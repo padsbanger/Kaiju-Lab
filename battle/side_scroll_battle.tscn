@@ -1,9 +1,11 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="Script" path="res://battle/side_scroll_battle.gd" id="1"]
 [ext_resource type="Script" path="res://battle/scroll_controller.gd" id="2"]
 [ext_resource type="PackedScene" path="res://kaiju/kaiju.tscn" id="3"]
 [ext_resource type="Script" path="res://battle/kaiju_battle_controller.gd" id="4"]
+[ext_resource type="Script" path="res://battle/battle_director.gd" id="5"]
+[ext_resource type="BattleMapData" path="res://data/battles/city_ruins.tres" id="6"]
 
 [sub_resource type="Environment" id="Env"]
 background_mode = 1
@@ -133,6 +135,9 @@ mesh = SubResource("ForegroundRubble")
 unique_name_in_owner = true
 position = Vector3(0, 0, 0)
 
+[node name="EnemyRoot" type="Node3D" parent="."]
+unique_name_in_owner = true
+
 [node name="BattleCamera" type="Camera3D" parent="."]
 unique_name_in_owner = true
 projection = 1
@@ -145,6 +150,11 @@ script = ExtResource("2")
 
 [node name="KaijuBattleController" type="Node" parent="."]
 script = ExtResource("4")
+advance_speed = 0.32
+
+[node name="BattleDirector" type="Node" parent="."]
+script = ExtResource("5")
+map_data = ExtResource("6")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -179,4 +189,12 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.65, 0.82, 0.66, 1)
 theme_override_font_sizes/font_size = 8
 text = "AUTONOMY  ADVANCE   TARGET  NONE"
+horizontal_alignment = 1
+
+[node name="WaveLabel" type="Label" parent="UI/ProgressPanel/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.72, 0.32, 1)
+theme_override_font_sizes/font_size = 8
+text = "TRAVEL   HOSTILES 00   00:00"
 horizontal_alignment = 1

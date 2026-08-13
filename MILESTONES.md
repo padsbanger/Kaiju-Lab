@@ -215,7 +215,7 @@ Exit criteria:
 
 ## Milestone 5: Progression Triggers and Enemy Waves
 
-Status: **not started**
+Status: **complete**
 
 Goal: turn the test level into a continuous multi-minute deployment.
 

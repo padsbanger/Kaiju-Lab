@@ -12,6 +12,9 @@ signal status_changed(message: String)
 @onready var progress_bar: ProgressBar = %ProgressBar
 @onready var progress_label: Label = %ProgressLabel
 @onready var state_label: Label = %StateLabel
+@onready var wave_label: Label = %WaveLabel
+@onready var enemy_root: Node3D = %EnemyRoot
+@onready var battle_director: BattleDirector = $BattleDirector
 var elapsed_seconds: float = 0.0
 var active: bool = true
 
@@ -23,6 +26,8 @@ func _ready() -> void:
 	scroll_controller.boss_gate_x = %BossGate.position.x
 	scroll_controller.configure(kaiju, camera, %FarLayer, %MidLayer, %ForegroundLayer)
 	scroll_controller.progress_changed.connect(_on_progress_changed)
+	battle_director.configure(self)
+	battle_director.phase_changed.connect(_on_phase_changed)
 	status_changed.emit("DEPLOYMENT // CITY RUINS")
 
 
@@ -31,6 +36,7 @@ func _physics_process(delta: float) -> void:
 		return
 	elapsed_seconds += delta
 	state_label.text = "AUTONOMY  %s   TARGET  %s" % [battle_controller.state_name(), _target_name()]
+	wave_label.text = "%s   HOSTILES %02d   %02d:%02d" % [battle_director.phase_name(), battle_director.remaining_count(), int(elapsed_seconds) / 60, int(elapsed_seconds) % 60]
 
 
 func bind_specimen(specimen: SpecimenState) -> void:
@@ -49,6 +55,10 @@ func _on_state_changed(_state: KaijuBattleController.State) -> void:
 func _target_name() -> String:
 	var target: Node3D = kaiju.brain_controller.target
 	return target.name.to_upper() if is_instance_valid(target) else "NONE"
+
+
+func _on_phase_changed(_phase: BattleDirector.Phase, title: String) -> void:
+	wave_label.text = title
 
 
 func build_result(outcome: BattleResult.Outcome) -> BattleResult:

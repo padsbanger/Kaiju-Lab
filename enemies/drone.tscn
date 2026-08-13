@@ -4,37 +4,36 @@
 [ext_resource type="Script" path="res://combat/health.gd" id="2"]
 [ext_resource type="Script" path="res://combat/ranged_attack.gd" id="3"]
 [ext_resource type="PackedScene" path="res://combat/projectile.tscn" id="4"]
-[ext_resource type="Texture2D" path="res://art/pixel/enemies/tank.png" id="5"]
+[ext_resource type="Texture2D" path="res://art/pixel/enemies/drone.png" id="5"]
 
 [sub_resource type="BoxShape3D" id="Shape"]
-size = Vector3(1.7, 0.8, 2.2)
+size = Vector3(1.25, 0.6, 0.45)
 
-[node name="Tank" type="CharacterBody3D"]
+[node name="AttackDrone" type="CharacterBody3D"]
 collision_layer = 2
 collision_mask = 5
 script = ExtResource("1")
-speed = 1.25
-preferred_distance = 7.5
-unit_name = "TANK"
+speed = 1.8
+preferred_distance = 6.5
+unit_name = "ATTACK DRONE"
 
 [node name="Collision" type="CollisionShape3D" parent="."]
-position = Vector3(0, 0.4, 0)
 shape = SubResource("Shape")
 
-[node name="Body" type="Sprite3D" parent="."]
-position = Vector3(0, 0.65, 0)
+[node name="Sprite" type="Sprite3D" parent="."]
+position = Vector3(0, 0.2, 0)
 texture_filter = 1
-pixel_size = 0.018
+pixel_size = 0.014
 texture = ExtResource("5")
 
 [node name="Health" type="Node" parent="."]
 script = ExtResource("2")
-max_health = 95.0
+max_health = 36.0
 
 [node name="RangedAttack" type="Node3D" parent="."]
-position = Vector3(0, 1.0, 0)
 script = ExtResource("3")
 projectile_scene = ExtResource("4")
-damage = 10.0
-cooldown = 3.2
+damage = 4.0
+cooldown = 2.0
 collision_targets = 9
+
