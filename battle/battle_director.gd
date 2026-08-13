@@ -24,6 +24,9 @@ var boss: Node3D
 func configure(owner_battle: SideScrollBattle) -> void:
 	battle = owner_battle
 	phase_changed.emit(phase, "ADVANCING")
+	# A deployment should show a hostile immediately; otherwise the long initial
+	# march reads as an empty scene rather than an autobattle.
+	call_deferred("start_wave", 0)
 
 
 func _process(_delta: float) -> void:
@@ -61,13 +64,14 @@ func _spawn_enemy(scene: PackedScene, wave: WaveData, index: int) -> void:
 		return
 	var enemy: Node3D = scene.instantiate() as Node3D
 	battle.enemy_root.add_child(enemy)
-	var base_x: float = battle.kaiju.global_position.x + 5.0
+	var base_x: float = battle.kaiju.global_position.x + 6.5
 	if wave.spawn_rule == WaveData.SpawnRule.LEFT_ENTRY:
 		base_x = battle.kaiju.global_position.x - 4.0
 	elif wave.spawn_rule in [WaveData.SpawnRule.FIXED_EMPLACEMENT, WaveData.SpawnRule.PREPLACED]:
 		base_x = lerpf(2.0, battle.scroll_controller.boss_gate_x - 3.0, wave.trigger_progress)
 	var height: float = 3.0 if wave.spawn_rule == WaveData.SpawnRule.AIR_ENTRY else 0.0
-	enemy.global_position = Vector3(base_x + index * wave.spacing, height, 0.0)
+	# Keep combatants in front of the parallax meshes on the camera-facing lane.
+	enemy.global_position = Vector3(base_x + index * wave.spacing, height, 0.25)
 	living_enemies.append(enemy)
 	enemy.tree_exiting.connect(_on_enemy_removed.bind(enemy), CONNECT_ONE_SHOT)
 

@@ -24,6 +24,9 @@ shape = SubResource("Shape")
 position = Vector3(0, 0.2, 0)
 texture_filter = 1
 pixel_size = 0.014
+render_priority = 10
+no_depth_test = true
+shaded = false
 texture = ExtResource("5")
 
 [node name="Health" type="Node" parent="."]
@@ -36,4 +39,3 @@ projectile_scene = ExtResource("4")
 damage = 4.0
 cooldown = 2.0
 collision_targets = 9
-

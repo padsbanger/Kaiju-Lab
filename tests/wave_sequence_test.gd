@@ -10,7 +10,15 @@ func _initialize() -> void:
 	var director: BattleDirector = battle.battle_director
 	director.set_process(false)
 	assert(director.map_data.waves.size() == 4)
+	await process_frame
+	assert(director.remaining_count() == director.map_data.waves[0].enemy_scenes.size(), "A deployment must open with a visible first-contact wave")
+	for enemy: Node3D in director.living_enemies.duplicate():
+		enemy.take_damage(9999.0, battle.kaiju)
+	await process_frame
+	await process_frame
 	for index: int in director.map_data.waves.size():
+		if index == 0:
+			continue
 		director.start_wave(index)
 		await process_frame
 		assert(director.current_wave_index == index)

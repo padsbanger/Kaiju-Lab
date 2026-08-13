@@ -25,6 +25,9 @@ shape = SubResource("Shape_body")
 position = Vector3(0, 0.7, 0)
 texture_filter = 1
 pixel_size = 0.014
+render_priority = 10
+no_depth_test = true
+shaded = false
 texture = ExtResource("4_sprite")
 
 [node name="Health" type="Node" parent="."]
