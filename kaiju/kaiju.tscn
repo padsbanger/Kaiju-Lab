@@ -1,10 +1,10 @@
-[gd_scene load_steps=27 format=3]
+[gd_scene load_steps=28 format=3]
 
 [ext_resource type="Script" path="res://kaiju/kaiju.gd" id="1_kaiju"]
 [ext_resource type="Script" path="res://kaiju/visuals/component_visual.gd" id="2_visual"]
-[ext_resource type="Texture2D" path="res://art/sprites/kaiju/torso.png" id="3_torso"]
-[ext_resource type="Texture2D" path="res://art/sprites/kaiju/head.png" id="4_head"]
-[ext_resource type="Texture2D" path="res://art/sprites/kaiju/claw_arm.png" id="5_claw"]
+[ext_resource type="Texture2D" path="res://art/pixel/kaiju/torso.png" id="3_torso"]
+[ext_resource type="Texture2D" path="res://art/pixel/kaiju/head.png" id="4_head"]
+[ext_resource type="Texture2D" path="res://art/pixel/kaiju/claw_arm.png" id="5_claw"]
 [ext_resource type="Script" path="res://combat/health.gd" id="6_health"]
 [ext_resource type="Script" path="res://combat/melee_attack.gd" id="7_attack"]
 [ext_resource type="Script" path="res://kaiju/brain/brain_controller.gd" id="8_brain"]
@@ -21,6 +21,7 @@
 [ext_resource type="PackedScene" path="res://combat/projectile.tscn" id="19_projectile"]
 [ext_resource type="Script" path="res://kaiju/resources/resource_controller.gd" id="20_resources"]
 [ext_resource type="Resource" path="res://data/brains/predator_brain.tres" id="21_predator"]
+[ext_resource type="Script" path="res://kaiju/visuals/pixel_animation_controller.gd" id="22_pixel_anim"]
 
 [sub_resource type="CapsuleShape3D" id="Capsule_kaiju"]
 radius = 0.85
@@ -92,7 +93,7 @@ shape = SubResource("Shape_torso_component")
 
 [node name="HeadSocket" type="Node3D" parent="ComponentRoot"]
 unique_name_in_owner = true
-position = Vector3(-0.05, 2.65, -0.02)
+position = Vector3(0.55, 2.45, -0.02)
 
 [node name="HeadComponent" type="Area3D" parent="ComponentRoot/HeadSocket"]
 collision_layer = 8
@@ -112,10 +113,10 @@ shape = SubResource("Shape_head_component")
 
 [node name="LeftArmSocket" type="Node3D" parent="ComponentRoot"]
 unique_name_in_owner = true
-position = Vector3(-1.15, 1.5, 0.04)
+position = Vector3(-0.72, 1.45, 0.04)
 
 [node name="ClawComponent" type="Area3D" parent="ComponentRoot/LeftArmSocket"]
-rotation = Vector3(0, 0, -0.55)
+rotation = Vector3(0, 0, -0.25)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("11_component")
@@ -124,7 +125,7 @@ visual_path = NodePath("Visual")
 
 [node name="Visual" type="Sprite3D" parent="ComponentRoot/LeftArmSocket/ClawComponent"]
 render_priority = 4
-scale = Vector3(0.78, 0.78, 0.78)
+scale = Vector3(0.9, 0.9, 0.9)
 texture = ExtResource("5_claw")
 script = ExtResource("2_visual")
 component_id = &"left_claw"
@@ -135,14 +136,14 @@ shape = SubResource("Shape_limb_component")
 
 [node name="RightArmSocket" type="Node3D" parent="ComponentRoot"]
 unique_name_in_owner = true
-position = Vector3(1.15, 1.5, -0.04)
+position = Vector3(0.92, 1.42, -0.04)
 
 [node name="MutationSocket" type="Node3D" parent="ComponentRoot"]
 unique_name_in_owner = true
 position = Vector3(0.45, 2.25, 0.14)
 
 [node name="ClawComponent" type="Area3D" parent="ComponentRoot/RightArmSocket"]
-rotation = Vector3(0, 0, 0.55)
+rotation = Vector3(0, 0, 0.08)
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("11_component")
@@ -151,9 +152,8 @@ visual_path = NodePath("Visual")
 
 [node name="Visual" type="Sprite3D" parent="ComponentRoot/RightArmSocket/ClawComponent"]
 render_priority = 1
-scale = Vector3(0.78, 0.78, 0.78)
+scale = Vector3(0.95, 0.95, 0.95)
 texture = ExtResource("5_claw")
-flip_h = true
 script = ExtResource("2_visual")
 component_id = &"right_claw"
 
@@ -207,6 +207,13 @@ projectile_scene = ExtResource("19_projectile")
 damage = 16.0
 cooldown = 1.75
 collision_targets = 2
+
+[node name="PixelAnimationController" type="Node" parent="."]
+script = ExtResource("22_pixel_anim")
+torso_path = NodePath("../ComponentRoot/TorsoComponent")
+head_path = NodePath("../ComponentRoot/HeadSocket")
+left_arm_path = NodePath("../ComponentRoot/LeftArmSocket")
+right_arm_path = NodePath("../ComponentRoot/RightArmSocket")
 
 [node name="ClawAttack" type="Area3D" parent="."]
 position = Vector3(0, 1.1, 0)

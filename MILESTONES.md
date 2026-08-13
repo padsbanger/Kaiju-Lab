@@ -96,7 +96,7 @@ Exit criteria:
 
 ## Milestone 1: Retro Pixel Rendering and Asset Pipeline
 
-Status: **not started**
+Status: **complete**
 
 Goal: prove that the final pixel-art presentation works correctly inside the 3D scene before producing substantial content.
 
@@ -444,7 +444,7 @@ The earlier arena roadmap was completed through its Milestone 8 and remains avai
 
 - Existing technical foundation: complete and reusable
 - Milestone 0 — Pivot baseline and migration safety: complete
-- Milestone 1 — Retro pixel rendering and asset pipeline: not started
+- Milestone 1 — Retro pixel rendering and asset pipeline: complete
 - Milestone 2 — Giant laboratory entry scene: not started
 - Milestone 3 — Side-scrolling world and camera: not started
 - Milestone 4 — Heavy autonomous advance and engagement: not started

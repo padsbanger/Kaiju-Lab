@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="MutationData" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://progression/mutation_data.gd" id="1"]
-[ext_resource type="Texture2D" path="res://art/sprites/kaiju/acid_gland.png" id="2"]
+[ext_resource type="Texture2D" path="res://art/pixel/kaiju/spore_gland.png" id="2"]
 
 [resource]
 script = ExtResource("1")

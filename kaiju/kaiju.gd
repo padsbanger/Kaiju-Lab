@@ -14,6 +14,7 @@ signal died(source: Node)
 @onready var anatomy_controller: AnatomyController = $AnatomyController
 @onready var spit_attack: RangedAttack = $SpitAttack
 @onready var resource_controller: ResourceController = $ResourceController
+@onready var pixel_animation: PixelAnimationController = $PixelAnimationController
 var regeneration_cooldown: float = 0.0
 var regeneration_amount: float = 20.0
 var regeneration_biomass_cost: float = 12.0
@@ -39,10 +40,12 @@ func _physics_process(delta: float) -> void:
 		return
 	var target: Node3D = brain_controller.target if is_instance_valid(brain_controller.target) else null
 	movement_controller.update_movement(self, target, delta)
+	pixel_animation.set_state(PixelAnimationController.State.WALK if velocity.length_squared() > 0.1 else PixelAnimationController.State.IDLE)
 	if target != null:
 		var distance: float = global_position.distance_to(target.global_position)
 		if distance <= 2.4 and anatomy_controller.is_function_online(&"melee_weapon"):
-			claw_attack.try_attack(target)
+			if claw_attack.try_attack(target):
+				pixel_animation.set_state(PixelAnimationController.State.ATTACK)
 		elif distance > 2.4:
 			spit_attack.try_attack(target, self)
 	regeneration_cooldown = maxf(0.0, regeneration_cooldown - delta)
@@ -55,6 +58,7 @@ func _physics_process(delta: float) -> void:
 
 func take_damage(amount: float, source: Node = null) -> void:
 	health.take_damage(amount * (1.0 - damage_resistance), source)
+	pixel_animation.set_state(PixelAnimationController.State.HURT)
 
 
 func add_mutation_visual(mutation: MutationData) -> void:
