@@ -17,12 +17,22 @@ func try_attack(preferred_target: Node3D = null) -> bool:
 	if cooldown_remaining > 0.0:
 		return false
 	var candidates: Array[Node3D] = []
+	for area: Area3D in get_overlapping_areas():
+		if area.has_method("take_damage"):
+			candidates.append(area)
 	for body: Node3D in get_overlapping_bodies():
 		if body.has_method("take_damage"):
 			candidates.append(body)
 	if candidates.is_empty():
 		return false
-	var target: Node3D = preferred_target if preferred_target in candidates else candidates[0]
+	var target: Node3D = candidates[0]
+	if preferred_target in candidates:
+		target = preferred_target
+	elif preferred_target != null:
+		for candidate: Node3D in candidates:
+			if preferred_target.is_ancestor_of(candidate):
+				target = candidate
+				break
 	cooldown_remaining = cooldown
 	attack_started.emit()
 	target.take_damage(damage, get_parent())

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ComponentData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://kaiju/resources/component_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"claw_right"
+display_name = "Right Rending Claw"
+description = "A bone pincer driven by dense muscle bundles."
+max_health = 58.0
+mass = 18.0
+tags = Array[StringName]([&"limb", &"weapon"])
+attachment_type = &"arm"
+function_id = &"melee_weapon"

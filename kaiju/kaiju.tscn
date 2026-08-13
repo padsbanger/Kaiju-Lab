@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=23 format=3]
 
 [ext_resource type="Script" path="res://kaiju/kaiju.gd" id="1_kaiju"]
 [ext_resource type="Script" path="res://kaiju/visuals/component_visual.gd" id="2_visual"]
@@ -9,6 +9,14 @@
 [ext_resource type="Script" path="res://combat/melee_attack.gd" id="7_attack"]
 [ext_resource type="Script" path="res://kaiju/brain/brain_controller.gd" id="8_brain"]
 [ext_resource type="Script" path="res://kaiju/movement/movement_controller.gd" id="9_move"]
+[ext_resource type="Script" path="res://kaiju/anatomy/anatomy_controller.gd" id="10_anatomy"]
+[ext_resource type="Script" path="res://kaiju/anatomy/kaiju_component.gd" id="11_component"]
+[ext_resource type="Resource" path="res://data/components/torso_basic.tres" id="12_torso_data"]
+[ext_resource type="Resource" path="res://data/components/brain_predator.tres" id="13_brain_data"]
+[ext_resource type="Resource" path="res://data/components/heart_basic.tres" id="14_heart_data"]
+[ext_resource type="Resource" path="res://data/components/stomach_basic.tres" id="15_stomach_data"]
+[ext_resource type="Resource" path="res://data/components/claw_left.tres" id="16_left_data"]
+[ext_resource type="Resource" path="res://data/components/claw_right.tres" id="17_right_data"]
 
 [sub_resource type="CapsuleShape3D" id="Capsule_kaiju"]
 radius = 0.85
@@ -28,6 +36,23 @@ height = 0.025
 [sub_resource type="SphereShape3D" id="Shape_claw_attack"]
 radius = 2.05
 
+[sub_resource type="BoxShape3D" id="Shape_torso_component"]
+size = Vector3(1.5, 2.25, 0.85)
+
+[sub_resource type="SphereShape3D" id="Shape_head_component"]
+radius = 0.62
+
+[sub_resource type="SphereShape3D" id="Shape_heart_component"]
+radius = 0.31
+
+[sub_resource type="CapsuleShape3D" id="Shape_stomach_component"]
+radius = 0.32
+height = 0.82
+
+[sub_resource type="CapsuleShape3D" id="Shape_limb_component"]
+radius = 0.38
+height = 1.65
+
 [node name="Kaiju" type="CharacterBody3D"]
 collision_layer = 1
 collision_mask = 6
@@ -44,8 +69,13 @@ mesh = SubResource("Mesh_shadow")
 [node name="ComponentRoot" type="Node3D" parent="."]
 unique_name_in_owner = true
 
-[node name="TorsoComponent" type="Node3D" parent="ComponentRoot"]
+[node name="TorsoComponent" type="Area3D" parent="ComponentRoot"]
 position = Vector3(0, 1.35, 0)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("11_component")
+data = ExtResource("12_torso_data")
+visual_path = NodePath("Visual")
 
 [node name="Visual" type="Sprite3D" parent="ComponentRoot/TorsoComponent"]
 render_priority = 2
@@ -53,11 +83,19 @@ texture = ExtResource("3_torso")
 script = ExtResource("2_visual")
 component_id = &"torso"
 
+[node name="Hitbox" type="CollisionShape3D" parent="ComponentRoot/TorsoComponent"]
+shape = SubResource("Shape_torso_component")
+
 [node name="HeadSocket" type="Node3D" parent="ComponentRoot"]
 unique_name_in_owner = true
 position = Vector3(-0.05, 2.65, -0.02)
 
-[node name="HeadComponent" type="Node3D" parent="ComponentRoot/HeadSocket"]
+[node name="HeadComponent" type="Area3D" parent="ComponentRoot/HeadSocket"]
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("11_component")
+data = ExtResource("13_brain_data")
+visual_path = NodePath("Visual")
 
 [node name="Visual" type="Sprite3D" parent="ComponentRoot/HeadSocket/HeadComponent"]
 render_priority = 5
@@ -65,12 +103,20 @@ texture = ExtResource("4_head")
 script = ExtResource("2_visual")
 component_id = &"head"
 
+[node name="Hitbox" type="CollisionShape3D" parent="ComponentRoot/HeadSocket/HeadComponent"]
+shape = SubResource("Shape_head_component")
+
 [node name="LeftArmSocket" type="Node3D" parent="ComponentRoot"]
 unique_name_in_owner = true
 position = Vector3(-1.15, 1.5, 0.04)
 
-[node name="ClawComponent" type="Node3D" parent="ComponentRoot/LeftArmSocket"]
+[node name="ClawComponent" type="Area3D" parent="ComponentRoot/LeftArmSocket"]
 rotation = Vector3(0, 0, -0.55)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("11_component")
+data = ExtResource("16_left_data")
+visual_path = NodePath("Visual")
 
 [node name="Visual" type="Sprite3D" parent="ComponentRoot/LeftArmSocket/ClawComponent"]
 render_priority = 4
@@ -79,12 +125,21 @@ texture = ExtResource("5_claw")
 script = ExtResource("2_visual")
 component_id = &"left_claw"
 
+[node name="Hitbox" type="CollisionShape3D" parent="ComponentRoot/LeftArmSocket/ClawComponent"]
+rotation = Vector3(0, 0, 1.5708)
+shape = SubResource("Shape_limb_component")
+
 [node name="RightArmSocket" type="Node3D" parent="ComponentRoot"]
 unique_name_in_owner = true
 position = Vector3(1.15, 1.5, -0.04)
 
-[node name="ClawComponent" type="Node3D" parent="ComponentRoot/RightArmSocket"]
+[node name="ClawComponent" type="Area3D" parent="ComponentRoot/RightArmSocket"]
 rotation = Vector3(0, 0, 0.55)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("11_component")
+data = ExtResource("17_right_data")
+visual_path = NodePath("Visual")
 
 [node name="Visual" type="Sprite3D" parent="ComponentRoot/RightArmSocket/ClawComponent"]
 render_priority = 1
@@ -93,6 +148,32 @@ texture = ExtResource("5_claw")
 flip_h = true
 script = ExtResource("2_visual")
 component_id = &"right_claw"
+
+[node name="Hitbox" type="CollisionShape3D" parent="ComponentRoot/RightArmSocket/ClawComponent"]
+rotation = Vector3(0, 0, 1.5708)
+shape = SubResource("Shape_limb_component")
+
+[node name="InternalOrgans" type="Node3D" parent="ComponentRoot"]
+
+[node name="HeartComponent" type="Area3D" parent="ComponentRoot/InternalOrgans"]
+position = Vector3(-0.32, 1.45, 0.32)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("11_component")
+data = ExtResource("14_heart_data")
+
+[node name="Hitbox" type="CollisionShape3D" parent="ComponentRoot/InternalOrgans/HeartComponent"]
+shape = SubResource("Shape_heart_component")
+
+[node name="StomachComponent" type="Area3D" parent="ComponentRoot/InternalOrgans"]
+position = Vector3(0.28, 0.9, 0.3)
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("11_component")
+data = ExtResource("15_stomach_data")
+
+[node name="Hitbox" type="CollisionShape3D" parent="ComponentRoot/InternalOrgans/StomachComponent"]
+shape = SubResource("Shape_stomach_component")
 
 [node name="Health" type="Node" parent="."]
 script = ExtResource("6_health")
@@ -103,6 +184,9 @@ script = ExtResource("8_brain")
 
 [node name="MovementController" type="Node" parent="."]
 script = ExtResource("9_move")
+
+[node name="AnatomyController" type="Node" parent="."]
+script = ExtResource("10_anatomy")
 
 [node name="ClawAttack" type="Area3D" parent="."]
 position = Vector3(0, 1.1, 0)

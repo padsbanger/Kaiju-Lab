@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ComponentData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://kaiju/resources/component_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"heart_basic"
+display_name = "Primary Heart"
+description = "Maintains circulation throughout the specimen."
+max_health = 75.0
+mass = 12.0
+tags = Array[StringName]([&"organ", &"circulatory"])
+attachment_type = &"core"
+function_id = &"circulation"
+critical = true

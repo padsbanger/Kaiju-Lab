@@ -12,6 +12,7 @@ func _ready() -> void:
 	camera.look_at(Vector3(0.0, 1.0, 0.0))
 	kaiju.health.health_changed.connect(_on_kaiju_health_changed)
 	kaiju.died.connect(_on_kaiju_died)
+	kaiju.anatomy_controller.component_destroyed.connect(_on_component_destroyed)
 	enemy.died.connect(_on_enemy_died)
 	status_changed.emit("AUTONOMOUS COMBAT // TARGET ACQUISITION")
 
@@ -32,3 +33,7 @@ func _on_enemy_died(_enemy: MeleeSoldier) -> void:
 func _on_kaiju_died(_source: Node) -> void:
 	status_changed.emit("SPECIMEN LOST // RUN TERMINATED")
 	combat_finished.emit(&"defeat")
+
+
+func _on_component_destroyed(component: KaijuComponent) -> void:
+	status_changed.emit("%s DESTROYED // %s OFFLINE" % [component.data.display_name.to_upper(), component.data.function_id.to_upper()])

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ComponentData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://kaiju/resources/component_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"torso_basic"
+display_name = "Carapace Torso"
+description = "Structural tissue that anchors every major organ."
+max_health = 140.0
+mass = 48.0
+tags = Array[StringName]([&"organ", &"structural", &"defensive"])
+attachment_type = &"core"
+function_id = &"structural"
+critical = true
