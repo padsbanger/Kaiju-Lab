@@ -21,7 +21,7 @@ func show_lab() -> void:
 	_clear_scene_root()
 	lab_scene = LAB_SCENE.instantiate() as LabController
 	scene_root.add_child(lab_scene)
-	lab_scene.bind_specimen(run_manager.specimen)
+	lab_scene.bind_specimen(run_manager.specimen, run_manager.latest_battle_result)
 	lab_scene.deploy_requested.connect(deploy)
 	prototype_event.emit("GIANT KAIJU LAB // SPECIMEN READY")
 

@@ -270,7 +270,7 @@ Exit criteria:
 
 ## Milestone 7: Persistent Damage and Regeneration
 
-Status: **not started**
+Status: **complete**
 
 Goal: complete the first half of the return-to-lab fantasy: bring the same damaged organism home and restore it.
 

@@ -137,6 +137,28 @@ theme_override_font_sizes/font_size = 9
 text = "COMPONENT SCAN"
 autowrap_mode = 2
 
+[node name="RepairButton" type="Button" parent="UI"]
+unique_name_in_owner = true
+offset_left = 452.0
+offset_top = 270.0
+offset_right = 630.0
+offset_bottom = 303.0
+theme_override_font_sizes/font_size = 9
+theme_override_styles/normal = SubResource("Button")
+text = "REGENERATE"
+
+[node name="ReportLabel" type="Label" parent="UI"]
+unique_name_in_owner = true
+offset_left = 202.0
+offset_top = 92.0
+offset_right = 438.0
+offset_bottom = 260.0
+theme_override_colors/font_color = Color(0.64, 0.86, 0.68, 1)
+theme_override_font_sizes/font_size = 8
+text = "NO PREVIOUS DEPLOYMENT"
+horizontal_alignment = 1
+autowrap_mode = 2
+
 [node name="Phase" type="Label" parent="UI"]
 offset_left = 205.0
 offset_top = 62.0
