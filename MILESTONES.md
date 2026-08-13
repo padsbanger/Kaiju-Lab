@@ -129,7 +129,7 @@ Exit criteria:
 
 ## Milestone 2: Giant Laboratory Entry Scene
 
-Status: **not started**
+Status: **complete**
 
 Goal: make the laboratory the real starting point and primary preparation phase.
 
@@ -445,7 +445,7 @@ The earlier arena roadmap was completed through its Milestone 8 and remains avai
 - Existing technical foundation: complete and reusable
 - Milestone 0 — Pivot baseline and migration safety: complete
 - Milestone 1 — Retro pixel rendering and asset pipeline: complete
-- Milestone 2 — Giant laboratory entry scene: not started
+- Milestone 2 — Giant laboratory entry scene: complete
 - Milestone 3 — Side-scrolling world and camera: not started
 - Milestone 4 — Heavy autonomous advance and engagement: not started
 - Milestone 5 — Progression triggers and enemy waves: not started

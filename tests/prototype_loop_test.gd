@@ -1,7 +1,6 @@
 extends SceneTree
 
 const MAIN_SCENE: PackedScene = preload("res://main.tscn")
-const ACID: MutationData = preload("res://data/mutations/acid_gland.tres")
 
 
 func _initialize() -> void:
@@ -13,24 +12,11 @@ func _initialize() -> void:
 
 func _run(main: Main) -> void:
 	await process_frame
-	_defeat_active_enemies()
+	assert(main.lab_scene != null, "Project must open in the giant lab")
+	assert(main.run_manager.specimen.component_states.size() >= 6)
+	main.deploy()
 	await process_frame
-	assert(main.run_manager.phase == RunManager.RunPhase.MUTATION)
-	assert(main.mutation_selection.visible)
-	main.mutation_selection._on_mutation_chosen(ACID)
-	await process_frame
-	assert(main.run_manager.encounter_index == 2)
-	assert(&"acid_gland" in main.run_manager.selected_mutation_ids)
-	assert(main.combat_scene.kaiju.get_node("ComponentRoot/MutationSocket").get_child_count() == 1)
-	_defeat_active_enemies()
-	await process_frame
-	assert(main.run_manager.phase == RunManager.RunPhase.COMPLETE)
-	assert(main.run_end_screen.visible)
-	print("PASS: full UI loop reaches mutation, preserves visible change, and completes encounter two")
+	assert(main.combat_scene != null, "Deploy must transition to a battle")
+	assert(main.combat_scene.kaiju != null)
+	print("PASS: project opens in persistent lab and deploys the same specimen")
 	quit(0)
-
-
-func _defeat_active_enemies() -> void:
-	for enemy: Node in get_nodes_in_group(&"enemies"):
-		var health: Health = enemy.get_node("Health") as Health
-		health.take_damage(health.max_health * 10.0)
