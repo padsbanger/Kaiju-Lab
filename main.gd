@@ -37,6 +37,7 @@ func _on_combat_finished(result: StringName) -> void:
 	if result == &"victory" and run_manager.encounter_index == 1:
 		run_manager.begin_mutation_phase()
 		get_tree().paused = true
+		mutation_selection.set_anatomy_summary(combat_scene.kaiju)
 		mutation_selection.present_choices()
 	elif result == &"victory":
 		run_manager.finish_run(true)
