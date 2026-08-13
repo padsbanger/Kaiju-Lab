@@ -295,7 +295,7 @@ Exit criteria:
 
 ## Milestone 8: XP, Level-Up, and Organ Replacement
 
-Status: **not started**
+Status: **complete**
 
 Goal: complete the player decision loop before redeployment.
 

@@ -104,6 +104,26 @@ func set_run_movement_speed(value: float) -> void:
 	movement_controller.speed = value
 
 
+func apply_loadout_effects() -> void:
+	var left: KaijuComponent = $ComponentRoot/LeftArmSocket/ClawComponent
+	var sprite: Sprite3D = left.get_node("Visual") as Sprite3D
+	if &"tendril" in left.data.tags:
+		claw_attack.damage = 17.0
+		claw_attack.cooldown = 0.48
+		sprite.scale = Vector3(0.72, 1.18, 1.0)
+		sprite.modulate = Color(0.86, 0.5, 1.0, 1.0)
+	elif &"crusher" in left.data.tags:
+		claw_attack.damage = 39.0
+		claw_attack.cooldown = 1.25
+		sprite.scale = Vector3(1.25, 1.25, 1.0)
+		sprite.modulate = Color(0.88, 0.84, 0.64, 1.0)
+	else:
+		claw_attack.damage = 24.0
+		claw_attack.cooldown = 0.82
+		sprite.scale = Vector3(0.9, 0.9, 0.9)
+		sprite.modulate = Color.WHITE
+
+
 func reset_for_encounter(spawn_position: Vector3) -> void:
 	global_position = spawn_position
 	velocity = Vector3.ZERO

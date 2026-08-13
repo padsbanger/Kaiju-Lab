@@ -74,7 +74,7 @@ func build_result(outcome: BattleResult.Outcome) -> BattleResult:
 	result.waves_survived = battle_director.waves_cleared
 	result.enemies_defeated = battle_director.enemies_defeated
 	result.boss_defeated = outcome == BattleResult.Outcome.BOSS_DEFEATED
-	result.experience_reward = battle_director.enemies_defeated * 12 + (100 if result.boss_defeated else 0)
+	result.experience_reward = battle_director.enemies_defeated * 12 + (300 if result.boss_defeated else 0)
 	result.biomass_reward = battle_director.enemies_defeated * 3 + (40 if result.boss_defeated else 0)
 	result.dna_reward = 20 if result.boss_defeated else 4 * battle_director.waves_cleared
 	return result

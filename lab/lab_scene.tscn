@@ -179,3 +179,23 @@ theme_override_colors/font_color = Color(0.68, 1, 0.7, 1)
 theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = SubResource("Button")
 text = "DEPLOY"
+
+[node name="OrganButton" type="Button" parent="UI"]
+unique_name_in_owner = true
+offset_left = 198.0
+offset_top = 266.0
+offset_right = 442.0
+offset_bottom = 289.0
+theme_override_font_sizes/font_size = 8
+theme_override_styles/normal = SubResource("Button")
+text = "CHANGE ORGAN"
+
+[node name="LevelButton" type="Button" parent="UI"]
+unique_name_in_owner = true
+offset_left = 198.0
+offset_top = 291.0
+offset_right = 442.0
+offset_bottom = 314.0
+theme_override_font_sizes/font_size = 8
+theme_override_styles/normal = SubResource("Button")
+text = "LEVEL UP"

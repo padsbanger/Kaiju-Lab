@@ -12,6 +12,8 @@ signal deploy_requested
 @onready var deploy_button: Button = %DeployButton
 @onready var repair_button: Button = %RepairButton
 @onready var report_label: Label = %ReportLabel
+@onready var organ_button: Button = %OrganButton
+@onready var level_button: Button = %LevelButton
 var specimen: SpecimenState
 var latest_result: BattleResult
 var regeneration: RefCounted = REGENERATION_SYSTEM_SCRIPT.new()
@@ -24,6 +26,8 @@ func _ready() -> void:
 	component_list.item_selected.connect(_on_component_selected)
 	deploy_button.pressed.connect(func() -> void: deploy_requested.emit())
 	repair_button.pressed.connect(_repair_selected)
+	organ_button.pressed.connect(_cycle_left_organ)
+	level_button.pressed.connect(_level_up)
 	%LabCamera.look_at(Vector3(0.0, 1.4, 0.0))
 
 
@@ -43,6 +47,12 @@ func _refresh() -> void:
 	deploy_button.disabled = not regeneration.can_deploy(specimen)
 	deploy_button.text = "DEPLOY" if not deploy_button.disabled else "REGENERATION REQUIRED"
 	report_label.text = _battle_report()
+	level_button.disabled = not specimen.can_level_up()
+	level_button.text = "LEVEL UP" if not level_button.disabled else "LEVEL UP // %d XP NEEDED" % maxi(0, specimen.experience_to_next_level - specimen.experience)
+	var left_state: ComponentState = specimen.component_states.get(&"claw_left") as ComponentState
+	if left_state != null:
+		var installed: ComponentData = load(left_state.installed_resource_path) as ComponentData
+		organ_button.text = "CHANGE ORGAN // %s" % installed.display_name.to_upper()
 	if component_list.item_count > 0:
 		component_list.select(0)
 		_on_component_selected(0)
@@ -80,3 +90,19 @@ func _battle_report() -> String:
 			damaged.append("%s %d%% // %s" % [String(component_id).to_upper(), int(state.health_ratio() * 100.0), state.last_damage_cause])
 	var damage_text: String = "NO LASTING DAMAGE" if damaged.is_empty() else "\n".join(damaged)
 	return "BATTLE REPORT // %d%% PROGRESS // %d HOSTILES\n+%d XP  +%d BIOMASS  +%d DNA\n%s" % [int(latest_result.map_progress * 100.0), latest_result.enemies_defeated, latest_result.experience_reward, latest_result.biomass_reward, latest_result.dna_reward, damage_text]
+
+
+func _cycle_left_organ() -> void:
+	var state: ComponentState = specimen.component_states.get(&"claw_left") as ComponentState
+	if state == null:
+		return
+	var index: int = specimen.organ_inventory.find(state.installed_resource_path)
+	var next_path: String = specimen.organ_inventory[(index + 1) % specimen.organ_inventory.size()]
+	if specimen.install_organ(&"claw_left", next_path):
+		specimen.apply_to_kaiju(kaiju)
+		_refresh()
+
+
+func _level_up() -> void:
+	if specimen.level_up():
+		_refresh()
