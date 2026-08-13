@@ -158,7 +158,7 @@ Exit criteria:
 
 ## Milestone 3: Side-Scrolling World and Camera
 
-Status: **not started**
+Status: **complete**
 
 Goal: prove the defining battle composition before adding wave complexity.
 
@@ -446,7 +446,7 @@ The earlier arena roadmap was completed through its Milestone 8 and remains avai
 - Milestone 0 — Pivot baseline and migration safety: complete
 - Milestone 1 — Retro pixel rendering and asset pipeline: complete
 - Milestone 2 — Giant laboratory entry scene: complete
-- Milestone 3 — Side-scrolling world and camera: not started
+- Milestone 3 — Side-scrolling world and camera: complete
 - Milestone 4 — Heavy autonomous advance and engagement: not started
 - Milestone 5 — Progression triggers and enemy waves: not started
 - Milestone 6 — Final boss and battle resolution: not started

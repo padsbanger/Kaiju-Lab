@@ -4,12 +4,12 @@ extends Node
 signal prototype_event(message: String)
 
 const LAB_SCENE: PackedScene = preload("res://lab/lab_scene.tscn")
-const LEGACY_BATTLE_SCENE: PackedScene = preload("res://encounters/combat_scene.tscn")
+const BATTLE_SCENE: PackedScene = preload("res://battle/side_scroll_battle.tscn")
 
 @onready var scene_root: Node = $SceneRoot
 @onready var run_manager: RunManager = $RunManager
 var lab_scene: LabController
-var combat_scene: CombatScene
+var combat_scene: SideScrollBattle
 
 
 func _ready() -> void:
@@ -28,20 +28,15 @@ func show_lab() -> void:
 
 func deploy() -> void:
 	_clear_scene_root()
-	combat_scene = LEGACY_BATTLE_SCENE.instantiate() as CombatScene
+	combat_scene = BATTLE_SCENE.instantiate() as SideScrollBattle
 	scene_root.add_child(combat_scene)
-	run_manager.specimen.apply_to_kaiju(combat_scene.kaiju)
-	combat_scene.combat_finished.connect(_on_legacy_battle_finished)
-	prototype_event.emit("DEPLOYMENT // LEGACY TEST RANGE")
+	combat_scene.bind_specimen(run_manager.specimen)
+	combat_scene.battle_finished.connect(_on_battle_finished)
+	prototype_event.emit("DEPLOYMENT // CITY RUINS")
 
 
-func _on_legacy_battle_finished(result: StringName) -> void:
-	var battle_result := BattleResult.new()
-	battle_result.outcome = BattleResult.Outcome.VICTORY if result == &"victory" else BattleResult.Outcome.KAIJU_DEAD
-	battle_result.capture_components(combat_scene.kaiju)
-	battle_result.experience_reward = 50 if result == &"victory" else 10
-	battle_result.biomass_reward = 20
-	run_manager.record_battle_result(battle_result)
+func _on_battle_finished(result: BattleResult) -> void:
+	run_manager.record_battle_result(result)
 	show_lab()
 
 
