@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="MutationData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://progression/mutation_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"berserker_cortex"
+display_name = "BERSERKER CORTEX"
+description = "Rewires target scoring toward nearby prey and raises claw damage, but reduces ranged damage."
+rarity = &"EPIC"
+effect_type = &"berserker_cortex"
+magnitude = 8.0
+tradeoff = 4.0

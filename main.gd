@@ -10,6 +10,8 @@ signal prototype_event(message: String)
 @onready var mutation_system: MutationSystem = $MutationSystem
 @onready var run_manager: RunManager = $RunManager
 @onready var run_end_screen: RunEndScreen = %RunEndScreen
+@onready var combat_telemetry: CombatTelemetry = %CombatTelemetry
+@onready var combat_feedback: CombatFeedback = $CombatFeedback
 
 
 func _ready() -> void:
@@ -19,6 +21,8 @@ func _ready() -> void:
 	mutation_selection.mutation_selected.connect(_on_mutation_selected)
 	run_end_screen.restart_requested.connect(_on_restart_requested)
 	run_manager.begin_run()
+	combat_telemetry.bind(combat_scene.kaiju)
+	combat_feedback.bind(combat_scene.kaiju)
 	report_event("SPECIMEN K-01 // ARENA LINK STABLE")
 
 

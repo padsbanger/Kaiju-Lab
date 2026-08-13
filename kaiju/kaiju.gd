@@ -79,6 +79,22 @@ func add_regeneration_visual() -> void:
 	torso_visual.modulate = Color(0.62, 1.0, 0.65, 1.0)
 
 
+func add_extra_limb_visual(mutation: MutationData) -> void:
+	if mutation.visual_texture == null:
+		return
+	var extra_socket: Node3D = Node3D.new()
+	extra_socket.name = "AuxiliaryLimbSocket"
+	extra_socket.position = Vector3(0.7, 1.75, 0.08)
+	extra_socket.rotation.z = 0.95
+	component_root.add_child(extra_socket)
+	var sprite := ComponentVisual.new()
+	sprite.texture = mutation.visual_texture
+	sprite.component_id = mutation.id
+	sprite.render_priority = 3
+	sprite.scale = Vector3.ONE * 0.58
+	extra_socket.add_child(sprite)
+
+
 func set_run_movement_speed(value: float) -> void:
 	run_movement_speed = value
 	movement_controller.speed = value

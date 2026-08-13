@@ -233,4 +233,16 @@ Before declaring Milestone 6 complete, verify all of the following:
 
 ## Immediate Next Step
 
-Implement Milestone 0, then build Milestone 1 with placeholder assets. The first meaningful checkpoint should be a modular sprite-built kaiju standing in a readable 3D arena under the final MVP camera style.
+All planned prototype milestones are implemented. The next step is playtesting and balance iteration: observe whether combat decisions are understandable, whether component failures create useful lessons, and whether mutation choices produce meaningfully different second encounters before expanding scope.
+
+## Implementation Status
+
+- Milestone 0: complete
+- Milestone 1: complete
+- Milestone 2: complete
+- Milestone 3: complete
+- Milestone 4: complete
+- Milestone 5: complete
+- Milestone 6: complete
+- Milestone 7: complete
+- Milestone 8: complete

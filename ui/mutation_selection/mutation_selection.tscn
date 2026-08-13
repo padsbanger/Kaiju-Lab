@@ -1,10 +1,13 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://ui/mutation_selection/mutation_selection.gd" id="1"]
 [ext_resource type="Script" path="res://ui/mutation_selection/mutation_card.gd" id="2"]
 [ext_resource type="Resource" path="res://data/mutations/acid_gland.tres" id="3"]
 [ext_resource type="Resource" path="res://data/mutations/bone_plating.tres" id="4"]
 [ext_resource type="Resource" path="res://data/mutations/regeneration_tumor.tres" id="5"]
+[ext_resource type="Resource" path="res://data/mutations/berserker_cortex.tres" id="6"]
+[ext_resource type="Resource" path="res://data/mutations/metabolic_overdrive.tres" id="7"]
+[ext_resource type="Resource" path="res://data/mutations/twin_claw_tendril.tres" id="8"]
 
 [sub_resource type="StyleBoxFlat" id="Panel"]
 bg_color = Color(0.008, 0.022, 0.019, 0.975)
@@ -48,7 +51,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 script = ExtResource("1")
-mutation_pool = Array[Resource]([ExtResource("3"), ExtResource("4"), ExtResource("5")])
+mutation_pool = Array[Resource]([ExtResource("3"), ExtResource("4"), ExtResource("5"), ExtResource("6"), ExtResource("7"), ExtResource("8")])
 
 [node name="Dim" type="ColorRect" parent="."]
 layout_mode = 1

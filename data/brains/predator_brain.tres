@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="BrainData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://kaiju/resources/brain_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"predator"
+display_name = "PREDATOR CORTEX"
+description = "Prioritizes wounded prey, then closes efficiently."
+distance_weight = 0.8
+weakness_weight = 34.0
+aggression = 1.0
+melee_preference = 0.1

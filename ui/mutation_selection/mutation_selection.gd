@@ -65,4 +65,10 @@ func _preview_color_for(effect_type: StringName) -> Color:
 			return Color(0.72, 0.78, 0.95, 1.0)
 		&"regeneration_tumor":
 			return Color(0.52, 1.0, 0.55, 1.0)
+		&"berserker_cortex":
+			return Color(1.0, 0.35, 0.45, 1.0)
+		&"metabolic_overdrive":
+			return Color(0.82, 1.0, 0.38, 1.0)
+		&"extra_limb":
+			return Color(0.68, 0.38, 0.95, 1.0)
 	return Color.WHITE

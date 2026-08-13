@@ -18,6 +18,8 @@ godot --path .
 
 The project has a configured main scene and does not require manual editor setup.
 
+Combat is fully autonomous. During the lab phase, hover mutation cards to preview their effect and click one to evolve the specimen. Use **Start New Experiment** after a completed or failed run.
+
 ## Development
 
 - Project guidance: `AGENTS.md`
@@ -25,3 +27,13 @@ The project has a configured main scene and does not require manual editor setup
 - Visual direction references: `screenshots/`
 
 Every milestone should remain runnable and should end in a dedicated Git commit.
+
+## Tests
+
+Run the complete prototype suite from PowerShell:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\tests\run_all_tests.ps1
+```
+
+The suite covers component failure, brain weights, performance budgets, mutations, lab inspection, run state, autonomous mixed combat, and the full two-encounter UI loop.

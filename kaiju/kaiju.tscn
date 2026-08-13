@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3]
+[gd_scene load_steps=27 format=3]
 
 [ext_resource type="Script" path="res://kaiju/kaiju.gd" id="1_kaiju"]
 [ext_resource type="Script" path="res://kaiju/visuals/component_visual.gd" id="2_visual"]
@@ -20,6 +20,7 @@
 [ext_resource type="Script" path="res://combat/ranged_attack.gd" id="18_ranged"]
 [ext_resource type="PackedScene" path="res://combat/projectile.tscn" id="19_projectile"]
 [ext_resource type="Script" path="res://kaiju/resources/resource_controller.gd" id="20_resources"]
+[ext_resource type="Resource" path="res://data/brains/predator_brain.tres" id="21_predator"]
 
 [sub_resource type="CapsuleShape3D" id="Capsule_kaiju"]
 radius = 0.85
@@ -188,6 +189,7 @@ max_health = 180.0
 
 [node name="BrainController" type="Node" parent="."]
 script = ExtResource("8_brain")
+brain_data = ExtResource("21_predator")
 
 [node name="MovementController" type="Node" parent="."]
 script = ExtResource("9_move")
