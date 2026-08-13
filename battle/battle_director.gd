@@ -5,7 +5,7 @@ signal phase_changed(phase: Phase, title: String)
 signal wave_started(index: int, wave: WaveData)
 signal wave_cleared(index: int)
 signal preboss_sequence_complete
-signal boss_spawned(boss: Node3D)
+signal boss_spawned(boss: Node2D)
 
 enum Phase { TRAVEL, WAVE, ELITE, BOSS, COMPLETE }
 
@@ -14,11 +14,11 @@ var battle: SideScrollBattle
 var phase: Phase = Phase.TRAVEL
 var next_wave_index: int = 0
 var current_wave_index: int = -1
-var living_enemies: Array[Node3D] = []
+var living_enemies: Array[Node2D] = []
 var enemies_defeated: int = 0
 var waves_cleared: int = 0
 var boss_scene: PackedScene = preload("res://enemies/citadel_boss.tscn")
-var boss: Node3D
+var boss: Node2D
 
 
 func configure(owner_battle: SideScrollBattle) -> void:
@@ -62,21 +62,23 @@ func start_wave(index: int) -> void:
 func _spawn_enemy(scene: PackedScene, wave: WaveData, index: int) -> void:
 	if scene == null:
 		return
-	var enemy: Node3D = scene.instantiate() as Node3D
+	var enemy: Node2D = scene.instantiate() as Node2D
 	battle.enemy_root.add_child(enemy)
-	var base_x: float = battle.kaiju.global_position.x + 6.5
+	# Standard waves enter from just beyond the right camera edge, then march
+	# into view. This avoids sudden enemies materialising beside the kaiju.
+	var base_x: float = battle.right_screen_x() + 80.0
 	if wave.spawn_rule == WaveData.SpawnRule.LEFT_ENTRY:
-		base_x = battle.kaiju.global_position.x - 4.0
+		base_x = battle.kaiju.global_position.x - 180.0
 	elif wave.spawn_rule in [WaveData.SpawnRule.FIXED_EMPLACEMENT, WaveData.SpawnRule.PREPLACED]:
-		base_x = lerpf(2.0, battle.scroll_controller.boss_gate_x - 3.0, wave.trigger_progress)
-	var height: float = 3.0 if wave.spawn_rule == WaveData.SpawnRule.AIR_ENTRY else 0.0
-	# Keep combatants in front of the parallax meshes on the camera-facing lane.
-	enemy.global_position = Vector3(base_x + index * wave.spacing, height, 0.25)
+		base_x = lerpf(320.0, battle.scroll_controller.boss_gate_x - 240.0, wave.trigger_progress)
+	var spawn_y: float = battle.ground_y - 135.0 if wave.spawn_rule == WaveData.SpawnRule.AIR_ENTRY else battle.ground_y
+	var spacing: float = maxf(90.0, wave.spacing * 40.0)
+	enemy.global_position = Vector2(base_x + index * spacing, spawn_y)
 	living_enemies.append(enemy)
 	enemy.tree_exiting.connect(_on_enemy_removed.bind(enemy), CONNECT_ONE_SHOT)
 
 
-func _on_enemy_removed(enemy: Node3D) -> void:
+func _on_enemy_removed(enemy: Node2D) -> void:
 	if enemy in living_enemies:
 		living_enemies.erase(enemy)
 		enemies_defeated += 1
@@ -102,11 +104,11 @@ func _begin_boss() -> void:
 		return
 	phase = Phase.BOSS
 	preboss_sequence_complete.emit()
-	boss = boss_scene.instantiate() as Node3D
+	boss = boss_scene.instantiate() as Node2D
 	battle.enemy_root.add_child(boss)
-	boss.global_position = Vector3(battle.scroll_controller.boss_gate_x + 2.0, 0.0, 0.0)
+	boss.global_position = Vector2(battle.scroll_controller.boss_gate_x + 160.0, battle.ground_y)
 	living_enemies.append(boss)
 	boss.tree_exiting.connect(_on_enemy_removed.bind(boss), CONNECT_ONE_SHOT)
-	boss.died.connect(func(_enemy: Node3D) -> void: phase = Phase.COMPLETE)
+	boss.died.connect(func(_enemy: Node2D) -> void: phase = Phase.COMPLETE)
 	boss_spawned.emit(boss)
 	phase_changed.emit(phase, "FINAL BOSS // THE CITADEL")

@@ -1,5 +1,5 @@
 class_name KaijuComponent
-extends Area3D
+extends Area2D
 
 signal health_changed(component: KaijuComponent, current: float, maximum: float)
 signal component_destroyed(component: KaijuComponent)
@@ -8,7 +8,7 @@ signal component_destroyed(component: KaijuComponent)
 @export var visual_path: NodePath
 var current_health: float
 var is_destroyed: bool = false
-@onready var visual: Sprite3D = get_node_or_null(visual_path) as Sprite3D
+@onready var visual: Sprite2D = get_node_or_null(visual_path) as Sprite2D
 
 
 func _ready() -> void:

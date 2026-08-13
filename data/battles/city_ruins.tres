@@ -19,7 +19,6 @@ script = ExtResource("2")
 wave_id = &"crossfire"
 title = "WAVE 2 // CROSSFIRE"
 trigger_progress = 0.30
-spawn_rule = 1
 enemy_scenes = Array[PackedScene]([ExtResource("3"), ExtResource("4"), ExtResource("4")])
 
 [sub_resource type="Resource" id="Wave3"]

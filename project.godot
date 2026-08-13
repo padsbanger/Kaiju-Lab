@@ -24,13 +24,10 @@ window/size/window_height_override=720
 window/stretch/mode="viewport"
 window/stretch/aspect="expand"
 
-[physics]
-
-3d/physics_engine="Jolt Physics"
-
 [rendering]
 
 rendering_device/driver.windows="d3d12"
+2d/snap/snap_2d_transforms_to_pixel=true
+2d/snap/snap_2d_vertices_to_pixel=true
 rendering_method="gl_compatibility"
 rendering_method.mobile="gl_compatibility"
-textures/default_filters/use_nearest_mipmap_filter=false

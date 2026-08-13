@@ -15,7 +15,7 @@ func _initialize() -> void:
 	assert(battle.battle_controller.forced_target == battle.boss)
 	var pressures: Array[StringName] = []
 	battle.boss.pressure_used.connect(func(p: StringName) -> void: pressures.append(p))
-	battle.boss.global_position = battle.kaiju.global_position + Vector3(3.0, 0.0, 0.0)
+	battle.boss.global_position = battle.kaiju.global_position + Vector2(120.0, 0.0)
 	battle.boss.cannon_remaining = 0.0
 	battle.boss.stomp_remaining = 0.0
 	await process_frame

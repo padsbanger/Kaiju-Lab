@@ -1,0 +1,134 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://battle/parallax/parallax_controller.gd" id="1"]
+[ext_resource type="Texture2D" path="res://backgrounds/city_ruins/sky.png" id="2"]
+[ext_resource type="Texture2D" path="res://backgrounds/city_ruins/far skyline.png" id="3"]
+[ext_resource type="Texture2D" path="res://backgrounds/city_ruins/mid ruins.png" id="4"]
+[ext_resource type="Texture2D" path="res://backgrounds/city_ruins/near ruins.png" id="5"]
+[ext_resource type="Texture2D" path="res://backgrounds/city_ruins/foreground debris.png" id="6"]
+
+[sub_resource type="Shader" id="ForegroundMaskShader"]
+code = "shader_type canvas_item;\n\nvoid fragment() {\n    vec4 pixel = texture(TEXTURE, UV) * COLOR;\n    float debris_mask = smoothstep(0.52, 0.78, UV.y);\n    pixel.a *= debris_mask;\n    COLOR = pixel;\n}\n"
+
+[sub_resource type="ShaderMaterial" id="ForegroundMaskMaterial"]
+shader = SubResource("ForegroundMaskShader")
+
+[node name="CityRuinsParallax" type="Node2D"]
+unique_name_in_owner = true
+script = ExtResource("1")
+
+[node name="SkyLayer" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.05, 1)
+repeat_size = Vector2(1086, 0)
+repeat_times = 3
+z_index = -50
+
+[node name="Sprite2D" type="Sprite2D" parent="SkyLayer"]
+texture_filter = 1
+position = Vector2(0, -1)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2")
+centered = false
+
+[node name="RepeatBoundary" type="ColorRect" parent="SkyLayer"]
+visible = false
+offset_right = 1.0
+offset_bottom = 360.0
+color = Color(1, 0, 0, 0.9)
+
+[node name="FarSkylineLayer" type="Parallax2D" parent="."]
+modulate = Color(1, 1, 1, 0.62)
+scroll_scale = Vector2(0.15, 1)
+repeat_size = Vector2(1086, 0)
+repeat_times = 3
+z_index = -40
+
+[node name="Sprite2D" type="Sprite2D" parent="FarSkylineLayer"]
+texture_filter = 1
+position = Vector2(0, -1)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("3")
+centered = false
+
+[node name="RepeatBoundary" type="ColorRect" parent="FarSkylineLayer"]
+visible = false
+offset_right = 1.0
+offset_bottom = 360.0
+color = Color(1, 0.5, 0, 0.9)
+
+[node name="MidRuinsLayer" type="Parallax2D" parent="."]
+modulate = Color(1, 1, 1, 0.46)
+scroll_scale = Vector2(0.35, 1)
+repeat_size = Vector2(1086, 0)
+repeat_times = 3
+z_index = -30
+
+[node name="Sprite2D" type="Sprite2D" parent="MidRuinsLayer"]
+texture_filter = 1
+position = Vector2(0, -1)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("4")
+centered = false
+
+[node name="RepeatBoundary" type="ColorRect" parent="MidRuinsLayer"]
+visible = false
+offset_right = 1.0
+offset_bottom = 360.0
+color = Color(1, 1, 0, 0.9)
+
+[node name="NearRuinsLayer" type="Parallax2D" parent="."]
+modulate = Color(1, 1, 1, 0.48)
+scroll_scale = Vector2(0.65, 1)
+repeat_size = Vector2(1086, 0)
+repeat_times = 3
+z_index = -20
+
+[node name="Sprite2D" type="Sprite2D" parent="NearRuinsLayer"]
+texture_filter = 1
+position = Vector2(0, -1)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("5")
+centered = false
+
+[node name="RepeatBoundary" type="ColorRect" parent="NearRuinsLayer"]
+visible = false
+offset_right = 1.0
+offset_bottom = 360.0
+color = Color(0, 1, 0, 0.9)
+
+[node name="ForegroundDebrisLayer" type="Parallax2D" parent="."]
+modulate = Color(1, 1, 1, 0.68)
+scroll_scale = Vector2(1.15, 1)
+repeat_size = Vector2(1086, 0)
+repeat_times = 3
+z_index = 20
+
+[node name="Sprite2D" type="Sprite2D" parent="ForegroundDebrisLayer"]
+material = SubResource("ForegroundMaskMaterial")
+texture_filter = 1
+position = Vector2(0, -1)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("6")
+centered = false
+
+[node name="RepeatBoundary" type="ColorRect" parent="ForegroundDebrisLayer"]
+visible = false
+offset_right = 1.0
+offset_bottom = 360.0
+color = Color(0, 1, 1, 0.9)
+
+[node name="DebugCanvas" type="CanvasLayer" parent="."]
+visible = false
+layer = 20
+
+[node name="DebugLabel" type="Label" parent="DebugCanvas"]
+offset_left = 8.0
+offset_top = 36.0
+offset_right = 520.0
+offset_bottom = 132.0
+theme_override_colors/font_color = Color(0.7, 1, 0.72, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 8
+text = "PIXEL PARALLAX DEBUG"

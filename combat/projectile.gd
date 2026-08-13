@@ -1,10 +1,10 @@
 class_name CombatProjectile
-extends Area3D
+extends Area2D
 
-@export var speed: float = 9.0
+@export var speed: float = 360.0
 @export var damage: float = 12.0
 @export var lifetime: float = 5.0
-var direction: Vector3 = Vector3.FORWARD
+var direction: Vector2 = Vector2.RIGHT
 var source: Node
 
 
@@ -14,7 +14,7 @@ func _ready() -> void:
 	area_entered.connect(_on_hit)
 
 
-func launch(origin: Vector3, target_position: Vector3, attacker: Node, collision_targets: int) -> void:
+func launch(origin: Vector2, target_position: Vector2, attacker: Node, collision_targets: int) -> void:
 	global_position = origin
 	direction = origin.direction_to(target_position)
 	source = attacker
@@ -28,7 +28,7 @@ func _physics_process(delta: float) -> void:
 		queue_free()
 
 
-func _on_hit(target: Node3D) -> void:
+func _on_hit(target: Node2D) -> void:
 	if target == source or (is_instance_valid(source) and source.is_ancestor_of(target)):
 		return
 	if target.has_method("take_damage"):

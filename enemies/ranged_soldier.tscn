@@ -1,39 +1,30 @@
-[gd_scene load_steps=7 format=3]
-
+[gd_scene load_steps=6 format=3]
 [ext_resource type="Script" path="res://enemies/ranged_enemy.gd" id="1"]
 [ext_resource type="Script" path="res://combat/health.gd" id="2"]
 [ext_resource type="Script" path="res://combat/ranged_attack.gd" id="3"]
 [ext_resource type="PackedScene" path="res://combat/projectile.tscn" id="4"]
 [ext_resource type="Texture2D" path="res://art/pixel/enemies/rifle.png" id="5"]
-
-[sub_resource type="CapsuleShape3D" id="Shape"]
-radius = 0.32
-height = 1.35
-
-[node name="RangedSoldier" type="CharacterBody3D"]
+[sub_resource type="CapsuleShape2D" id="Shape"]
+radius = 14.0
+height = 52.0
+[node name="RangedSoldier" type="CharacterBody2D"]
+z_index = 6
 collision_layer = 2
-collision_mask = 5
+collision_mask = 1
 script = ExtResource("1")
-
-[node name="Collision" type="CollisionShape3D" parent="."]
-position = Vector3(0, 0.68, 0)
+[node name="Collision" type="CollisionShape2D" parent="."]
+position = Vector2(0, -27)
 shape = SubResource("Shape")
-
-[node name="Body" type="Sprite3D" parent="."]
-position = Vector3(0, 0.68, 0)
+[node name="Body" type="Sprite2D" parent="."]
+position = Vector2(0, -34)
 texture_filter = 1
-pixel_size = 0.014
-render_priority = 10
-no_depth_test = true
-shaded = false
+scale = Vector2(0.72, 0.72)
 texture = ExtResource("5")
-
 [node name="Health" type="Node" parent="."]
 script = ExtResource("2")
 max_health = 44.0
-
-[node name="RangedAttack" type="Node3D" parent="."]
-position = Vector3(0, 1.0, 0)
+[node name="RangedAttack" type="Node2D" parent="."]
+position = Vector2(-20, -38)
 script = ExtResource("3")
 projectile_scene = ExtResource("4")
 damage = 5.0

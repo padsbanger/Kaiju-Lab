@@ -16,7 +16,7 @@ func _initialize() -> void:
 	var left: KaijuComponent = kaiju.get_node("ComponentRoot/LeftArmSocket/ClawComponent") as KaijuComponent
 	assert(left.data.display_name == "Violet Tendril")
 	assert(kaiju.claw_attack.cooldown == 0.48 and kaiju.claw_attack.damage == 17.0)
-	var sprite: Sprite3D = left.get_node("Visual") as Sprite3D
+	var sprite: Sprite2D = left.get_node("Visual") as Sprite2D
 	assert(sprite.scale.y > sprite.scale.x, "Tendril replacement must visibly change silhouette")
 	assert(not specimen.install_organ(&"claw_left", "res://data/components/heart_basic.tres"), "Socket compatibility must be enforced")
 	print("PASS: rewards, level-up, compatible organ replacement, visual and behavior change")

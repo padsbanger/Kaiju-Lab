@@ -21,7 +21,7 @@ func _initialize() -> void:
 	assert(battle.get_node("UI/InspectButton") != null)
 	assert(ResourceLoader.exists("res://art/pixel/vfx/explosion.png"))
 	var before_vfx: int = battle.get_child_count()
-	battle._spawn_vfx(load("res://art/pixel/vfx/explosion.png"), Vector3.ZERO)
+	battle._spawn_vfx(load("res://art/pixel/vfx/explosion.png"), Vector2.ZERO)
 	assert(battle.get_child_count() == before_vfx + 1, "Pixel VFX must be instantiated in battle")
 	assert(battle.battle_director.map_data.target_duration_seconds == 150.0)
 	assert(battle.battle_director.map_data.waves.size() == 4)

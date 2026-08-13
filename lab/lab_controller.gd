@@ -1,5 +1,5 @@
 class_name LabController
-extends Node3D
+extends Node2D
 
 const REGENERATION_SYSTEM_SCRIPT: Script = preload("res://progression/regeneration_system.gd")
 const AUDIO_CUE_BUS_SCRIPT: Script = preload("res://audio/audio_cue_bus.gd")
@@ -32,7 +32,6 @@ func _ready() -> void:
 	repair_button.pressed.connect(_repair_selected)
 	organ_button.pressed.connect(_cycle_left_organ)
 	level_button.pressed.connect(_level_up)
-	%LabCamera.look_at(Vector3(0.0, 1.4, 0.0))
 
 
 func bind_specimen(state: SpecimenState, result: BattleResult = null) -> void:

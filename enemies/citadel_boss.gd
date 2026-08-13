@@ -1,11 +1,12 @@
 class_name CitadelBoss
-extends CharacterBody3D
+extends CharacterBody2D
 
 signal died(enemy: CitadelBoss)
 signal pressure_used(pressure: StringName)
 
 @onready var health: Health = $Health
 @onready var attack: RangedAttack = $SiegeCannon
+@onready var visual: Sprite2D = $Sprite
 var target: Kaiju
 var stomp_remaining: float = 2.5
 var cannon_remaining: float = 0.8
@@ -24,13 +25,14 @@ func _physics_process(delta: float) -> void:
 	if target == null or not is_instance_valid(target):
 		target = get_tree().get_first_node_in_group(&"kaiju") as Kaiju
 		return
+	visual.flip_h = target.global_position.x < global_position.x
 	cannon_remaining -= delta
 	stomp_remaining -= delta
 	if cannon_remaining <= 0.0:
 		attack.try_attack(target, self)
 		cannon_remaining = 2.2
 		pressure_used.emit(&"circulation_siege")
-	if stomp_remaining <= 0.0 and global_position.distance_to(target.global_position) < 5.0:
+	if stomp_remaining <= 0.0 and global_position.distance_to(target.global_position) < 190.0:
 		target.take_damage(8.0, self)
 		var damaged: Array[KaijuComponent] = target.anatomy_controller.get_damaged_components()
 		if not damaged.is_empty():
@@ -48,4 +50,3 @@ func _on_died(_source: Node) -> void:
 	died.emit(self)
 	set_physics_process(false)
 	queue_free()
-

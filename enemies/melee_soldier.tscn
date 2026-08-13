@@ -1,47 +1,36 @@
 [gd_scene load_steps=6 format=3]
-
-[ext_resource type="Script" path="res://enemies/melee_soldier.gd" id="1_enemy"]
-[ext_resource type="Script" path="res://combat/health.gd" id="2_health"]
-[ext_resource type="Script" path="res://combat/melee_attack.gd" id="3_attack"]
-[ext_resource type="Texture2D" path="res://art/pixel/enemies/melee.png" id="4_sprite"]
-
-[sub_resource type="CapsuleShape3D" id="Shape_body"]
-radius = 0.35
-height = 1.4
-
-[sub_resource type="SphereShape3D" id="Shape_attack"]
-radius = 1.45
-
-[node name="MeleeSoldier" type="CharacterBody3D"]
+[ext_resource type="Script" path="res://enemies/melee_soldier.gd" id="1"]
+[ext_resource type="Script" path="res://combat/health.gd" id="2"]
+[ext_resource type="Script" path="res://combat/melee_attack.gd" id="3"]
+[ext_resource type="Texture2D" path="res://art/pixel/enemies/melee.png" id="4"]
+[sub_resource type="CapsuleShape2D" id="BodyShape"]
+radius = 15.0
+height = 55.0
+[sub_resource type="CircleShape2D" id="AttackShape"]
+radius = 72.0
+[node name="MeleeSoldier" type="CharacterBody2D"]
+z_index = 6
 collision_layer = 2
-collision_mask = 5
-script = ExtResource("1_enemy")
-
-[node name="BodyCollision" type="CollisionShape3D" parent="."]
-position = Vector3(0, 0.7, 0)
-shape = SubResource("Shape_body")
-
-[node name="Body" type="Sprite3D" parent="."]
-position = Vector3(0, 0.7, 0)
+collision_mask = 1
+script = ExtResource("1")
+[node name="BodyCollision" type="CollisionShape2D" parent="."]
+position = Vector2(0, -28)
+shape = SubResource("BodyShape")
+[node name="Body" type="Sprite2D" parent="."]
+position = Vector2(0, -36)
 texture_filter = 1
-pixel_size = 0.014
-render_priority = 10
-no_depth_test = true
-shaded = false
-texture = ExtResource("4_sprite")
-
+scale = Vector2(0.72, 0.72)
+texture = ExtResource("4")
 [node name="Health" type="Node" parent="."]
-script = ExtResource("2_health")
+script = ExtResource("2")
 max_health = 65.0
-
-[node name="MeleeAttack" type="Area3D" parent="."]
-position = Vector3(0, 0.8, 0)
+[node name="MeleeAttack" type="Area2D" parent="."]
+position = Vector2(-20, -30)
 collision_layer = 0
 collision_mask = 9
 monitorable = false
-script = ExtResource("3_attack")
+script = ExtResource("3")
 damage = 9.0
 cooldown = 1.15
-
-[node name="Shape" type="CollisionShape3D" parent="MeleeAttack"]
-shape = SubResource("Shape_attack")
+[node name="Shape" type="CollisionShape2D" parent="MeleeAttack"]
+shape = SubResource("AttackShape")

@@ -20,7 +20,6 @@ func _initialize() -> void:
 	root.add_child(kaiju)
 	await process_frame
 	for visual: Node in kaiju.find_children("*", "ComponentVisual", true, false):
-		assert((visual as ComponentVisual).texture_filter == BaseMaterial3D.TEXTURE_FILTER_NEAREST)
-		assert((visual as ComponentVisual).billboard == BaseMaterial3D.BILLBOARD_DISABLED)
-	print("PASS: low-resolution pixel assets, logical viewport, and nearest Sprite3D filtering")
+		assert((visual as ComponentVisual).texture_filter == CanvasItem.TEXTURE_FILTER_NEAREST)
+	print("PASS: low-resolution pixel assets, logical viewport, and nearest Sprite2D filtering")
 	quit(0)

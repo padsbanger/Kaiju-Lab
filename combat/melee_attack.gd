@@ -1,5 +1,5 @@
 class_name MeleeAttack
-extends Area3D
+extends Area2D
 
 signal attack_started
 signal attack_landed(target: Node, damage: float)
@@ -13,23 +13,23 @@ func _physics_process(delta: float) -> void:
 	cooldown_remaining = maxf(0.0, cooldown_remaining - delta)
 
 
-func try_attack(preferred_target: Node3D = null) -> bool:
+func try_attack(preferred_target: Node2D = null) -> bool:
 	if cooldown_remaining > 0.0:
 		return false
-	var candidates: Array[Node3D] = []
-	for area: Area3D in get_overlapping_areas():
+	var candidates: Array[Node2D] = []
+	for area: Area2D in get_overlapping_areas():
 		if area.has_method("take_damage"):
 			candidates.append(area)
-	for body: Node3D in get_overlapping_bodies():
+	for body: Node2D in get_overlapping_bodies():
 		if body.has_method("take_damage"):
 			candidates.append(body)
 	if candidates.is_empty():
 		return false
-	var target: Node3D = candidates[0]
+	var target: Node2D = candidates[0]
 	if preferred_target in candidates:
 		target = preferred_target
 	elif preferred_target != null:
-		for candidate: Node3D in candidates:
+		for candidate: Node2D in candidates:
 			if preferred_target.is_ancestor_of(candidate):
 				target = candidate
 				break

@@ -13,11 +13,11 @@ func _initialize() -> void:
 	assert(battle.kaiju.velocity.x > 0.2, "Advance must accelerate heavily rather than teleport")
 	var soldier: MeleeSoldier = SOLDIER_SCENE.instantiate() as MeleeSoldier
 	battle.add_child(soldier)
-	soldier.global_position = battle.kaiju.global_position + Vector3(2.8, 0.0, 0.0)
+	soldier.global_position = battle.kaiju.global_position + Vector2(95.0, 0.0)
 	battle.kaiju.brain_controller.select_target()
 	await create_timer(0.35).timeout
 	assert(battle.battle_controller.state == KaijuBattleController.State.ENGAGE)
-	assert(battle.kaiju.velocity.x < 0.7, "Kaiju must decelerate for a blocking threat")
+	assert(battle.kaiju.velocity.x < 18.0, "Kaiju must decelerate for a blocking threat")
 	soldier.queue_free()
 	await create_timer(0.8).timeout
 	assert(battle.battle_controller.state == KaijuBattleController.State.ADVANCE)

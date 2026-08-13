@@ -1,37 +1,45 @@
 class_name RangedEnemy
-extends CharacterBody3D
+extends CharacterBody2D
 
 signal died(enemy: RangedEnemy)
 
-@export var speed: float = 2.1
-@export var preferred_distance: float = 6.0
+@export var speed: float = 58.0
+@export var preferred_distance: float = 230.0
 @export var unit_name: String = "RANGED SOLDIER"
 @onready var health: Health = $Health
 @onready var attack: RangedAttack = $RangedAttack
-var target: Node3D
+@onready var visual: Sprite2D = get_node_or_null("Body") as Sprite2D
+var target: Node2D
 
 
 func _ready() -> void:
 	add_to_group(&"enemies")
 	health.died.connect(_on_died)
+	if visual == null:
+		visual = get_node_or_null("Sprite") as Sprite2D
+	assert(visual != null, "%s requires a Sprite2D visual named Body or Sprite" % name)
 
 
 func _physics_process(delta: float) -> void:
 	if target == null or not is_instance_valid(target):
-		target = get_tree().get_first_node_in_group(&"kaiju") as Node3D
+		target = get_tree().get_first_node_in_group(&"kaiju") as Node2D
 		return
-	var offset: Vector3 = target.global_position - global_position
-	offset.y = 0.0
-	if offset.length() > preferred_distance + 0.5:
+	var offset := Vector2(target.global_position.x - global_position.x, 0.0)
+	_update_visual_facing(offset.x)
+	if offset.length() > preferred_distance + 20.0:
 		velocity = offset.normalized() * speed
-	elif offset.length() < preferred_distance - 1.0:
+	elif offset.length() < preferred_distance - 35.0:
 		velocity = -offset.normalized() * speed * 0.65
 	else:
-		velocity = Vector3.ZERO
+		velocity = Vector2.ZERO
 	attack.try_attack(target, self)
-	if offset.length_squared() > 0.01:
-		rotation.y = lerp_angle(rotation.y, atan2(offset.x, offset.z), minf(1.0, delta * 7.0))
+	velocity.y = 0.0
 	move_and_slide()
+
+
+func _update_visual_facing(horizontal_offset: float) -> void:
+	# Source art faces right; standard right-edge spawns face the kaiju to the left.
+	visual.flip_h = horizontal_offset < 0.0
 
 
 func take_damage(amount: float, source: Node = null) -> void:

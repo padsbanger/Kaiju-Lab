@@ -22,7 +22,7 @@ func _initialize() -> void:
 	for index: int in director.map_data.waves.size():
 		director.start_wave(index)
 		await process_frame
-		for enemy: Node3D in director.living_enemies.duplicate():
+		for enemy: Node2D in director.living_enemies.duplicate():
 			enemy.take_damage(9999.0, battle.kaiju)
 		await process_frame
 		await process_frame

@@ -1,5 +1,5 @@
 class_name CombatFeedback
-extends Node3D
+extends Node2D
 
 var specimen: Kaiju
 var attack_player: AudioStreamPlayer
@@ -25,10 +25,10 @@ func bind(kaiju: Kaiju) -> void:
 func _on_attack() -> void:
 	attack_player.play()
 	_spawn_pulse(Color(0.25, 1.0, 0.38, 1.0), 1.8)
-	var left_visual: Sprite3D = specimen.get_node("ComponentRoot/LeftArmSocket/ClawComponent/Visual") as Sprite3D
+	var left_visual: Sprite2D = specimen.get_node("ComponentRoot/LeftArmSocket/ClawComponent/Visual") as Sprite2D
 	var tween: Tween = create_tween()
-	tween.tween_property(left_visual, "scale", Vector3.ONE * 0.88, 0.06)
-	tween.tween_property(left_visual, "scale", Vector3.ONE * 0.78, 0.12)
+	tween.tween_property(left_visual, "scale", Vector2.ONE * 0.88, 0.06)
+	tween.tween_property(left_visual, "scale", Vector2.ONE * 0.78, 0.12)
 
 
 func _on_component_destroyed(_component: KaijuComponent) -> void:
@@ -39,14 +39,14 @@ func _on_component_destroyed(_component: KaijuComponent) -> void:
 func _spawn_pulse(color: Color, energy: float) -> void:
 	if specimen == null:
 		return
-	var pulse := OmniLight3D.new()
+	var pulse := PointLight2D.new()
 	pulse.light_color = color
-	pulse.light_energy = energy
-	pulse.omni_range = 4.0
-	pulse.position = specimen.global_position + Vector3.UP * 1.5
+	pulse.energy = energy
+	pulse.texture_scale = 1.5
+	pulse.position = specimen.global_position + Vector2.UP * 70.0
 	add_child(pulse)
 	var tween: Tween = create_tween()
-	tween.tween_property(pulse, "light_energy", 0.0, 0.22)
+	tween.tween_property(pulse, "energy", 0.0, 0.22)
 	tween.tween_callback(pulse.queue_free)
 
 
