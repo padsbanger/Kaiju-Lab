@@ -2,55 +2,266 @@
 
 ## Project Overview
 
-**Kaiju Lab** is a single-player roguelite autobattler built in **Godot 4**.
+**Kaiju Lab** is a single-player roguelite **2.5D side-scrolling autobattler** built in **Godot 4**.
 
-The player does not directly control a combat character. Instead, the player grows and engineers a giant biological monster by attaching organs, limbs, mutations, weapons, nervous systems, defensive structures, and symbiotic organisms.
+The player grows and engineers a giant biological monster by attaching organs, limbs, mutations, weapons, nervous systems, defensive structures, and symbiotic organisms.
 
-The player's main task is to design a kaiju that can survive combat autonomously.
+The player does **not** directly control the kaiju during normal battles. The player prepares the organism in the lab, deploys it, then watches it autonomously advance through a scrolling battlefield.
+
+The intended high-level loop is:
+
+```text
+GIANT KAIJU LAB
+    ↓
+repair / regenerate
+    ↓
+level up / change organs / mutate
+    ↓
+DEPLOY
+    ↓
+2.5D SIDE-SCROLLING AUTOBATTLE
+    ↓
+kaiju slowly advances through the map
+    ↓
+enemy waves attack
+    ↓
+boss encounter at the end
+    ↓
+battle result
+    ↓
+RETURN TO LAB
+```
 
 The central design principle is:
 
-> **Build the organism. Watch the organism fight. Learn from failure. Mutate again.**
+> **Build the organism. Deploy it. Watch it survive. Bring it home. Rebuild it stronger.**
 
 The kaiju should feel like a living biological machine rather than a normal RPG character wearing equipment.
 
----
+A battle should usually last **several minutes**, not a few seconds. The player should be able to watch the organism's build succeed, degrade, adapt, or fail over the course of a long push through the level.
 
 # Visual and Technical Direction
 
-**Kaiju Lab is a 3D game with modular 2D character visuals.**
+**Kaiju Lab is a retro-pixel 2.5D side-scrolling game.**
 
-The battlefield, navigation, collisions, projectiles, targeting, effects, and encounter logic exist in real 3D space. The kaiju is visually assembled from multiple transparent 2D body-part sprites placed in that 3D world using Godot `Sprite3D` / `AnimatedSprite3D` nodes.
+The battlefield is built in 3D so it can have real depth, layered scenery, lighting, particles, projectile trajectories, foreground/background objects, and parallax. Characters and biological body parts are represented primarily with modular 2D pixel-art sprites placed into the 3D world using Godot `Sprite3D` / `AnimatedSprite3D`.
 
-The intended presentation is a stylized **2.5D** game:
+The intended presentation is:
 
 ```text
-3D arena / terrain / buildings
+3D side-scrolling level
         +
-3D navigation / hitboxes / projectiles
+retro pixel-art Sprite3D characters
         +
-2D Sprite3D kaiju body parts
+modular 2D kaiju body parts
         +
-fixed or controlled isometric camera
+3D hitboxes / projectiles / effects
+        +
+side-view perspective camera
 ```
 
-This hybrid approach is a core project constraint, not a temporary placeholder.
+This hybrid architecture is a core project constraint.
+
+## Side-Scrolling Battle Presentation
+
+The battle should read visually like a classic side-scrolling game.
+
+The kaiju:
+
+- starts on the **left side of the screen**
+- faces toward the level's forward direction
+- advances slowly and automatically
+- should usually remain around the left third of the viewport rather than walking all the way to the screen edge
+
+The level:
+
+- progresses horizontally
+- visually scrolls **to the left** as the kaiju advances, similar to a classic Mario-style side scroller
+- uses a fixed side-view / slightly elevated 2.5D camera
+- may contain limited depth lanes, foreground/background objects, or slight Z-axis separation
+- should not behave like a freely explorable 3D arena
+
+The camera should follow level progress while preserving the composition of the kaiju on the left side of the frame.
+
+Conceptually:
+
+```text
+SCREEN
+
+[KAIJU]  → forward progression
+
+        enemies / hazards / structures / objectives
+
+<<<<<<<< environment scrolls left <<<<<<<<
+
+                                      [BOSS]
+```
+
+Do not rotate the gameplay camera around the kaiju.
+
+## Battle Flow
+
+A standard battle is a continuous push through one authored or procedurally assembled map.
+
+Typical sequence:
+
+```text
+DEPLOY
+  ↓
+Kaiju enters from left
+  ↓
+Slow automatic march
+  ↓
+Enemy wave
+  ↓
+Short travel section
+  ↓
+Enemy wave
+  ↓
+Elite / environmental challenge
+  ↓
+More enemy waves
+  ↓
+Boss gate
+  ↓
+Boss fight
+  ↓
+Battle result
+  ↓
+Return to lab
+```
+
+Battles may last several minutes.
+
+A battle can end when:
+
+- the kaiju dies
+- all required enemies are dead
+- the end-of-map boss is defeated
+- an encounter-specific victory or failure condition is met
+
+The default level should culminate in a **large boss enemy at the end of the map**.
+
+## Enemy Entry Rules
+
+Enemy encounters are controlled by map progression and encounter triggers.
+
+Per the current design direction:
+
+- enemy waves may appear from the **left side of the screen** and immediately pressure the kaiju
+- authored enemies may also already exist farther along the map
+- ranged enemies, vehicles, turrets, flying enemies, and bosses may attack from positions that improve readability
+- spawn behavior must be data-driven so the exact entry side can be changed per encounter without rewriting enemy AI
+
+Do not hardcode every enemy to one spawn edge.
+
+## Autonomous Combat Rule
+
+Kaiju combat is autonomous.
+
+During a normal battle the player should **not** manually:
+
+- steer the kaiju
+- spam attacks
+- aim projectiles
+- activate a standard MMO-style ability hotbar
+- choose individual targets every few seconds
+
+The kaiju decides when to:
+
+- walk forward
+- stop to fight
+- choose a target
+- use an organ ability
+- regenerate
+- attack a boss
+- respond to enemies attacking from different positions
+
+Player agency should primarily come from the **lab build**, not reflex controls during combat.
+
+Optional battle-speed controls, pause, inspect, or debug overlays are acceptable.
+
+## Forward Movement Behavior
+
+The kaiju has a desired forward velocity but should not blindly walk through combat.
+
+Suggested states:
+
+```text
+ADVANCE
+ENGAGE
+RECOVER
+STAGGERED
+BOSS_FIGHT
+DEAD
+```
+
+Typical behavior:
+
+```text
+No important threat nearby
+→ ADVANCE
+
+Enemy enters engagement range
+→ ENGAGE
+→ slow or stop
+→ fight autonomously
+
+Threat cleared
+→ ADVANCE
+
+Boss arena reached
+→ stop automatic map scrolling as needed
+→ BOSS_FIGHT
+```
+
+Movement should feel heavy and deliberate.
+
+The kaiju is enormous. Avoid twitchy acceleration or rapid direction changes.
 
 ## Rendering Rules
 
 For the MVP:
 
-- use a fixed or tightly controlled elevated/isometric camera
-- use `Sprite3D` or `AnimatedSprite3D` for kaiju body parts
-- keep body-part textures on transparent backgrounds
-- keep all body-part art in the same viewing angle and lighting style
-- use consistent sprite scale / pixels-per-world-unit
-- define intentional pivots for every sprite
-- attach parts through explicit sockets rather than hardcoded world positions
+- use a fixed side-view or slightly elevated side-view camera
+- use orthographic projection unless perspective clearly improves the pixel-art presentation
+- use `Sprite3D` / `AnimatedSprite3D` for the kaiju and most enemies
+- use transparent pixel-art textures
+- keep body-part sprites at a consistent viewing angle
+- use nearest-neighbor texture filtering for pixel-art assets
+- avoid texture smoothing that blurs pixels
+- use integer-friendly render scaling where practical
+- keep consistent sprite scale / pixels-per-world-unit
+- define intentional pivots for every body-part sprite
+- attach parts through explicit sockets
 - keep gameplay collision separate from sprite dimensions
-- use 3D particles, decals, lighting, shadows, and projectiles where useful
+- use restrained 3D lighting, particles, decals, smoke, explosions, and shadows without destroying pixel readability
+- use parallax layers for city ruins, laboratories, wastelands, industrial zones, or other environments
 
-Do **not** introduce a freely rotating gameplay camera until the project supports directional sprites or another technique that prevents the kaiju from looking like a flat cardboard cutout.
+Do not introduce a freely rotating camera.
+
+## Retro Pixel Art Direction
+
+The visual identity should feel deliberately retro rather than merely low resolution.
+
+Prefer:
+
+- chunky readable pixels
+- strong silhouettes
+- limited animation frames with expressive poses
+- dark industrial palettes with vivid biological glow accents
+- CRT-era / late-90s PC / 16-bit-to-32-bit inspired interface details
+- pixel-art explosions, muzzle flashes, smoke, gore, electricity, acid, and organ effects
+- layered parallax backgrounds
+- dramatic giant-scale kaiju silhouettes
+- readable tanks, soldiers, helicopters, turrets, drones, and bosses
+
+Avoid:
+
+- photorealistic rendering
+- smooth modern vector-like characters
+- blurry AI-art texture downscaling presented as pixel art
+- high-poly realistic creature rigs as the main character solution
 
 ## Visual / Gameplay Separation
 
@@ -80,11 +291,9 @@ The component's 3D node owns:
 
 The `Sprite3D` / `AnimatedSprite3D` owns only presentation.
 
-Destroying or replacing a sprite must not destroy gameplay state unless the corresponding gameplay component is actually removed.
-
 ## Sprite Body-Part System
 
-Kaiju visuals are assembled like a modular animated paper doll in 3D space.
+Kaiju visuals are assembled like a modular animated biological paper doll.
 
 Example:
 
@@ -102,37 +311,39 @@ KaijuRoot
 │   └── RightArmComponent
 │       └── TentacleSprite
 ├── BackSocket
-│   └── AcidGlandComponent
-│       └── AcidGlandSprite
+│   └── SporeGlandComponent
+│       └── SporeGlandSprite
 └── TailSocket
     └── TailComponent
         └── TailSprite
 ```
 
-Mutations should preferably produce visible changes by:
+Mutations should visibly alter the sprite assembly by:
 
-- replacing a sprite
-- adding another sprite component
-- changing animation frames
-- adding overlays such as armor, tumors, wounds, eyes, glands, or parasites
-- changing sprite scale or transform within safe limits
-- spawning extra attachment sockets when a mutation permits additional anatomy
+- replacing body-part sprites
+- adding new component sprites
+- adding overlays
+- changing animations
+- adding wounds or regeneration states
+- changing silhouettes
+- adding extra sockets when a mutation permits additional anatomy
 
-A late-run kaiju should look increasingly unusual and visually communicate the player's build.
+A late-run kaiju should look increasingly bizarre and should visually communicate the player's build.
 
 ## Sprite Animation
 
-Prefer independent component animation over one monolithic character animation.
+Prefer independent component animation over one monolithic animation.
 
-Useful animation states include:
+Useful states include:
 
 ```text
 idle
-move
+walk
 attack
 charge
 hurt
 damaged
+regenerating
 destroyed
 active
 cooldown
@@ -140,65 +351,51 @@ cooldown
 
 Examples:
 
-- heart sprites pulse independently
+- legs drive the kaiju's slow walking cycle
+- torso has a heavy breathing/bobbing animation
+- heart pulses independently
 - glands swell before firing
 - tentacles animate independently
 - claws play attack frames when their ability activates
-- eyes blink or track targets
-- damaged components switch to injured frames
-- destroyed limbs may detach, fall, fade, or leave a stump sprite
-
-Do not require every body part to have every animation.
-
-## Directional Sprites
-
-The MVP may use a single camera-facing or fixed-angle sprite set because the camera is controlled.
-
-If camera rotation is added later, prefer directional variants such as:
-
-```text
-front
-front_right
-right
-back_right
-back
-back_left
-left
-front_left
-```
-
-Four directions are acceptable before eight directions.
-
-Do not generate directional sprite complexity until camera rotation materially improves the game.
+- damaged organs use injured variants
+- regenerating organs pulse or grow back in the lab
 
 ## Environment and Enemies
 
-The environment should be true 3D so arenas have real depth, obstacles, elevation, destruction targets, and projectile trajectories.
+The environment should use 3D geometry and layered 2D/3D presentation to create depth while preserving side-scrolling readability.
 
 For enemies:
 
-- `Sprite3D` / `AnimatedSprite3D` enemies are preferred for the initial art style
-- simple 3D enemy meshes are acceptable when they improve readability
+- `Sprite3D` / `AnimatedSprite3D` is preferred
+- enemies should have readable side silhouettes
+- ground units should primarily operate along the progression axis
+- flying enemies may use vertical space
+- bosses may occupy much more of the screen than normal units
 - enemy gameplay logic must remain independent of rendering choice
 
-Do not require full 3D character rigs for ordinary units unless a specific feature clearly benefits from them.
-
----
+Do not require full 3D character rigs for ordinary units.
 
 # Core Gameplay Loop
 
-1. Start with a basic kaiju organism.
-2. Enter an encounter.
-3. The kaiju fights automatically.
-4. Earn biomass, DNA, research material, or mutation rewards.
-5. Choose new organs, limbs, mutations, or behavioral upgrades.
-6. Modify the kaiju's body.
-7. Enter a harder encounter.
-8. Repeat until the kaiju dies or completes the run.
-9. Unlock persistent research and new biological components.
-10. Start a new experiment.
+1. Kaiju returns to or begins in the giant laboratory.
+2. Inspect battle damage and regeneration status.
+3. Regenerate damaged organs and body parts.
+4. Spend earned experience / resources to level up.
+5. Install, replace, upgrade, or mutate organs.
+6. Deploy the kaiju into a side-scrolling battle map.
+7. Kaiju starts on the left side of the screen.
+8. Kaiju autonomously marches forward while the environment scrolls left.
+9. Enemy waves attack throughout the map.
+10. Kaiju automatically stops or slows to fight important threats.
+11. Reach the final boss encounter.
+12. Battle ends when its victory/failure condition is reached.
+13. Award XP, biomass, DNA, organs, research, or other rewards.
+14. Return the same persistent kaiju to the laboratory.
+15. Regenerate, rebuild, and deploy again.
 
----
+The lab → battle → lab rhythm is the heart of the game.
+
+Do not structure the default game as disposable five-second rounds separated by constant reward screens. The player should spend meaningful time watching a single deployment play out.
 
 # Game Pillars
 
@@ -394,17 +591,26 @@ Example:
 ```text
 Main
 ├── RunManager
-├── ResearchManager
+├── LabManager
+├── ProgressionManager
 ├── SceneManager
 └── AudioManager
 
-CombatScene
-├── Arena3D
-├── NavigationRegion3D
+BattleScene
+├── SideScrollWorld : Node3D
+│   ├── LevelRoot
+│   ├── ParallaxBackgroundRoot
+│   ├── ForegroundRoot
+│   ├── EncounterTriggerRoot
+│   ├── EnemySpawnRoot
+│   ├── BossGate
+│   └── LevelEnd
+├── BattleDirector
+├── ScrollController
 ├── Kaiju : CharacterBody3D
 │   ├── AnatomyController
 │   ├── BrainController
-│   ├── MovementController
+│   ├── ForwardMovementController
 │   ├── TargetingController
 │   ├── ResourceController
 │   ├── CollisionShape3D
@@ -422,12 +628,26 @@ CombatScene
 ├── EffectsRoot3D
 ├── CameraRig3D
 │   └── Camera3D
-└── CombatUI
+└── BattleUI
+
+LabScene
+├── GiantLabEnvironment
+├── RegenerationChamber
+│   └── KaijuPreview
+├── LabCamera
+├── LabController
+└── LabUI
+    ├── BattleReportPanel
+    ├── OrganConditionPanel
+    ├── AnatomyPanel
+    ├── LevelUpPanel
+    ├── MutationPanel
+    └── DeployPanel
 ```
 
-Do not create huge scripts that manage unrelated systems.
+The battle camera and scroll controller must work together so the kaiju remains visually anchored near the left side while the world appears to move left.
 
----
+Do not create huge scripts that manage unrelated systems.
 
 # Suggested Project Structure
 
@@ -436,40 +656,39 @@ res://
 ├── autoload/
 │   ├── game_state.gd
 │   ├── run_manager.gd
-│   ├── research_manager.gd
+│   ├── lab_manager.gd
+│   ├── progression_manager.gd
 │   └── scene_manager.gd
 │
 ├── kaiju/
 │   ├── kaiju.tscn
 │   ├── kaiju.gd
-│   │
 │   ├── anatomy/
-│   │   ├── anatomy_controller.gd
-│   │   ├── attachment_point.gd
-│   │   └── component_graph.gd
-│   │
 │   ├── brain/
-│   │   ├── brain_controller.gd
-│   │   ├── instincts/
-│   │   └── behaviors/
-│   │
+│   ├── movement/
+│   │   └── forward_movement_controller.gd
 │   ├── components/
-│   │   ├── base/
-│   │   ├── organs/
-│   │   ├── limbs/
-│   │   ├── weapons/
-│   │   ├── armor/
-│   │   └── parasites/
-│   │
 │   ├── resources/
-│   │   ├── component_data.gd
-│   │   ├── mutation_data.gd
-│   │   └── brain_data.gd
-│   │
 │   └── visuals/
-│       ├── component_visual.gd
-│       ├── sprite_orientation.gd
-│       └── sprite_animation_controller.gd
+│
+├── battle/
+│   ├── battle_scene.tscn
+│   ├── battle_director.gd
+│   ├── scroll_controller.gd
+│   ├── battle_result.gd
+│   ├── encounter_triggers/
+│   ├── spawn_system/
+│   ├── boss/
+│   ├── damage/
+│   ├── targeting/
+│   ├── projectiles/
+│   ├── effects/
+│   └── status_effects/
+│
+├── levels/
+│   ├── base/
+│   ├── city_ruins/
+│   └── test_level/
 │
 ├── enemies/
 │   ├── base/
@@ -478,38 +697,36 @@ res://
 │   ├── kaiju/
 │   └── aliens/
 │
-├── combat/
-│   ├── damage/
-│   ├── targeting/
-│   ├── projectiles/
-│   ├── effects/
-│   └── status_effects/
-│
-├── encounters/
-│   ├── combat_scene.tscn
-│   ├── encounter_manager.gd
-│   └── encounter_data/
+├── lab/
+│   ├── lab_scene.tscn
+│   ├── lab_controller.gd
+│   ├── regeneration_system.gd
+│   ├── organ_management/
+│   └── specimen_preview/
 │
 ├── progression/
+│   ├── level_system.gd
 │   ├── mutation_system.gd
 │   ├── reward_system.gd
 │   └── research_tree.gd
 │
 ├── ui/
 │   ├── lab/
-│   ├── combat/
-│   ├── mutation_selection/
+│   ├── battle/
+│   ├── battle_results/
+│   ├── organ_management/
 │   └── research/
 │
 ├── data/
 │   ├── components/
 │   ├── enemies/
+│   ├── levels/
 │   ├── encounters/
+│   ├── bosses/
 │   └── mutations/
 │
-├── audio/
 ├── art/
-│   ├── sprites/
+│   ├── pixel/
 │   │   ├── kaiju/
 │   │   │   ├── bodies/
 │   │   │   ├── heads/
@@ -519,13 +736,16 @@ res://
 │   │   │   ├── armor/
 │   │   │   ├── parasites/
 │   │   │   └── damage_states/
-│   │   └── enemies/
+│   │   ├── enemies/
+│   │   ├── bosses/
+│   │   ├── ui/
+│   │   └── vfx/
 │   ├── environments_3d/
-│   └── vfx/
+│   └── lab/
+│
+├── audio/
 └── tests/
 ```
-
----
 
 # Data-Driven Design
 
@@ -712,22 +932,48 @@ Build the system incrementally.
 
 # MVP Scope
 
-The first playable prototype should be small.
+The first playable prototype should prove the complete **lab → side-scrolling battle → boss → lab** loop.
 
 ## Kaiju
 
 Implement:
 
 - one `CharacterBody3D` kaiju root
-- one torso `AnimatedSprite3D`
+- modular `AnimatedSprite3D` torso/head/arms/tail
 - one brain
 - one heart
 - one stomach
-- two weapon limbs represented by separate body-part sprites
+- two weapon limbs
 - explicit `Node3D` attachment sockets
-- simple 3D hitboxes for damageable components
-- one optional mutation slot
-- fixed/elevated gameplay camera
+- simple 3D hitboxes
+- heavy automatic walk animation
+- automatic forward movement
+- automatic stopping/engagement behavior
+- persistent health / organ damage results passed back to the lab
+
+## Battle Map
+
+Implement one short test level with:
+
+- side-view 2.5D camera
+- kaiju starting on the left side
+- horizontal progression
+- world scrolling left as the kaiju advances
+- layered retro-pixel background
+- 3-5 encounter trigger zones
+- enemy spawn points
+- one boss arena at the end
+- one boss
+
+The test battle should be long enough to observe the build rather than ending instantly.
+
+Target prototype battle duration:
+
+```text
+roughly 2-5 minutes
+```
+
+Balance may change later.
 
 ## Enemies
 
@@ -736,65 +982,124 @@ Implement:
 - melee soldier
 - ranged soldier
 - tank
-
-## Abilities
-
-Implement:
-
-- melee claw attack
-- projectile/spit attack
-- regeneration
+- one larger boss enemy
 
 ## Combat
 
 Implement:
 
-- autonomous targeting in 3D space
-- autonomous 3D movement/navigation
+- autonomous forward movement
+- autonomous targeting
 - automatic attacks
-- real 3D projectiles or melee hit volumes
-- component damage through 3D hitboxes
-- visible sprite damage states
+- enemies automatically attacking the kaiju
+- real 3D projectile / hit-volume logic
+- component damage
+- visible pixel-sprite damage states
+- battle progress tracking
+- boss trigger
 - kaiju death
 - enemy death
+- boss death
+
+## Battle End Conditions
+
+`BattleDirector` must support explicit result states.
+
+Suggested result enum:
+
+```text
+VICTORY_BOSS_DEFEATED
+VICTORY_ALL_REQUIRED_ENEMIES_DEFEATED
+DEFEAT_KAIJU_DIED
+DEFEAT_ENCOUNTER_FAILED
+```
+
+Do not rely on scene reloads to infer battle outcome.
+
+The result must contain enough data for the lab to display:
+
+- duration
+- enemies defeated
+- boss defeated
+- damage taken
+- organs damaged
+- organs destroyed
+- XP earned
+- biomass earned
+- DNA / research rewards
+- discovered organs or mutations
+
+## Lab
+
+Implement a giant retro-pixel biotechnology lab.
+
+After every battle:
+
+1. transition back to the lab
+2. show the kaiju inside a regeneration / containment chamber
+3. show visible battle damage
+4. regenerate or repair damaged body parts
+5. award XP
+6. allow level-up when requirements are met
+7. allow organ changes
+8. allow available mutations/upgrades
+9. allow deployment into the next battle
+
+The lab should feel like a physical place built to contain an enormous organism, not a generic menu floating over a background.
 
 ## Progression
 
-After each battle:
+For the MVP:
 
-- present 3 random mutation choices
-- player chooses 1
-- mutation modifies the kaiju
-- whenever practical, the mutation also visibly adds/replaces/changes a body-part sprite
-- next encounter begins
+- battles award XP and biomass
+- kaiju level persists between deployments
+- organs can have levels
+- at least one organ can be replaced in the lab
+- at least one organ can be upgraded
+- at least one mutation visibly changes the kaiju
+- the next deployment uses the changed build
 
-Do not build the meta-progression research tree before the core combat loop is fun.
+Avoid building a huge research tree before this complete loop works.
 
 ---
 
 # First Prototype Loop
 
 ```text
-Start Run
-   ↓
-Create Basic Kaiju
-   ↓
-Encounter
-   ↓
-Autonomous Battle
-   ↓
-Win?
- ├─ No → Run Ends
- └─ Yes
+START IN LAB
       ↓
-  Mutation Selection
+Inspect Kaiju
       ↓
- Modify Kaiju
+Change / Upgrade Organ
       ↓
- Next Encounter
+DEPLOY
+      ↓
+Kaiju enters left side of battle
+      ↓
+AUTOMATIC FORWARD MARCH
+      ↓
+Enemy waves attack
+      ↓
+Kaiju autonomously fights
+      ↓
+Advance again
+      ↓
+BOSS GATE
+      ↓
+Boss Fight
+      ↓
+Battle Result
+      ↓
+RETURN TO LAB
+      ↓
+Regenerate Damage
+      ↓
+Gain XP / Level Up
+      ↓
+Change Organs
+      ↓
+DEPLOY AGAIN
 ```
-
----
 
 # Mutation Examples
 
@@ -963,57 +1268,138 @@ Pressure:
 
 # Combat Readability
 
-The player should understand what is happening without needing to inspect logs constantly.
+The player should understand the battle while mostly watching rather than micromanaging.
 
 Use:
 
-- clear attack animations
+- strong pixel-art silhouettes
+- clear walk / attack / hurt animations
 - readable projectiles
-- status icons
-- damaged organ indicators
-- floating damage sparingly
-- ability activation indicators
+- organ damage indicators
+- boss health bar
+- level progress / boss-gate indicator
+- enemy wave or threat indicators when useful
+- visible regeneration and organ failure
 - distinct audio cues
-- visible destroyed body parts when possible
+- screen shake sparingly for large attacks
+- large boss telegraphs
+- foreground/background separation
 
-Avoid excessive visual noise.
+Avoid excessive UI covering the battle.
+
+Because the player is not actively controlling attacks, the battle presentation itself must remain interesting for several minutes.
 
 Important events should be obvious:
 
 ```text
 HEART DESTROYED
-
 PLASMA GLAND OFFLINE
-
 LEFT ARM SEVERED
-
 REGENERATION ACTIVE
+BOSS APPROACHING
+BOSS DEFEATED
 ```
-
----
 
 # Lab Phase
 
-Between encounters, the player enters the lab interface.
+The giant laboratory is the player's home base and the main preparation phase.
 
-The lab should eventually allow:
+Every deployment should return to the lab after the battle result is resolved.
 
-- viewing the assembled kaiju as a modular 2.5D specimen
-- viewing anatomy
-- attaching organs by socket
-- replacing organs
-- previewing sprite changes before committing
-- inspecting connections
-- viewing damage
-- selecting mutations
-- comparing components
-- reviewing organism statistics
+## Lab Fantasy
+
+The kaiju should appear inside an enormous industrial-biotech regeneration chamber.
+
+The scene may include:
+
+- giant mechanical gantries
+- articulated repair arms
+- nutrient injectors
+- regeneration fluid
+- containment rings
+- observation platforms
+- scientists or tiny maintenance workers for scale
+- giant tanks containing organs
+- monitors showing tissue condition
+- pipes, cables, pumps, warning lights, and bio-reactors
+- visible scars and damaged organs being repaired
+
+The kaiju should feel gigantic compared with the laboratory staff and machinery.
+
+## Lab Functions
+
+The player can:
+
+- inspect the kaiju
+- inspect battle damage
+- regenerate damaged organs
+- replace organs
+- upgrade organ levels
+- mutate organs
+- attach new body parts
+- compare organs
+- inspect synergies
+- inspect stats
+- level up the specimen
+- review battle results
+- prepare the next deployment
+
+The lab should visually show organ changes on the kaiju immediately.
+
+## Regeneration
+
+Post-battle damage should matter visually and mechanically.
+
+At minimum, the lab should track:
+
+```text
+organ health
+organ destroyed/damaged state
+regeneration status
+repair cost or regeneration requirement
+```
+
+For the MVP, regeneration may complete instantly when the player confirms recovery if real-time waiting would add no gameplay value.
+
+Do **not** require the player to wait real-world hours for regeneration unless that mechanic is explicitly requested later.
+
+## Leveling
+
+The kaiju gains XP from battles.
+
+Leveling may unlock:
+
+- additional organ levels
+- additional sockets
+- mutation choices
+- larger body stages
+- new brain capacity
+- new organ categories
+
+Prefer unlocks and build choices over simple permanent stat inflation.
+
+## Organ Management
+
+Organ changes happen primarily in the lab, not during battle.
+
+Changing an organ should:
+
+1. validate socket compatibility
+2. update gameplay data
+3. update the corresponding pixel-art body-part sprite
+4. update abilities / resources / synergies
+5. update the lab preview
+6. persist into the next deployment
 
 The lab is as important as combat.
 
-The interface should make experimentation enjoyable.
+A strong game session should feel like alternating between:
 
----
+> **spectacle and survival in battle**
+
+and
+
+> **experimentation and rebuilding in the lab**
 
 # Meta Progression
 
@@ -1195,71 +1581,73 @@ Avoid duplicate state.
 
 # Performance
 
-Autobattlers can contain many enemies.
-
-Keep common runtime systems lightweight.
+Battles may run for several minutes and contain many simultaneous enemies, projectiles, particles, and sprite animations.
 
 Prefer:
 
-- object pooling for projectiles when needed
+- object pooling for common projectiles and effects
 - cached node references
-- limited physics queries
-- staggered AI updates
-- event-based logic
-- simple enemy navigation
-- shared sprite atlases / `SpriteFrames` where practical
-- disabling animation or reducing update frequency for distant/off-screen units
-- keeping sprite presentation independent from expensive gameplay simulation
+- event-driven encounter triggers
+- simple lane/progression-axis AI
+- staggered target scans
+- disabling expensive logic for dead/off-screen entities
+- sprite atlases / shared `SpriteFrames`
+- reusing enemy scenes
+- conservative particle counts
+- despawning or pooling enemies far behind the active battle area
+- separating background decoration from physics
+- limiting navigation complexity because the game is primarily side-scrolling
 
-Avoid running expensive AI calculations every frame.
+Avoid treating the battle like an unrestricted 3D RTS.
 
-Example:
-
-```gdscript
-func _physics_process(delta: float) -> void:
-    movement_controller.update_movement(delta)
-```
-
-But decision making can run less often:
+Most ground combat should be solvable with:
 
 ```text
-Brain evaluation:
-5-10 times per second
-
-Target scanning:
-2-5 times per second
+horizontal distance
+limited depth/lane offset
+engagement range
+line of sight
+target priority
 ```
 
-Adjust based on gameplay needs.
+Brain decisions do not need to run every frame.
 
----
+Suggested starting frequencies:
+
+```text
+high-level brain evaluation: 4-8 Hz
+target scanning: 2-5 Hz
+encounter progression checks: event-driven where possible
+```
 
 # Development Priority
 
-Always prioritize a playable loop over infrastructure.
+Always prioritize proving the complete gameplay rhythm.
 
 Order:
 
-1. Create the 3D arena and fixed/elevated camera.
-2. Create a kaiju root with modular `Sprite3D` / `AnimatedSprite3D` body parts.
-3. Autonomous kaiju movement.
-4. Autonomous targeting.
-5. Basic attack.
-6. Enemy combat.
-7. Encounter completion.
-8. Mutation reward.
-9. Mutation visibly modifies the kaiju sprite assembly.
-10. Multiple encounters.
-11. Component hitboxes and damage states.
-12. Component interactions.
-13. Expanded organs.
-14. Lab UI.
-15. Meta progression.
-16. Polish.
+1. Create one side-scrolling 2.5D test level.
+2. Create fixed side-view camera and scroll behavior.
+3. Place the kaiju on the left side of the screen.
+4. Implement slow autonomous forward movement.
+5. Make the world visually scroll left as progression advances.
+6. Create modular retro-pixel kaiju body-part sprites.
+7. Add one enemy that attacks automatically.
+8. Make the kaiju automatically stop/engage/fight.
+9. Add encounter trigger zones and wave spawning.
+10. Add battle progress tracking.
+11. Add final boss encounter.
+12. Add explicit battle result states.
+13. Return to giant laboratory after battle.
+14. Show battle damage in the lab.
+15. Add regeneration.
+16. Add XP and level-up.
+17. Add organ replacement/upgrading.
+18. Redeploy with the modified kaiju.
+19. Expand enemy variety and mutations.
+20. Add polish, VFX, audio, additional levels, and meta progression.
 
-Do not build complex procedural generation before steps 1-8 work.
-
----
+Do not build complex procedural generation, large research trees, or many enemy factions before steps 1-18 work.
 
 # Agent Behavior
 
@@ -1275,11 +1663,16 @@ When implementing a feature:
 8. Add comments only where behavior is non-obvious.
 9. Do not introduce dependencies unless necessary.
 10. Preserve compatibility with Godot 4.
-11. Preserve the 2.5D architecture: 3D gameplay + modular 2D body-part sprites.
-12. Do not replace the modular sprite pipeline with full 3D character rigs unless explicitly requested.
-13. Keep visual nodes separate from gameplay state and collision logic.
-
----
+11. Preserve the 2.5D architecture: 3D world logic + modular pixel-art `Sprite3D` visuals.
+12. Preserve the side-scrolling battle direction: kaiju starts on the left and the environment scrolls left as progress moves forward.
+13. Do not replace the battle with a free-roaming 3D arena.
+14. Do not replace the modular sprite pipeline with full 3D character rigs unless explicitly requested.
+15. Do not introduce manual action-game controls unless explicitly requested.
+16. Keep battles autonomous.
+17. Keep the lab as a real gameplay phase, not just a pause menu.
+18. After battle completion, return the persistent kaiju state to the lab rather than creating an unrelated new specimen.
+19. Boss encounters belong at or near the end of standard battle maps.
+20. Preserve the retro pixel-art visual direction.
 
 # Feature Completion Criteria
 
@@ -1320,67 +1713,120 @@ Debug tools should be easy to disable for release builds.
 
 When adding systems, test at minimum:
 
-- kaiju can acquire a target
-- kaiju can attack
-- enemy can damage kaiju
-- component can be destroyed
-- destroyed component stops functioning
-- encounter can end
-- mutation can be selected
-- mutation affects following battle
+- battle starts with kaiju on the left side of the screen
+- kaiju advances automatically
+- camera/world scrolling creates the intended leftward scene motion
+- kaiju stops or slows when engaging threats
+- enemy waves trigger correctly
+- enemies can attack the kaiju
+- kaiju can autonomously acquire and attack targets
+- component damage persists through battle result generation
+- battle can end from kaiju death
+- battle can end when required enemies are defeated
+- boss encounter triggers at the end of the level
+- battle can end from boss defeat
+- battle result is passed to the lab
+- damaged organs appear damaged in the lab
+- regeneration restores organ state
+- XP can level the kaiju
+- organs can be replaced/upgraded
+- changed organs appear visually
+- changed build persists into the next deployment
 
-For deterministic systems, prefer automated unit-style tests where practical.
-
----
+For deterministic systems, prefer automated tests where practical.
 
 # Art Direction
 
 The target visual identity is:
 
-- stylized 2.5D presentation
-- true 3D arenas and environmental depth
-- modular 2D kaiju body-part sprites placed in 3D space
+- retro pixel-art 2.5D
+- side-scrolling battle composition
+- giant kaiju occupying the left side of the battlefield
+- horizontally scrolling war zones
+- modular 2D pixel-art kaiju body parts placed in 3D space
+- layered parallax scenery
+- ruined cities, industrial zones, military installations, alien biomes, and other large-scale environments
 - grotesque biotechnology
 - experimental laboratory organisms
 - readable silhouettes
-- modular anatomy
 - visible mutation
 - exaggerated biological weapons
 - scientific instrumentation
 - controlled body horror rather than pure gore
-- strong sprite silhouettes that remain readable from the gameplay camera
+- dramatic size contrast between kaiju and soldiers/vehicles
+- massive boss silhouettes at the end of maps
 
-The monster should visibly evolve during a run.
+The laboratory should share the retro-pixel style but feel much more controlled and technological than battlefields.
 
-A successful late-run kaiju should look meaningfully different from the starting organism, ideally recognizable from its silhouette alone.
+The kaiju should visibly evolve across deployments.
 
-## Body-Part Asset Rules
+A successful high-level specimen should be recognizable from its silhouette alone.
 
-All body-part sprites should follow consistent production rules:
+## Pixel-Art Asset Rules
 
-- transparent PNG or sprite atlas input
-- consistent camera/view angle
+All gameplay sprites should follow consistent production rules:
+
+- transparent PNG or sprite atlas
+- nearest-neighbor filtering
+- no unintended smoothing
+- consistent side-view camera angle
 - consistent light direction
 - consistent approximate pixel density
 - intentional pivot point
 - documented compatible socket type
-- enough empty canvas around animated extremities to prevent clipping
-- damage variants only when they add useful combat readability
+- enough canvas around animated extremities to prevent clipping
+- clear damaged / regenerating states where useful
+- limited animation frame counts with strong poses
 
-Do not paint permanent effects into a base sprite if they can be represented as reusable overlays.
+Do not simply shrink detailed painted illustrations and call them pixel art.
+
+Prefer assets designed around pixel clusters and readable low-resolution shapes.
+
+## Body-Part Asset Rules
+
+Kaiju body parts should be authored to combine cleanly.
+
+Each part should define:
+
+```text
+socket_type
+pivot
+layer_order
+base_scale
+animation_set
+damage_variants
+compatible_overlays
+```
 
 Prefer reusable sprite layers for:
 
 - wounds
-- armor plates
+- armor
 - tumors
 - glowing energy
 - poison
 - electricity
 - parasites
+- regeneration tissue
 - temporary status effects
 
----
+The final assembled kaiju may intentionally become visually messy and mutated, but socket alignment must remain deterministic.
+
+## Scale
+
+The kaiju should feel huge.
+
+Use visual scale cues such as:
+
+- tiny soldiers
+- tanks reaching only partway up the legs
+- helicopters near the head
+- buildings in background layers
+- dust clouds at footsteps
+- large projectile impacts
+- lab workers and machinery surrounding the regeneration platform
+
+Bosses should be large enough to visually signal the end of a battle.
 
 # Design Rule
 
@@ -1396,11 +1842,23 @@ If not, it is probably not a priority.
 
 Build the smallest possible prototype where:
 
-1. A modular kaiju made from multiple 2D body-part sprites exists inside a 3D arena.
-2. The kaiju autonomously moves and fights enemies using real 3D gameplay logic.
-3. The player wins an encounter.
-4. The player chooses one of three mutations.
-5. The chosen mutation physically or behaviorally changes the kaiju and, whenever possible, visibly changes its sprite assembly.
-6. The next encounter demonstrates the effect.
+1. The game opens in a giant retro-pixel Kaiju Lab.
+2. The player can inspect a modular kaiju and change at least one organ.
+3. The player deploys the kaiju.
+4. Battle begins with the kaiju on the left side of a 2.5D side-scrolling level.
+5. The kaiju slowly advances automatically.
+6. The scene/world scrolls left as level progress moves forward.
+7. Enemies appear according to encounter triggers and attack automatically.
+8. The kaiju autonomously stops, targets, and fights.
+9. The battle lasts long enough to observe the build working.
+10. The kaiju reaches a final boss.
+11. The battle correctly resolves from kaiju death, required-enemy completion, or boss defeat.
+12. The game returns to the lab.
+13. Battle damage is visible on the kaiju.
+14. The kaiju regenerates.
+15. XP/rewards are applied.
+16. The player can level up or replace/upgrade an organ.
+17. The visual kaiju sprite assembly changes.
+18. The modified specimen can be deployed again.
 
-Everything else is secondary until this loop is fun.
+Everything else is secondary until this complete **LAB → BATTLE → BOSS → LAB** loop is fun.

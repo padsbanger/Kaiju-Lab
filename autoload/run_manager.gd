@@ -4,6 +4,7 @@ extends Node
 signal run_started
 signal encounter_advanced(encounter_index: int)
 signal run_finished(victory: bool)
+signal battle_result_recorded(result: BattleResult)
 
 enum RunPhase { COMBAT, MUTATION, COMPLETE, DEFEAT }
 
@@ -11,6 +12,8 @@ var encounter_index: int = 1
 var phase: RunPhase = RunPhase.COMBAT
 var selected_mutation_ids: Array[StringName] = []
 var biomass_earned: int = 0
+var specimen: SpecimenState = SpecimenState.new()
+var latest_battle_result: BattleResult
 
 
 func begin_run() -> void:
@@ -39,3 +42,13 @@ func advance_encounter() -> void:
 func finish_run(victory: bool) -> void:
 	phase = RunPhase.COMPLETE if victory else RunPhase.DEFEAT
 	run_finished.emit(victory)
+
+
+func register_specimen(kaiju: Kaiju) -> void:
+	specimen.initialize_from_kaiju(kaiju)
+
+
+func record_battle_result(result: BattleResult) -> void:
+	latest_battle_result = result
+	result.apply_to_specimen(specimen)
+	battle_result_recorded.emit(result)

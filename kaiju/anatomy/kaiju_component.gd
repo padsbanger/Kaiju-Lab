@@ -52,6 +52,15 @@ func reset() -> void:
 	_update_visual_state()
 
 
+func restore_state(saved_health: float, saved_max_health: float = -1.0) -> void:
+	var maximum: float = data.max_health if saved_max_health <= 0.0 else saved_max_health
+	current_health = clampf(saved_health, 0.0, maximum)
+	is_destroyed = current_health <= 0.0
+	monitorable = not is_destroyed
+	health_changed.emit(self, current_health, maximum)
+	_update_visual_state()
+
+
 func _update_visual_state() -> void:
 	if visual == null:
 		return
