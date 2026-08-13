@@ -18,6 +18,7 @@ var regeneration_cooldown: float = 0.0
 var regeneration_amount: float = 20.0
 var regeneration_biomass_cost: float = 12.0
 var damage_resistance: float = 0.0
+var run_movement_speed: float = 3.4
 
 
 func _ready() -> void:
@@ -30,6 +31,7 @@ func _ready() -> void:
 	anatomy_controller.register_tree(component_root)
 	anatomy_controller.component_destroyed.connect(_on_component_destroyed)
 	anatomy_controller.critical_failure.connect(_on_critical_failure)
+	run_movement_speed = movement_controller.speed
 
 
 func _physics_process(delta: float) -> void:
@@ -75,6 +77,24 @@ func add_plating_visual() -> void:
 func add_regeneration_visual() -> void:
 	var torso_visual: Sprite3D = $ComponentRoot/TorsoComponent/Visual
 	torso_visual.modulate = Color(0.62, 1.0, 0.65, 1.0)
+
+
+func set_run_movement_speed(value: float) -> void:
+	run_movement_speed = value
+	movement_controller.speed = value
+
+
+func reset_for_encounter(spawn_position: Vector3) -> void:
+	global_position = spawn_position
+	velocity = Vector3.ZERO
+	health.reset()
+	resource_controller.biomass = 60.0
+	resource_controller.resource_changed.emit(&"biomass", resource_controller.biomass, resource_controller.maximum_biomass)
+	movement_controller.speed = run_movement_speed
+	for component: KaijuComponent in anatomy_controller.components:
+		component.reset()
+	brain_controller.set_physics_process(true)
+	set_physics_process(true)
 
 
 func _on_died(source: Node) -> void:

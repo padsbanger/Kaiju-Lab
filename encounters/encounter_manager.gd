@@ -14,6 +14,10 @@ func register_existing_enemies() -> void:
 	enemy_count_changed.emit(active_enemies.size())
 
 
+func reset() -> void:
+	active_enemies.clear()
+
+
 func register_enemy(enemy: Node) -> void:
 	if enemy in active_enemies:
 		return

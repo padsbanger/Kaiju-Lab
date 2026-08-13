@@ -9,6 +9,7 @@ var source: Node
 
 
 func _ready() -> void:
+	add_to_group(&"projectiles")
 	body_entered.connect(_on_hit)
 	area_entered.connect(_on_hit)
 

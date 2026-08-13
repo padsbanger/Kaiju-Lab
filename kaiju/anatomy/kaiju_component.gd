@@ -44,6 +44,14 @@ func ratio() -> float:
 	return current_health / data.max_health if data.max_health > 0.0 else 0.0
 
 
+func reset() -> void:
+	is_destroyed = false
+	monitorable = true
+	current_health = data.max_health
+	health_changed.emit(self, current_health, data.max_health)
+	_update_visual_state()
+
+
 func _update_visual_state() -> void:
 	if visual == null:
 		return

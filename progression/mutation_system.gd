@@ -16,7 +16,7 @@ func apply_mutation(kaiju: Kaiju, mutation: MutationData) -> bool:
 			kaiju.add_mutation_visual(mutation)
 		&"bone_plating":
 			kaiju.damage_resistance = clampf(kaiju.damage_resistance + mutation.magnitude, 0.0, 0.8)
-			kaiju.movement_controller.speed = maxf(1.0, kaiju.movement_controller.speed - mutation.tradeoff)
+			kaiju.set_run_movement_speed(maxf(1.0, kaiju.run_movement_speed - mutation.tradeoff))
 			kaiju.add_plating_visual()
 		&"regeneration_tumor":
 			kaiju.regeneration_amount += mutation.magnitude

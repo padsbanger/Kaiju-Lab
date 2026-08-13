@@ -1,9 +1,11 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://encounters/combat_scene.tscn" id="2_combat"]
 [ext_resource type="PackedScene" path="res://ui/mutation_selection/mutation_selection.tscn" id="3_mutation_ui"]
 [ext_resource type="Script" path="res://progression/mutation_system.gd" id="4_mutation_system"]
+[ext_resource type="Script" path="res://autoload/run_manager.gd" id="5_run_manager"]
+[ext_resource type="PackedScene" path="res://ui/run_end_screen.tscn" id="6_end_screen"]
 
 [sub_resource type="StyleBoxFlat" id="Style_panel"]
 bg_color = Color(0.015, 0.045, 0.036, 0.92)
@@ -48,6 +50,9 @@ script = ExtResource("1_main")
 
 [node name="MutationSystem" type="Node" parent="."]
 script = ExtResource("4_mutation_system")
+
+[node name="RunManager" type="Node" parent="."]
+script = ExtResource("5_run_manager")
 
 [node name="Interface" type="CanvasLayer" parent="."]
 
@@ -168,5 +173,9 @@ theme_override_colors/font_color = Color(0.56, 0.55, 0.69, 1)
 text = "MODULAR SOCKETS: 3 ONLINE"
 
 [node name="MutationSelection" parent="Interface" instance=ExtResource("3_mutation_ui")]
+unique_name_in_owner = true
+visible = false
+
+[node name="RunEndScreen" parent="Interface" instance=ExtResource("6_end_screen")]
 unique_name_in_owner = true
 visible = false
