@@ -184,7 +184,7 @@ Exit criteria:
 
 ## Milestone 4: Heavy Autonomous Advance and Engagement
 
-Status: **not started**
+Status: **complete**
 
 Goal: convert the existing chase-based arena AI into deliberate side-scrolling battle behavior.
 

@@ -1,8 +1,9 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://battle/side_scroll_battle.gd" id="1"]
 [ext_resource type="Script" path="res://battle/scroll_controller.gd" id="2"]
 [ext_resource type="PackedScene" path="res://kaiju/kaiju.tscn" id="3"]
+[ext_resource type="Script" path="res://battle/kaiju_battle_controller.gd" id="4"]
 
 [sub_resource type="Environment" id="Env"]
 background_mode = 1
@@ -142,6 +143,9 @@ current = true
 [node name="ScrollController" type="Node" parent="."]
 script = ExtResource("2")
 
+[node name="KaijuBattleController" type="Node" parent="."]
+script = ExtResource("4")
+
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="ProgressPanel" type="PanelContainer" parent="UI"]
@@ -168,3 +172,11 @@ custom_minimum_size = Vector2(0, 9)
 layout_mode = 2
 show_percentage = false
 theme_override_styles/fill = SubResource("ProgressFill")
+
+[node name="StateLabel" type="Label" parent="UI/ProgressPanel/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.82, 0.66, 1)
+theme_override_font_sizes/font_size = 8
+text = "AUTONOMY  ADVANCE   TARGET  NONE"
+horizontal_alignment = 1
