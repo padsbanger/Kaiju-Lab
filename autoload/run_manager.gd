@@ -52,3 +52,9 @@ func record_battle_result(result: BattleResult) -> void:
 	latest_battle_result = result
 	result.apply_to_specimen(specimen)
 	battle_result_recorded.emit(result)
+
+
+func new_specimen() -> void:
+	specimen = SpecimenState.new()
+	latest_battle_result = null
+	begin_run()

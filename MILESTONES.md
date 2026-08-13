@@ -321,7 +321,7 @@ Exit criteria:
 
 ## Milestone 9: Complete Lab → Battle → Boss → Lab Vertical Slice
 
-Status: **not started**
+Status: **complete**
 
 Goal: prove the revised current goal end to end with no developer intervention.
 
