@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3]
+[gd_scene load_steps=26 format=3]
 
 [ext_resource type="Script" path="res://kaiju/kaiju.gd" id="1_kaiju"]
 [ext_resource type="Script" path="res://kaiju/visuals/component_visual.gd" id="2_visual"]
@@ -17,6 +17,9 @@
 [ext_resource type="Resource" path="res://data/components/stomach_basic.tres" id="15_stomach_data"]
 [ext_resource type="Resource" path="res://data/components/claw_left.tres" id="16_left_data"]
 [ext_resource type="Resource" path="res://data/components/claw_right.tres" id="17_right_data"]
+[ext_resource type="Script" path="res://combat/ranged_attack.gd" id="18_ranged"]
+[ext_resource type="PackedScene" path="res://combat/projectile.tscn" id="19_projectile"]
+[ext_resource type="Script" path="res://kaiju/resources/resource_controller.gd" id="20_resources"]
 
 [sub_resource type="CapsuleShape3D" id="Capsule_kaiju"]
 radius = 0.85
@@ -187,6 +190,17 @@ script = ExtResource("9_move")
 
 [node name="AnatomyController" type="Node" parent="."]
 script = ExtResource("10_anatomy")
+
+[node name="ResourceController" type="Node" parent="."]
+script = ExtResource("20_resources")
+
+[node name="SpitAttack" type="Node3D" parent="."]
+position = Vector3(0, 2.45, 0)
+script = ExtResource("18_ranged")
+projectile_scene = ExtResource("19_projectile")
+damage = 16.0
+cooldown = 1.75
+collision_targets = 2
 
 [node name="ClawAttack" type="Area3D" parent="."]
 position = Vector3(0, 1.1, 0)

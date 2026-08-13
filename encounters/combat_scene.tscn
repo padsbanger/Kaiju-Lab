@@ -1,8 +1,11 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="Script" path="res://encounters/combat_scene.gd" id="1_combat"]
 [ext_resource type="PackedScene" path="res://kaiju/kaiju.tscn" id="2_kaiju"]
 [ext_resource type="PackedScene" path="res://enemies/melee_soldier.tscn" id="3_enemy"]
+[ext_resource type="PackedScene" path="res://enemies/ranged_soldier.tscn" id="4_ranged"]
+[ext_resource type="PackedScene" path="res://enemies/tank.tscn" id="5_tank"]
+[ext_resource type="Script" path="res://encounters/encounter_manager.gd" id="6_manager"]
 
 [sub_resource type="Environment" id="Environment_arena"]
 background_mode = 1
@@ -122,6 +125,15 @@ position = Vector3(-4.5, 0, 0)
 [node name="MeleeSoldier" parent="." instance=ExtResource("3_enemy")]
 unique_name_in_owner = true
 position = Vector3(5.5, 0, 0)
+
+[node name="RangedSoldier" parent="." instance=ExtResource("4_ranged")]
+position = Vector3(7.5, 0, -4.5)
+
+[node name="Tank" parent="." instance=ExtResource("5_tank")]
+position = Vector3(9.5, 0, 4.5)
+
+[node name="EncounterManager" type="Node" parent="."]
+script = ExtResource("6_manager")
 
 [node name="CameraRig3D" type="Node3D" parent="."]
 

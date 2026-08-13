@@ -5,7 +5,7 @@ signal combat_finished(result: StringName)
 
 @onready var camera: Camera3D = %Camera3D
 @onready var kaiju: Kaiju = %Kaiju
-@onready var enemy: MeleeSoldier = %MeleeSoldier
+@onready var encounter_manager: EncounterManager = $EncounterManager
 
 
 func _ready() -> void:
@@ -13,7 +13,9 @@ func _ready() -> void:
 	kaiju.health.health_changed.connect(_on_kaiju_health_changed)
 	kaiju.died.connect(_on_kaiju_died)
 	kaiju.anatomy_controller.component_destroyed.connect(_on_component_destroyed)
-	enemy.died.connect(_on_enemy_died)
+	encounter_manager.encounter_cleared.connect(_on_encounter_cleared)
+	encounter_manager.enemy_count_changed.connect(_on_enemy_count_changed)
+	encounter_manager.register_existing_enemies.call_deferred()
 	status_changed.emit("AUTONOMOUS COMBAT // TARGET ACQUISITION")
 
 
@@ -25,9 +27,13 @@ func _on_kaiju_health_changed(current: float, maximum: float) -> void:
 	kaiju_health_changed.emit(current, maximum)
 
 
-func _on_enemy_died(_enemy: MeleeSoldier) -> void:
+func _on_encounter_cleared() -> void:
 	status_changed.emit("ENCOUNTER CLEARED // HOSTILE ELIMINATED")
 	combat_finished.emit(&"victory")
+
+
+func _on_enemy_count_changed(remaining: int) -> void:
+	status_changed.emit("AUTONOMOUS COMBAT // HOSTILES REMAINING: %d" % remaining)
 
 
 func _on_kaiju_died(_source: Node) -> void:

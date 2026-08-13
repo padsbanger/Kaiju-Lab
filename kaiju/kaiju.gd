@@ -12,6 +12,9 @@ signal died(source: Node)
 @onready var movement_controller: MovementController = $MovementController
 @onready var claw_attack: MeleeAttack = $ClawAttack
 @onready var anatomy_controller: AnatomyController = $AnatomyController
+@onready var spit_attack: RangedAttack = $SpitAttack
+@onready var resource_controller: ResourceController = $ResourceController
+var regeneration_cooldown: float = 0.0
 
 
 func _ready() -> void:
@@ -31,8 +34,18 @@ func _physics_process(delta: float) -> void:
 		return
 	var target: Node3D = brain_controller.target if is_instance_valid(brain_controller.target) else null
 	movement_controller.update_movement(self, target, delta)
-	if target != null and anatomy_controller.is_function_online(&"melee_weapon"):
-		claw_attack.try_attack(target)
+	if target != null:
+		var distance: float = global_position.distance_to(target.global_position)
+		if distance <= 2.4 and anatomy_controller.is_function_online(&"melee_weapon"):
+			claw_attack.try_attack(target)
+		elif distance > 2.4:
+			spit_attack.try_attack(target, self)
+	regeneration_cooldown = maxf(0.0, regeneration_cooldown - delta)
+	if health.ratio() < 0.65 and regeneration_cooldown <= 0.0 and resource_controller.consume_biomass(12.0):
+		health.heal(20.0)
+		for component: KaijuComponent in anatomy_controller.get_damaged_components():
+			component.heal(6.0)
+		regeneration_cooldown = 4.0
 
 
 func take_damage(amount: float, source: Node = null) -> void:

@@ -14,7 +14,7 @@ func _initialize() -> void:
 
 
 func _run_test(combat: CombatScene) -> void:
-	var timeout_seconds: float = 18.0
+	var timeout_seconds: float = 35.0
 	while result == &"" and timeout_seconds > 0.0:
 		await create_timer(0.1).timeout
 		timeout_seconds -= 0.1
