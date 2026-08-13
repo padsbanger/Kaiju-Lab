@@ -1,0 +1,86 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://kaiju/kaiju.gd" id="1_kaiju"]
+[ext_resource type="Script" path="res://kaiju/visuals/component_visual.gd" id="2_visual"]
+[ext_resource type="Texture2D" path="res://art/sprites/kaiju/torso.png" id="3_torso"]
+[ext_resource type="Texture2D" path="res://art/sprites/kaiju/head.png" id="4_head"]
+[ext_resource type="Texture2D" path="res://art/sprites/kaiju/claw_arm.png" id="5_claw"]
+
+[sub_resource type="CapsuleShape3D" id="Capsule_kaiju"]
+radius = 0.85
+height = 2.8
+
+[sub_resource type="StandardMaterial3D" id="Material_shadow"]
+transparency = 1
+albedo_color = Color(0.04, 0.08, 0.07, 0.62)
+shading_mode = 0
+
+[sub_resource type="CylinderMesh" id="Mesh_shadow"]
+material = SubResource("Material_shadow")
+top_radius = 1.45
+bottom_radius = 1.45
+height = 0.025
+
+[node name="Kaiju" type="CharacterBody3D"]
+script = ExtResource("1_kaiju")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+position = Vector3(0, 1.4, 0)
+shape = SubResource("Capsule_kaiju")
+
+[node name="GroundShadow" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.035, 0)
+mesh = SubResource("Mesh_shadow")
+
+[node name="ComponentRoot" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="TorsoComponent" type="Node3D" parent="ComponentRoot"]
+position = Vector3(0, 1.35, 0)
+
+[node name="Visual" type="Sprite3D" parent="ComponentRoot/TorsoComponent"]
+render_priority = 2
+texture = ExtResource("3_torso")
+script = ExtResource("2_visual")
+component_id = &"torso"
+
+[node name="HeadSocket" type="Node3D" parent="ComponentRoot"]
+unique_name_in_owner = true
+position = Vector3(-0.05, 2.65, -0.02)
+
+[node name="HeadComponent" type="Node3D" parent="ComponentRoot/HeadSocket"]
+
+[node name="Visual" type="Sprite3D" parent="ComponentRoot/HeadSocket/HeadComponent"]
+render_priority = 5
+texture = ExtResource("4_head")
+script = ExtResource("2_visual")
+component_id = &"head"
+
+[node name="LeftArmSocket" type="Node3D" parent="ComponentRoot"]
+unique_name_in_owner = true
+position = Vector3(-1.15, 1.5, 0.04)
+
+[node name="ClawComponent" type="Node3D" parent="ComponentRoot/LeftArmSocket"]
+rotation = Vector3(0, 0, -0.55)
+
+[node name="Visual" type="Sprite3D" parent="ComponentRoot/LeftArmSocket/ClawComponent"]
+render_priority = 4
+scale = Vector3(0.78, 0.78, 0.78)
+texture = ExtResource("5_claw")
+script = ExtResource("2_visual")
+component_id = &"left_claw"
+
+[node name="RightArmSocket" type="Node3D" parent="ComponentRoot"]
+unique_name_in_owner = true
+position = Vector3(1.15, 1.5, -0.04)
+
+[node name="ClawComponent" type="Node3D" parent="ComponentRoot/RightArmSocket"]
+rotation = Vector3(0, 0, 0.55)
+
+[node name="Visual" type="Sprite3D" parent="ComponentRoot/RightArmSocket/ClawComponent"]
+render_priority = 1
+scale = Vector3(0.78, 0.78, 0.78)
+texture = ExtResource("5_claw")
+flip_h = true
+script = ExtResource("2_visual")
+component_id = &"right_claw"

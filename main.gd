@@ -7,7 +7,7 @@ signal prototype_event(message: String)
 
 
 func _ready() -> void:
-	report_event("SYSTEM READY // INITIALIZING SPECIMEN BAY")
+	report_event("SPECIMEN K-01 // ARENA LINK STABLE")
 
 
 func report_event(message: String) -> void:
