@@ -2,6 +2,7 @@ class_name LabController
 extends Node3D
 
 const REGENERATION_SYSTEM_SCRIPT: Script = preload("res://progression/regeneration_system.gd")
+const AUDIO_CUE_BUS_SCRIPT: Script = preload("res://audio/audio_cue_bus.gd")
 
 signal deploy_requested
 
@@ -17,9 +18,12 @@ signal deploy_requested
 var specimen: SpecimenState
 var latest_result: BattleResult
 var regeneration: RefCounted = REGENERATION_SYSTEM_SCRIPT.new()
+var audio_cues: Node
 
 
 func _ready() -> void:
+	audio_cues = AUDIO_CUE_BUS_SCRIPT.new()
+	add_child(audio_cues)
 	kaiju.set_physics_process(false)
 	kaiju.brain_controller.set_physics_process(false)
 	kaiju.pixel_animation.set_state(PixelAnimationController.State.IDLE)
@@ -75,6 +79,7 @@ func _repair_selected() -> void:
 		return
 	var component: KaijuComponent = kaiju.anatomy_controller.components[selected[0]]
 	if regeneration.repair(specimen, component.data.id):
+		audio_cues.play(&"regeneration")
 		specimen.apply_to_kaiju(kaiju)
 		kaiju.pixel_animation.set_state(PixelAnimationController.State.REGENERATING)
 		_refresh()
@@ -105,4 +110,5 @@ func _cycle_left_organ() -> void:
 
 func _level_up() -> void:
 	if specimen.level_up():
+		audio_cues.play(&"level_up")
 		_refresh()

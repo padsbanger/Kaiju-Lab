@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://battle/side_scroll_battle.gd" id="1"]
 [ext_resource type="Script" path="res://battle/scroll_controller.gd" id="2"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://battle/kaiju_battle_controller.gd" id="4"]
 [ext_resource type="Script" path="res://battle/battle_director.gd" id="5"]
 [ext_resource type="BattleMapData" path="res://data/battles/city_ruins.tres" id="6"]
+[ext_resource type="Script" path="res://audio/audio_cue_bus.gd" id="7"]
 
 [sub_resource type="Environment" id="Env"]
 background_mode = 1
@@ -156,6 +157,9 @@ advance_speed = 0.32
 script = ExtResource("5")
 map_data = ExtResource("6")
 
+[node name="AudioCueBus" type="Node" parent="."]
+script = ExtResource("7")
+
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="ProgressPanel" type="PanelContainer" parent="UI"]
@@ -225,3 +229,47 @@ theme_override_font_sizes/font_size = 10
 text = "DEPLOYMENT RESULT"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="PauseButton" type="Button" parent="UI"]
+unique_name_in_owner = true
+process_mode = 3
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 72.0
+offset_bottom = 30.0
+theme_override_font_sizes/font_size = 8
+text = "PAUSE"
+
+[node name="SpeedButton" type="Button" parent="UI"]
+unique_name_in_owner = true
+offset_left = 76.0
+offset_top = 8.0
+offset_right = 136.0
+offset_bottom = 30.0
+theme_override_font_sizes/font_size = 8
+text = "SPEED 1.0x"
+
+[node name="InspectButton" type="Button" parent="UI"]
+unique_name_in_owner = true
+offset_left = 504.0
+offset_top = 8.0
+offset_right = 632.0
+offset_bottom = 30.0
+theme_override_font_sizes/font_size = 8
+text = "INSPECT ORGANS"
+
+[node name="InspectionPanel" type="PanelContainer" parent="UI"]
+unique_name_in_owner = true
+visible = false
+offset_left = 455.0
+offset_top = 78.0
+offset_right = 632.0
+offset_bottom = 230.0
+theme_override_styles/panel = SubResource("HudPanel")
+
+[node name="Label" type="Label" parent="UI/InspectionPanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.62, 0.9, 0.65, 1)
+theme_override_font_sizes/font_size = 8
+text = "AUTONOMOUS ORGANS\nCLAW // READY\nACID SPIT // 16 DMG\nREGENERATION // BIOMASS\n\nNo manual combat input."
+autowrap_mode = 2

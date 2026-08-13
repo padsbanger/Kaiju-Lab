@@ -19,7 +19,7 @@ func _initialize() -> void:
 	lab.bind_specimen(specimen, result)
 	assert(lab.kaiju.anatomy_controller.components[0].is_destroyed)
 	assert(lab.deploy_button.disabled, "Critical destruction must block deployment")
-	assert("CITADEL" in lab.report_label.text)
+	assert("BATTLE REPORT" in lab.report_label.text and "TORSO_BASIC" in lab.report_label.text)
 	var before: int = specimen.biomass
 	assert(lab.regeneration.repair(specimen, torso_id))
 	assert(specimen.biomass < before and torso.current_health == torso.max_health)

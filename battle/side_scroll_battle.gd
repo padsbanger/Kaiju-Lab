@@ -4,6 +4,12 @@ extends Node3D
 signal battle_finished(result: BattleResult)
 signal status_changed(message: String)
 
+const PIXEL_VFX_SCRIPT: Script = preload("res://battle/pixel_vfx.gd")
+const DUST_VFX: Texture2D = preload("res://art/pixel/vfx/dust.png")
+const ELECTRIC_VFX: Texture2D = preload("res://art/pixel/vfx/electric.png")
+const EXPLOSION_VFX: Texture2D = preload("res://art/pixel/vfx/explosion.png")
+const BOSS_SURGE_VFX: Texture2D = preload("res://art/pixel/vfx/boss_surge.png")
+
 @export var level_length: float = 48.0
 @onready var kaiju: Kaiju = %Kaiju
 @onready var camera: Camera3D = %BattleCamera
@@ -15,6 +21,7 @@ signal status_changed(message: String)
 @onready var wave_label: Label = %WaveLabel
 @onready var enemy_root: Node3D = %EnemyRoot
 @onready var battle_director: BattleDirector = $BattleDirector
+@onready var audio_cues: AudioCueBus = $AudioCueBus
 var elapsed_seconds: float = 0.0
 var active: bool = true
 var resolved: bool = false
@@ -32,6 +39,10 @@ func _ready() -> void:
 	battle_director.phase_changed.connect(_on_phase_changed)
 	battle_director.boss_spawned.connect(_on_boss_spawned)
 	kaiju.died.connect(_on_kaiju_died)
+	%PauseButton.pressed.connect(toggle_pause)
+	%SpeedButton.pressed.connect(cycle_speed)
+	%InspectButton.pressed.connect(func() -> void: %InspectionPanel.visible = not %InspectionPanel.visible)
+	audio_cues.play(&"deploy")
 	status_changed.emit("DEPLOYMENT // CITY RUINS")
 
 
@@ -63,6 +74,9 @@ func _target_name() -> String:
 
 func _on_phase_changed(_phase: BattleDirector.Phase, title: String) -> void:
 	wave_label.text = title
+	if _phase in [BattleDirector.Phase.WAVE, BattleDirector.Phase.ELITE]:
+		audio_cues.play(&"wave_start")
+		_spawn_vfx(DUST_VFX, kaiju.global_position + Vector3(1.0, 0.2, 0.1))
 
 
 func build_result(outcome: BattleResult.Outcome) -> BattleResult:
@@ -86,9 +100,13 @@ func _on_boss_spawned(spawned_boss: Node3D) -> void:
 	boss.died.connect(_on_boss_died, CONNECT_ONE_SHOT)
 	%BossBar.visible = true
 	boss.health.health_changed.connect(func(current: float, maximum: float) -> void: %BossBar.value = 100.0 * current / maximum)
+	boss.pressure_used.connect(_on_boss_pressure)
+	audio_cues.play(&"boss_gate")
+	_spawn_vfx(BOSS_SURGE_VFX, boss.global_position + Vector3(0.0, 1.2, 0.1), 1.4)
 
 
 func _on_boss_died(_enemy: Node3D) -> void:
+	_spawn_vfx(EXPLOSION_VFX, boss.global_position + Vector3(0.0, 1.0, 0.2), 1.7)
 	resolve_battle(BattleResult.Outcome.BOSS_DEFEATED)
 
 
@@ -104,6 +122,7 @@ func resolve_battle(outcome: BattleResult.Outcome, reason: String = "") -> void:
 	battle_controller.set_physics_process(false)
 	var result: BattleResult = build_result(outcome)
 	result.failure_reason = reason
+	audio_cues.play(&"victory" if result.boss_defeated else &"defeat")
 	%ResultPanel.visible = true
 	%ResultLabel.text = _result_summary(result)
 	await get_tree().create_timer(0.35).timeout
@@ -113,3 +132,28 @@ func resolve_battle(outcome: BattleResult.Outcome, reason: String = "") -> void:
 func _result_summary(result: BattleResult) -> String:
 	var title: String = "DEPLOYMENT COMPLETE" if result.boss_defeated else "SPECIMEN RECALLED"
 	return "%s\nPROGRESS %d%%  TIME %02d:%02d\nHOSTILES %d  WAVES %d\nREWARD +%d XP  +%d BIOMASS  +%d DNA\n%s" % [title, int(result.map_progress * 100.0), int(result.elapsed_seconds) / 60, int(result.elapsed_seconds) % 60, result.enemies_defeated, result.waves_survived, result.experience_reward, result.biomass_reward, result.dna_reward, result.failure_reason]
+
+
+func toggle_pause() -> void:
+	get_tree().paused = not get_tree().paused
+	%PauseButton.text = "RESUME" if get_tree().paused else "PAUSE"
+
+
+func cycle_speed() -> void:
+	var next_scale: float = 2.0 if Engine.time_scale < 1.5 else 0.5
+	Engine.time_scale = next_scale
+	%SpeedButton.text = "SPEED %.1fx" % next_scale
+
+
+func _on_boss_pressure(_pressure: StringName) -> void:
+	_spawn_vfx(ELECTRIC_VFX, kaiju.global_position + Vector3(0.0, 1.3, 0.2))
+	audio_cues.play(&"boss_phase")
+
+
+func _spawn_vfx(texture: Texture2D, world_position: Vector3, visual_scale: float = 1.0) -> void:
+	var effect: Sprite3D = PIXEL_VFX_SCRIPT.new() as Sprite3D
+	effect.texture = texture
+	effect.pixel_size = 0.018
+	effect.scale = Vector3.ONE * visual_scale
+	add_child(effect)
+	effect.global_position = world_position

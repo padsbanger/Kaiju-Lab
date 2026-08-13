@@ -1,4 +1,4 @@
-# Kaiju Lab Milestones — Retro Side-Scrolling Roadmap
+# Kaiju Lab Milestones â€” Retro Side-Scrolling Roadmap
 
 This roadmap supersedes the original arena-based prototype plan.
 
@@ -8,19 +8,19 @@ The target loop is now:
 
 ```text
 GIANT KAIJU LAB
-    ↓
+    â†“
 inspect damage / regenerate / level up / change organs
-    ↓
+    â†“
 DEPLOY
-    ↓
+    â†“
 2.5D SIDE-SCROLLING AUTOBATTLE
-    ↓
-advance through waves for roughly 2–5 minutes
-    ↓
+    â†“
+advance through waves for roughly 2â€“5 minutes
+    â†“
 FINAL BOSS
-    ↓
+    â†“
 battle report and persistent damage
-    ↓
+    â†“
 RETURN TO THE LAB
 ```
 
@@ -228,7 +228,7 @@ Deliverables:
 - Add at least one flying or elevated threat to prove vertical targeting.
 - Add wave start, wave clear, travel, and elite challenge phases.
 - Track enemies remaining, current wave, deployment time, and map progress.
-- Balance the prototype deployment toward a 2–5 minute duration.
+- Balance the prototype deployment toward a 2â€“5 minute duration.
 - Prevent defeated or bypassed waves from leaving stale targets or blocking progress.
 
 Exit criteria:
@@ -319,7 +319,7 @@ Exit criteria:
 - The kaiju silhouette or visible anatomy changes.
 - The new organ changes behavior in the following deployment.
 
-## Milestone 9: Complete Lab → Battle → Boss → Lab Vertical Slice
+## Milestone 9: Complete Lab â†’ Battle â†’ Boss â†’ Lab Vertical Slice
 
 Status: **complete**
 
@@ -342,7 +342,7 @@ Deliverables:
 Exit criteria:
 
 - The complete loop runs from the configured project entry point.
-- A normal deployment lasts approximately 2–5 minutes at standard speed.
+- A normal deployment lasts approximately 2â€“5 minutes at standard speed.
 - All combat remains autonomous.
 - Damage, rewards, level, inventory, and build persist correctly across scene transitions.
 - The second deployment contains the modified specimen and demonstrates its changed behavior.
@@ -352,7 +352,7 @@ This is the new vertical-slice gate. Do not expand into large procedural systems
 
 ## Milestone 10: Retro Presentation, Readability, and Balance
 
-Status: **not started**
+Status: **complete**
 
 Goal: bring the proven vertical slice close to the quality and clarity suggested by the new reference screenshots.
 
@@ -379,7 +379,7 @@ Deliverables:
   - level-up, change-organ, mutation, and deploy actions.
 - Add battle-speed and pause controls without adding manual combat actions.
 - Profile sprite counts, physics queries, projectiles, particles, parallax layers, and AI updates.
-- Balance the default deployment to the 2–5 minute target with meaningful degradation and recovery decisions.
+- Balance the default deployment to the 2â€“5 minute target with meaningful degradation and recovery decisions.
 
 Exit criteria:
 
@@ -418,7 +418,7 @@ Before declaring Milestone 9 complete, verify all of the following:
 - Rewards can produce XP progression.
 - A changed organ visibly and behaviorally affects the next deployment.
 - Scene transitions do not duplicate enemies, projectiles, UI, rewards, or specimen state.
-- The representative deployment lasts roughly 2–5 minutes at standard speed.
+- The representative deployment lasts roughly 2â€“5 minutes at standard speed.
 
 ## Deferred Until After the Revised Vertical Slice
 
@@ -443,14 +443,14 @@ Begin Milestone 0 by extracting persistent specimen state from the current comba
 The earlier arena roadmap was completed through its Milestone 8 and remains available in Git history. Under this revised roadmap:
 
 - Existing technical foundation: complete and reusable
-- Milestone 0 — Pivot baseline and migration safety: complete
-- Milestone 1 — Retro pixel rendering and asset pipeline: complete
-- Milestone 2 — Giant laboratory entry scene: complete
-- Milestone 3 — Side-scrolling world and camera: complete
-- Milestone 4 — Heavy autonomous advance and engagement: not started
-- Milestone 5 — Progression triggers and enemy waves: not started
-- Milestone 6 — Final boss and battle resolution: not started
-- Milestone 7 — Persistent damage and regeneration: not started
-- Milestone 8 — XP, level-up, and organ replacement: not started
-- Milestone 9 — Complete revised vertical slice: not started
-- Milestone 10 — Retro presentation, readability, and balance: not started
+- Milestone 0 â€” Pivot baseline and migration safety: complete
+- Milestone 1 â€” Retro pixel rendering and asset pipeline: complete
+- Milestone 2 â€” Giant laboratory entry scene: complete
+- Milestone 3 â€” Side-scrolling world and camera: complete
+- Milestone 4 â€” Heavy autonomous advance and engagement: not started
+- Milestone 5 â€” Progression triggers and enemy waves: not started
+- Milestone 6 â€” Final boss and battle resolution: not started
+- Milestone 7 â€” Persistent damage and regeneration: not started
+- Milestone 8 â€” XP, level-up, and organ replacement: not started
+- Milestone 9 â€” Complete revised vertical slice: not started
+- Milestone 10 â€” Retro presentation, readability, and balance: not started
