@@ -136,6 +136,10 @@ shape = SubResource("Shape_limb_component")
 unique_name_in_owner = true
 position = Vector3(1.15, 1.5, -0.04)
 
+[node name="MutationSocket" type="Node3D" parent="ComponentRoot"]
+unique_name_in_owner = true
+position = Vector3(0.45, 2.25, 0.14)
+
 [node name="ClawComponent" type="Area3D" parent="ComponentRoot/RightArmSocket"]
 rotation = Vector3(0, 0, 0.55)
 collision_layer = 8

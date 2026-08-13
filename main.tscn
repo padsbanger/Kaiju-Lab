@@ -1,7 +1,9 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://encounters/combat_scene.tscn" id="2_combat"]
+[ext_resource type="PackedScene" path="res://ui/mutation_selection/mutation_selection.tscn" id="3_mutation_ui"]
+[ext_resource type="Script" path="res://progression/mutation_system.gd" id="4_mutation_system"]
 
 [sub_resource type="StyleBoxFlat" id="Style_panel"]
 bg_color = Color(0.015, 0.045, 0.036, 0.92)
@@ -43,6 +45,9 @@ border_color = Color(1, 0.28, 0.35, 0.9)
 script = ExtResource("1_main")
 
 [node name="CombatScene" parent="." instance=ExtResource("2_combat")]
+
+[node name="MutationSystem" type="Node" parent="."]
+script = ExtResource("4_mutation_system")
 
 [node name="Interface" type="CanvasLayer" parent="."]
 
@@ -161,3 +166,7 @@ text = "R-ARM  //  RENDING CLAW"
 [node name="Hint" type="Label" parent="Interface/SpecimenPanel/Margin/Rows"]
 theme_override_colors/font_color = Color(0.56, 0.55, 0.69, 1)
 text = "MODULAR SOCKETS: 3 ONLINE"
+
+[node name="MutationSelection" parent="Interface" instance=ExtResource("3_mutation_ui")]
+unique_name_in_owner = true
+visible = false

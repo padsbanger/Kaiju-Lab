@@ -15,6 +15,9 @@ signal died(source: Node)
 @onready var spit_attack: RangedAttack = $SpitAttack
 @onready var resource_controller: ResourceController = $ResourceController
 var regeneration_cooldown: float = 0.0
+var regeneration_amount: float = 20.0
+var regeneration_biomass_cost: float = 12.0
+var damage_resistance: float = 0.0
 
 
 func _ready() -> void:
@@ -41,15 +44,37 @@ func _physics_process(delta: float) -> void:
 		elif distance > 2.4:
 			spit_attack.try_attack(target, self)
 	regeneration_cooldown = maxf(0.0, regeneration_cooldown - delta)
-	if health.ratio() < 0.65 and regeneration_cooldown <= 0.0 and resource_controller.consume_biomass(12.0):
-		health.heal(20.0)
+	if health.ratio() < 0.65 and regeneration_cooldown <= 0.0 and resource_controller.consume_biomass(regeneration_biomass_cost):
+		health.heal(regeneration_amount)
 		for component: KaijuComponent in anatomy_controller.get_damaged_components():
 			component.heal(6.0)
 		regeneration_cooldown = 4.0
 
 
 func take_damage(amount: float, source: Node = null) -> void:
-	health.take_damage(amount, source)
+	health.take_damage(amount * (1.0 - damage_resistance), source)
+
+
+func add_mutation_visual(mutation: MutationData) -> void:
+	if mutation.visual_texture == null or %MutationSocket.get_child_count() > 0:
+		return
+	var sprite := ComponentVisual.new()
+	sprite.texture = mutation.visual_texture
+	sprite.component_id = mutation.id
+	sprite.render_priority = 6
+	sprite.scale = Vector3.ONE * 0.65
+	%MutationSocket.add_child(sprite)
+
+
+func add_plating_visual() -> void:
+	var torso_visual: Sprite3D = $ComponentRoot/TorsoComponent/Visual
+	torso_visual.modulate = Color(0.78, 0.82, 0.96, 1.0)
+	torso_visual.scale *= 1.08
+
+
+func add_regeneration_visual() -> void:
+	var torso_visual: Sprite3D = $ComponentRoot/TorsoComponent/Visual
+	torso_visual.modulate = Color(0.62, 1.0, 0.65, 1.0)
 
 
 func _on_died(source: Node) -> void:
