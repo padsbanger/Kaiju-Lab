@@ -1,7 +1,8 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://encounters/combat_scene.gd" id="1_combat"]
 [ext_resource type="PackedScene" path="res://kaiju/kaiju.tscn" id="2_kaiju"]
+[ext_resource type="PackedScene" path="res://enemies/melee_soldier.tscn" id="3_enemy"]
 
 [sub_resource type="Environment" id="Environment_arena"]
 background_mode = 1
@@ -115,6 +116,12 @@ mesh = SubResource("Mesh_wall")
 shape = SubResource("Shape_wall")
 
 [node name="Kaiju" parent="." instance=ExtResource("2_kaiju")]
+unique_name_in_owner = true
+position = Vector3(-4.5, 0, 0)
+
+[node name="MeleeSoldier" parent="." instance=ExtResource("3_enemy")]
+unique_name_in_owner = true
+position = Vector3(5.5, 0, 0)
 
 [node name="CameraRig3D" type="Node3D" parent="."]
 

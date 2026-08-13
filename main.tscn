@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://encounters/combat_scene.tscn" id="2_combat"]
@@ -22,6 +22,22 @@ border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
 border_color = Color(0.18, 0.42, 0.26, 0.75)
+
+[sub_resource type="StyleBoxFlat" id="Style_health_bg"]
+bg_color = Color(0.08, 0.025, 0.04, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.45, 0.13, 0.22, 0.8)
+
+[sub_resource type="StyleBoxFlat" id="Style_health_fill"]
+bg_color = Color(0.82, 0.08, 0.18, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.28, 0.35, 0.9)
 
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
@@ -73,6 +89,31 @@ theme_override_font_sizes/font_size = 14
 text = "BOOTING..."
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="HealthPanel" type="VBoxContainer" parent="Interface"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 428.0
+offset_top = 82.0
+offset_right = -428.0
+offset_bottom = 126.0
+grow_horizontal = 2
+theme_override_constants/separation = 2
+
+[node name="Label" type="Label" parent="Interface/HealthPanel"]
+theme_override_colors/font_color = Color(0.82, 0.73, 0.75, 1)
+theme_override_font_sizes/font_size = 12
+text = "SPECIMEN VITALITY"
+horizontal_alignment = 1
+
+[node name="HealthBar" type="ProgressBar" parent="Interface/HealthPanel"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 22)
+max_value = 180.0
+value = 180.0
+show_percentage = false
+theme_override_styles/background = SubResource("Style_health_bg")
+theme_override_styles/fill = SubResource("Style_health_fill")
 
 [node name="SpecimenPanel" type="PanelContainer" parent="Interface"]
 anchors_preset = 6
