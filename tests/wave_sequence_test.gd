@@ -8,6 +8,7 @@ func _initialize() -> void:
 	root.add_child(battle)
 	await process_frame
 	var director: BattleDirector = battle.battle_director
+	director.set_process(false)
 	assert(director.map_data.waves.size() == 4)
 	for index: int in director.map_data.waves.size():
 		director.start_wave(index)

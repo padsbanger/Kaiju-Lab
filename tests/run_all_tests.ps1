@@ -13,6 +13,7 @@ $tests = @(
     "res://tests/side_scroll_test.gd",
     "res://tests/autonomous_advance_test.gd",
     "res://tests/wave_sequence_test.gd",
+    "res://tests/boss_resolution_test.gd",
     "res://tests/anatomy_test.gd",
     "res://tests/brain_test.gd",
     "res://tests/performance_budget_test.gd",

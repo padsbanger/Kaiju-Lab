@@ -5,6 +5,7 @@ signal phase_changed(phase: Phase, title: String)
 signal wave_started(index: int, wave: WaveData)
 signal wave_cleared(index: int)
 signal preboss_sequence_complete
+signal boss_spawned(boss: Node3D)
 
 enum Phase { TRAVEL, WAVE, ELITE, BOSS, COMPLETE }
 
@@ -16,6 +17,8 @@ var current_wave_index: int = -1
 var living_enemies: Array[Node3D] = []
 var enemies_defeated: int = 0
 var waves_cleared: int = 0
+var boss_scene: PackedScene = preload("res://enemies/citadel_boss.tscn")
+var boss: Node3D
 
 
 func configure(owner_battle: SideScrollBattle) -> void:
@@ -37,8 +40,7 @@ func _process(_delta: float) -> void:
 		if battle.scroll_controller.progress >= wave.trigger_progress:
 			start_wave(next_wave_index)
 	elif phase == Phase.TRAVEL and next_wave_index >= map_data.waves.size():
-		phase = Phase.BOSS
-		preboss_sequence_complete.emit()
+		_begin_boss()
 
 
 func start_wave(index: int) -> void:
@@ -90,3 +92,17 @@ func remaining_count() -> int:
 func phase_name() -> String:
 	return Phase.keys()[phase]
 
+
+func _begin_boss() -> void:
+	if phase == Phase.BOSS or boss != null:
+		return
+	phase = Phase.BOSS
+	preboss_sequence_complete.emit()
+	boss = boss_scene.instantiate() as Node3D
+	battle.enemy_root.add_child(boss)
+	boss.global_position = Vector3(battle.scroll_controller.boss_gate_x + 2.0, 0.0, 0.0)
+	living_enemies.append(boss)
+	boss.tree_exiting.connect(_on_enemy_removed.bind(boss), CONNECT_ONE_SHOT)
+	boss.died.connect(func(_enemy: Node3D) -> void: phase = Phase.COMPLETE)
+	boss_spawned.emit(boss)
+	phase_changed.emit(phase, "FINAL BOSS // THE CITADEL")

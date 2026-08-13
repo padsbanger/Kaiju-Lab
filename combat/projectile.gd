@@ -29,8 +29,8 @@ func _physics_process(delta: float) -> void:
 
 
 func _on_hit(target: Node3D) -> void:
-	if target == source or (source != null and source.is_ancestor_of(target)):
+	if target == source or (is_instance_valid(source) and source.is_ancestor_of(target)):
 		return
 	if target.has_method("take_damage"):
-		target.take_damage(damage, source)
+		target.take_damage(damage, source if is_instance_valid(source) else null)
 		queue_free()

@@ -17,6 +17,8 @@ signal status_changed(message: String)
 @onready var battle_director: BattleDirector = $BattleDirector
 var elapsed_seconds: float = 0.0
 var active: bool = true
+var resolved: bool = false
+var boss: Node3D
 
 
 func _ready() -> void:
@@ -28,6 +30,8 @@ func _ready() -> void:
 	scroll_controller.progress_changed.connect(_on_progress_changed)
 	battle_director.configure(self)
 	battle_director.phase_changed.connect(_on_phase_changed)
+	battle_director.boss_spawned.connect(_on_boss_spawned)
+	kaiju.died.connect(_on_kaiju_died)
 	status_changed.emit("DEPLOYMENT // CITY RUINS")
 
 
@@ -67,4 +71,45 @@ func build_result(outcome: BattleResult.Outcome) -> BattleResult:
 	result.elapsed_seconds = elapsed_seconds
 	result.map_progress = scroll_controller.progress
 	result.capture_components(kaiju)
+	result.waves_survived = battle_director.waves_cleared
+	result.enemies_defeated = battle_director.enemies_defeated
+	result.boss_defeated = outcome == BattleResult.Outcome.BOSS_DEFEATED
+	result.experience_reward = battle_director.enemies_defeated * 12 + (100 if result.boss_defeated else 0)
+	result.biomass_reward = battle_director.enemies_defeated * 3 + (40 if result.boss_defeated else 0)
+	result.dna_reward = 20 if result.boss_defeated else 4 * battle_director.waves_cleared
 	return result
+
+
+func _on_boss_spawned(spawned_boss: Node3D) -> void:
+	boss = spawned_boss
+	battle_controller.forced_target = boss
+	boss.died.connect(_on_boss_died, CONNECT_ONE_SHOT)
+	%BossBar.visible = true
+	boss.health.health_changed.connect(func(current: float, maximum: float) -> void: %BossBar.value = 100.0 * current / maximum)
+
+
+func _on_boss_died(_enemy: Node3D) -> void:
+	resolve_battle(BattleResult.Outcome.BOSS_DEFEATED)
+
+
+func _on_kaiju_died(_source: Node) -> void:
+	resolve_battle(BattleResult.Outcome.KAIJU_DEAD, "Specimen vital systems failed")
+
+
+func resolve_battle(outcome: BattleResult.Outcome, reason: String = "") -> void:
+	if resolved:
+		return
+	resolved = true
+	active = false
+	battle_controller.set_physics_process(false)
+	var result: BattleResult = build_result(outcome)
+	result.failure_reason = reason
+	%ResultPanel.visible = true
+	%ResultLabel.text = _result_summary(result)
+	await get_tree().create_timer(0.35).timeout
+	battle_finished.emit(result)
+
+
+func _result_summary(result: BattleResult) -> String:
+	var title: String = "DEPLOYMENT COMPLETE" if result.boss_defeated else "SPECIMEN RECALLED"
+	return "%s\nPROGRESS %d%%  TIME %02d:%02d\nHOSTILES %d  WAVES %d\nREWARD +%d XP  +%d BIOMASS  +%d DNA\n%s" % [title, int(result.map_progress * 100.0), int(result.elapsed_seconds) / 60, int(result.elapsed_seconds) % 60, result.enemies_defeated, result.waves_survived, result.experience_reward, result.biomass_reward, result.dna_reward, result.failure_reason]

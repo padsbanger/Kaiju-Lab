@@ -241,7 +241,7 @@ Exit criteria:
 
 ## Milestone 6: Final Boss and Battle Resolution
 
-Status: **not started**
+Status: **complete**
 
 Goal: give the side-scrolling deployment a clear climax and authoritative result.
 
