@@ -1,0 +1,51 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://main.gd" id="1_main"]
+
+[node name="Main" type="Node"]
+script = ExtResource("1_main")
+
+[node name="Interface" type="CanvasLayer" parent="."]
+
+[node name="Backdrop" type="ColorRect" parent="Interface"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.018, 0.035, 0.032, 1)
+
+[node name="BootPanel" type="PanelContainer" parent="Interface"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -260.0
+offset_top = -70.0
+offset_right = 260.0
+offset_bottom = 70.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="Interface/BootPanel"]
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 20
+
+[node name="Rows" type="VBoxContainer" parent="Interface/BootPanel/Margin"]
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Interface/BootPanel/Margin/Rows"]
+theme_override_colors/font_color = Color(0.55, 1, 0.58, 1)
+theme_override_font_sizes/font_size = 32
+text = "KAIJU LAB"
+horizontal_alignment = 1
+
+[node name="StatusLabel" type="Label" parent="Interface/BootPanel/Margin/Rows"]
+unique_name_in_owner = true
+theme_override_colors/font_color = Color(0.67, 0.82, 0.7, 1)
+theme_override_font_sizes/font_size = 14
+text = "BOOTING..."
+horizontal_alignment = 1
