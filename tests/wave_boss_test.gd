@@ -18,4 +18,3 @@ func _initialize() -> void:
 	assert(battle.director.defeated_count == 1)
 	print("PASS: data-driven wave sequence and boss resolution")
 	quit(0)
-

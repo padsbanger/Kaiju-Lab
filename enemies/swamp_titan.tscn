@@ -1,0 +1,32 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://enemies/enemy.gd" id="1"]
+[sub_resource type="RectangleShape2D" id="shape"]
+size = Vector2(86, 86)
+
+[node name="SwampTitan" type="CharacterBody2D"]
+script = ExtResource("1")
+display_name = "Swamp Titan"
+max_health = 520.0
+move_speed = 15.0
+attack_damage = 22.0
+attack_range = 58.0
+attack_interval = 1.35
+is_boss = true
+reward_value = 95
+[node name="Shape" type="CollisionShape2D" parent="."]
+position = Vector2(0, -43)
+shape = SubResource("shape")
+[node name="Visual" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-43, -86, 31, -86, 51, -50, 41, 0, -39, 0, -52, -48)
+color = Color(0.28, 0.45, 0.18, 1)
+[node name="Core" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-18, -63, 17, -67, 26, -36, 0, -20, -29, -38)
+color = Color(0.73, 0.3, 0.75, 1)
+[node name="HealthBar" type="ProgressBar" parent="."]
+offset_left = -48.0
+offset_top = -101.0
+offset_right = 48.0
+offset_bottom = -92.0
+show_percentage = false
+

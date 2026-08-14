@@ -167,12 +167,27 @@ text = "MUTATE"
 [node name="Status" type="Label" parent="."]
 offset_left = 15.0
 offset_top = 310.0
-offset_right = 380.0
+offset_right = 285.0
 offset_bottom = 346.0
 theme_override_colors/font_color = Color(0.58, 0.74, 0.72, 1)
 theme_override_font_sizes/font_size = 10
 text = "SELECT AN ORGAN TO BEGIN"
 vertical_alignment = 1
+
+[node name="MapLabel" type="Label" parent="."]
+offset_left = 285.0
+offset_top = 326.0
+offset_right = 323.0
+offset_bottom = 350.0
+theme_override_font_sizes/font_size = 9
+text = "MAP"
+vertical_alignment = 1
+
+[node name="MapOption" type="OptionButton" parent="."]
+offset_left = 322.0
+offset_top = 325.0
+offset_right = 472.0
+offset_bottom = 353.0
 
 [node name="Deploy" type="Button" parent="."]
 offset_left = 480.0
@@ -180,3 +195,57 @@ offset_top = 325.0
 offset_right = 626.0
 offset_bottom = 353.0
 text = "DEPLOY SPECIMEN"
+
+[node name="SalvagePanel" type="Panel" parent="."]
+visible = false
+z_index = 20
+offset_left = 72.0
+offset_top = 65.0
+offset_right = 568.0
+offset_bottom = 302.0
+
+[node name="Backdrop" type="ColorRect" parent="SalvagePanel"]
+show_behind_parent = true
+offset_right = 496.0
+offset_bottom = 237.0
+mouse_filter = 2
+color = Color(0.025, 0.045, 0.055, 1)
+
+[node name="Title" type="Label" parent="SalvagePanel"]
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 480.0
+offset_bottom = 40.0
+theme_override_colors/font_color = Color(0.52, 1, 0.68, 1)
+theme_override_font_sizes/font_size = 18
+text = "FIELD RECOVERY"
+
+[node name="Summary" type="Label" parent="SalvagePanel"]
+offset_left = 16.0
+offset_top = 43.0
+offset_right = 480.0
+offset_bottom = 76.0
+theme_override_font_sizes/font_size = 10
+text = "POST-BATTLE SALVAGE // CHOOSE ONE"
+
+[node name="Choice1" type="Button" parent="SalvagePanel"]
+offset_left = 16.0
+offset_top = 84.0
+offset_right = 480.0
+offset_bottom = 126.0
+theme_override_font_sizes/font_size = 9
+text = "RECLAIM TISSUE"
+[node name="Choice2" type="Button" parent="SalvagePanel"]
+offset_left = 16.0
+offset_top = 132.0
+offset_right = 480.0
+offset_bottom = 174.0
+theme_override_font_sizes/font_size = 9
+text = "CULTURE MUTAGENS"
+[node name="Choice3" type="Button" parent="SalvagePanel"]
+offset_left = 16.0
+offset_top = 180.0
+offset_right = 480.0
+offset_bottom = 222.0
+theme_override_font_sizes/font_size = 9
+text = "ANALYZE COMBAT"

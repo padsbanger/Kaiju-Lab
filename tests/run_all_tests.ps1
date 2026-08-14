@@ -8,7 +8,12 @@ $tests = @(
     "res://tests/lab_render_test.gd",
     "res://tests/autonomous_battle_test.gd",
     "res://tests/wave_boss_test.gd",
-    "res://tests/battle_render_test.gd"
+    "res://tests/battle_render_test.gd",
+    "res://tests/battle_result_test.gd",
+    "res://tests/persistent_campaign_test.gd",
+    "res://tests/corrupt_save_test.gd",
+    "res://tests/second_map_test.gd",
+    "res://tests/salvage_render_test.gd"
 )
 
 function Invoke-Godot([string[]] $Arguments) {

@@ -20,6 +20,13 @@ const CRITICAL_SUPPLY: float = 12.0
 @export var heat: float = 0.0
 @export var components: Dictionary[StringName, ComponentState] = {}
 @export var mutations: PackedStringArray = []
+@export var unlocked_maps: PackedStringArray = ["city_ruins"]
+@export var map_victories: Dictionary[StringName, int] = {}
+@export var circuit_progress: PackedStringArray = []
+@export var circuit_level: int = 1
+@export var total_deployments: int = 0
+@export var total_victories: int = 0
+@export var pending_salvage: Array[SalvageChoice] = []
 
 var _available_functions: Dictionary[StringName, bool] = {}
 
@@ -155,6 +162,43 @@ func apply_mutation(mutation: MutationData) -> bool:
 	return true
 
 
+func record_battle_result(result: BattleResult) -> void:
+	total_deployments += 1
+	if result.victory:
+		total_victories += 1
+		map_victories[result.map_id] = map_victories.get(result.map_id, 0) + 1
+		if not circuit_progress.has(String(result.map_id)):
+			circuit_progress.append(String(result.map_id))
+		if result.map_id == &"city_ruins" and not unlocked_maps.has("toxic_swamp"):
+			unlocked_maps.append("toxic_swamp")
+		if circuit_progress.has("city_ruins") and circuit_progress.has("toxic_swamp"):
+			circuit_level += 1
+			circuit_progress.clear()
+			biomass += 30
+	state_changed.emit()
+
+
+func set_pending_salvage(choices: Array[SalvageChoice]) -> void:
+	pending_salvage = choices
+	state_changed.emit()
+
+
+func claim_salvage(choice_id: StringName) -> bool:
+	for choice: SalvageChoice in pending_salvage:
+		if choice.choice_id != choice_id:
+			continue
+		biomass += choice.biomass
+		dna += choice.dna
+		experience += choice.experience
+		while experience >= level * 100:
+			experience -= level * 100
+			level += 1
+		pending_salvage.clear()
+		state_changed.emit()
+		return true
+	return false
+
+
 func attack_multiplier() -> float:
 	var multiplier := 1.0
 	for mutation_id: String in mutations:
@@ -198,6 +242,12 @@ func to_dictionary() -> Dictionary:
 	var component_data := {}
 	for socket: StringName in components:
 		component_data[String(socket)] = components[socket].to_dictionary()
+	var salvage_data: Array[Dictionary] = []
+	for choice: SalvageChoice in pending_salvage:
+		salvage_data.append(choice.to_dictionary())
+	var victory_data := {}
+	for map_id: StringName in map_victories:
+		victory_data[String(map_id)] = map_victories[map_id]
 	return {
 		"specimen_name": specimen_name,
 		"level": level,
@@ -209,6 +259,13 @@ func to_dictionary() -> Dictionary:
 		"oxygen": oxygen,
 		"heat": heat,
 		"mutations": Array(mutations),
+		"unlocked_maps": Array(unlocked_maps),
+		"map_victories": victory_data,
+		"circuit_progress": Array(circuit_progress),
+		"circuit_level": circuit_level,
+		"total_deployments": total_deployments,
+		"total_victories": total_victories,
+		"pending_salvage": salvage_data,
 		"components": component_data,
 	}
 
@@ -225,6 +282,18 @@ static func from_dictionary(data: Dictionary) -> SpecimenState:
 	specimen.oxygen = clampf(float(data.get("oxygen", MAX_OXYGEN)), 0.0, MAX_OXYGEN)
 	specimen.heat = clampf(float(data.get("heat", 0.0)), 0.0, MAX_HEAT)
 	specimen.mutations = PackedStringArray(data.get("mutations", []))
+	specimen.unlocked_maps = PackedStringArray(data.get("unlocked_maps", ["city_ruins"]))
+	if not specimen.unlocked_maps.has("city_ruins"):
+		specimen.unlocked_maps.append("city_ruins")
+	var saved_victories: Dictionary = data.get("map_victories", {})
+	for map_id: String in saved_victories:
+		specimen.map_victories[StringName(map_id)] = maxi(0, int(saved_victories[map_id]))
+	specimen.circuit_progress = PackedStringArray(data.get("circuit_progress", []))
+	specimen.circuit_level = maxi(1, int(data.get("circuit_level", 1)))
+	specimen.total_deployments = maxi(0, int(data.get("total_deployments", 0)))
+	specimen.total_victories = maxi(0, int(data.get("total_victories", 0)))
+	for choice_data: Dictionary in data.get("pending_salvage", []):
+		specimen.pending_salvage.append(SalvageChoice.from_dictionary(choice_data))
 	var saved_components: Dictionary = data.get("components", {})
 	for socket_key: String in saved_components:
 		var saved_state: Dictionary = saved_components[socket_key]

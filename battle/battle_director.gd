@@ -9,14 +9,16 @@ var kaiju: KaijuBattleActor
 var next_wave_index: int = 0
 var active_enemy_count: int = 0
 var defeated_count: int = 0
+var threat_level: int = 1
 
 
-func configure(value: BattleMapData, actor: KaijuBattleActor) -> void:
+func configure(value: BattleMapData, actor: KaijuBattleActor, threat: int = 1) -> void:
 	map_data = value
 	kaiju = actor
 	next_wave_index = 0
 	active_enemy_count = 0
 	defeated_count = 0
+	threat_level = maxi(1, threat)
 
 
 func update_progress(progress_x: float) -> void:
@@ -37,6 +39,13 @@ func spawn_wave(index: int) -> Array[BattleEnemy]:
 		if enemy == null:
 			continue
 		get_parent().add_child(enemy)
+		var threat_multiplier := 1.0 + float(threat_level - 1) * 0.16
+		enemy.max_health *= threat_multiplier
+		enemy.health = enemy.max_health
+		enemy.health_bar.max_value = enemy.max_health
+		enemy.health_bar.value = enemy.health
+		enemy.attack_damage *= 1.0 + float(threat_level - 1) * 0.1
+		enemy.reward_value = roundi(enemy.reward_value * threat_multiplier)
 		enemy.bind_target(kaiju)
 		enemy.position = _entry_position(wave, enemy_index)
 		enemy.defeated.connect(_on_enemy_defeated)
@@ -64,4 +73,3 @@ func _on_enemy_defeated(_enemy: BattleEnemy, was_boss: bool) -> void:
 	defeated_count += 1
 	if was_boss:
 		boss_defeated.emit()
-

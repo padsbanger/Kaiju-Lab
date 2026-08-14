@@ -39,7 +39,7 @@ Status: **complete**
 
 ## Milestone 4 — Persistent Campaign Loop
 
-Status: **planned**
+Status: **complete**
 
 - Transfer battle damage and rewards through a serializable battle result.
 - Require one post-battle salvage choice.

@@ -30,7 +30,7 @@ func _initialize() -> void:
 	assert(not lab.apply_mutation_by_id(&"bone_plating"))
 
 	var deployment_emitted: Array[bool] = [false]
-	lab.deployment_requested.connect(func(_value: SpecimenState) -> void: deployment_emitted[0] = true)
+	lab.deployment_requested.connect(func(_value: SpecimenState, _map: BattleMapData) -> void: deployment_emitted[0] = true)
 	lab.request_deployment()
 	assert(deployment_emitted[0])
 	print("PASS: lab inspection, comparison, repair, install, mutation, and deploy preparation")

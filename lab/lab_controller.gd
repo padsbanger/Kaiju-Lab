@@ -1,7 +1,7 @@
 class_name LabController
 extends Node2D
 
-signal deployment_requested(specimen: SpecimenState)
+signal deployment_requested(specimen: SpecimenState, map_data: BattleMapData)
 
 const SOCKET_ORDER: PackedStringArray = ["brain", "heart", "stomach", "torso", "arm_left", "arm_right"]
 
@@ -17,6 +17,9 @@ const SOCKET_ORDER: PackedStringArray = ["brain", "heart", "stomach", "torso", "
 @onready var mutate_button: Button = $MutationPanel/Mutate
 @onready var deploy_button: Button = $Deploy
 @onready var status_label: Label = $Status
+@onready var map_option: OptionButton = $MapOption
+@onready var salvage_panel: Panel = $SalvagePanel
+@onready var salvage_summary: Label = $SalvagePanel/Summary
 
 var specimen: SpecimenState
 var selected_socket: StringName = &"torso"
@@ -32,6 +35,9 @@ func _ready() -> void:
 	mutation_option.item_selected.connect(_on_mutation_selected)
 	mutate_button.pressed.connect(mutate_selected)
 	deploy_button.pressed.connect(request_deployment)
+	for index: int in range(3):
+		var salvage_button: Button = salvage_panel.get_node("Choice%d" % (index + 1))
+		salvage_button.pressed.connect(_claim_salvage_index.bind(index))
 	_populate_mutations()
 	if specimen == null:
 		var fresh_specimen := SpecimenState.new()
@@ -97,13 +103,26 @@ func request_deployment() -> void:
 	if not specimen.has_function(&"structure") or not specimen.has_function(&"cognition"):
 		status_label.text = "DEPLOYMENT BLOCKED: VITAL FUNCTION OFFLINE"
 		return
-	deployment_requested.emit(specimen)
+	if specimen.pending_salvage.size() > 0:
+		status_label.text = "CHOOSE SALVAGE BEFORE REDEPLOYMENT"
+		return
+	var selected_map := MapCatalog.CITY_RUINS
+	if map_option.item_count > 0 and map_option.selected >= 0:
+		selected_map = MapCatalog.get_by_id(StringName(map_option.get_item_metadata(map_option.selected)))
+	deployment_requested.emit(specimen, selected_map)
+
+
+func claim_salvage_by_id(choice_id: StringName) -> bool:
+	var claimed := specimen != null and specimen.claim_salvage(choice_id)
+	status_label.text = "SALVAGE SECURED" if claimed else "SALVAGE ALREADY CLAIMED"
+	_refresh()
+	return claimed
 
 
 func _refresh() -> void:
 	if not is_node_ready() or specimen == null:
 		return
-	resources_label.text = "BIOMASS %03d   DNA %02d   LEVEL %02d" % [specimen.biomass, specimen.dna, specimen.level]
+	resources_label.text = "BIO %03d  DNA %02d  LV %02d  CIRCUIT %02d" % [specimen.biomass, specimen.dna, specimen.level, specimen.circuit_level]
 	var state: ComponentState = specimen.components.get(selected_socket)
 	if state == null:
 		return
@@ -123,6 +142,8 @@ func _refresh() -> void:
 	repair_button.disabled = specimen.repair_cost(selected_socket) <= 0 or specimen.biomass < specimen.repair_cost(selected_socket)
 	_populate_candidates(state)
 	_update_mutation_description()
+	_populate_maps()
+	_refresh_salvage()
 	for socket_name: String in SOCKET_ORDER:
 		var socket_state: ComponentState = specimen.components.get(StringName(socket_name))
 		var button: Button = get_node("SocketPanel/%s" % socket_name)
@@ -185,3 +206,40 @@ func _on_candidate_selected(_index: int) -> void:
 
 func _on_mutation_selected(_index: int) -> void:
 	_update_mutation_description()
+
+
+func _populate_maps() -> void:
+	var previous_id: StringName = &""
+	if map_option.item_count > 0 and map_option.selected >= 0:
+		previous_id = StringName(map_option.get_item_metadata(map_option.selected))
+	map_option.clear()
+	for map: BattleMapData in MapCatalog.available_for(specimen):
+		map_option.add_item(map.display_name)
+		var index := map_option.item_count - 1
+		map_option.set_item_metadata(index, map.map_id)
+		if map.map_id == previous_id:
+			map_option.select(index)
+
+
+func _refresh_salvage() -> void:
+	salvage_panel.visible = not specimen.pending_salvage.is_empty()
+	deploy_button.disabled = salvage_panel.visible
+	if not salvage_panel.visible:
+		return
+	salvage_summary.text = "POST-BATTLE SALVAGE // CHOOSE ONE\nDamage persists. Recovery strategy cannot be changed."
+	for index: int in range(3):
+		var button: Button = salvage_panel.get_node("Choice%d" % (index + 1))
+		if index >= specimen.pending_salvage.size():
+			button.visible = false
+			continue
+		button.visible = true
+		var choice := specimen.pending_salvage[index]
+		button.text = "%s\n+%d BIO   +%d DNA   +%d XP\n%s" % [
+			choice.display_name, choice.biomass, choice.dna, choice.experience, choice.description,
+		]
+
+
+func _claim_salvage_index(index: int) -> void:
+	if specimen == null or index < 0 or index >= specimen.pending_salvage.size():
+		return
+	claim_salvage_by_id(specimen.pending_salvage[index].choice_id)
