@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="ComponentData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://kaiju/resources/component_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"heart_basic"
+display_name = "Redundant Heart Cluster"
+description = "Three smaller pumps trade peak flow for exceptional durability and stable supply."
+max_health = 112.0
+mass = 23.0
+tags = Array[StringName]([&"organ", &"circulatory", &"fortress"])
+attachment_type = &"core"
+function_id = &"circulation"
+critical = true
+function_output = 0.9
+movement_multiplier = 0.92
+incoming_damage_multiplier = 0.94
+installation_cost = 62

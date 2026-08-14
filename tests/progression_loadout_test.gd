@@ -19,5 +19,9 @@ func _initialize() -> void:
 	var sprite: Sprite2D = left.get_node("Visual") as Sprite2D
 	assert(sprite.scale.y > sprite.scale.x, "Tendril replacement must visibly change silhouette")
 	assert(not specimen.install_organ(&"claw_left", "res://data/components/heart_basic.tres"), "Socket compatibility must be enforced")
+	var options: Array[ComponentData] = specimen.compatible_organs(&"claw_left")
+	assert(options.size() >= 4, "The arm socket must offer multiple meaningful build choices")
+	var comparison: String = specimen.organ_comparison(&"claw_left", "res://data/components/claw_hammer.tres")
+	assert(comparison.contains("HEALTH") and comparison.contains("MASS") and comparison.contains("ENERGY USE") and comparison.contains("REQUIRES"))
 	print("PASS: rewards, level-up, compatible organ replacement, visual and behavior change")
 	quit(0)

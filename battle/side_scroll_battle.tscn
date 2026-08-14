@@ -59,6 +59,9 @@ position = Vector2(80, 310)
 [node name="EnemyRoot" type="Node2D" parent="."]
 unique_name_in_owner = true
 
+[node name="HazardRoot" type="Node2D" parent="."]
+unique_name_in_owner = true
+
 [node name="BattleCamera" type="Camera2D" parent="."]
 unique_name_in_owner = true
 position = Vector2(240, 180)
@@ -119,6 +122,20 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.72, 0.32, 1)
 theme_override_font_sizes/font_size = 8
 text = "TRAVEL   HOSTILES 00   00:00"
+horizontal_alignment = 1
+
+[node name="MetabolismLabel" type="Label" parent="UI"]
+unique_name_in_owner = true
+offset_left = 140.0
+offset_top = 74.0
+offset_right = 500.0
+offset_bottom = 97.0
+theme_override_colors/font_color = Color(0.54, 0.94, 0.72, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 8
+text = "ENERGY 100  BLOOD 100  OXYGEN 100  HEAT 010\nMETABOLISM STABLE"
 horizontal_alignment = 1
 
 [node name="BossBar" type="ProgressBar" parent="UI"]

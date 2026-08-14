@@ -1,456 +1,196 @@
-# Kaiju Lab Milestones â€” Retro Side-Scrolling Roadmap
+# Kaiju Lab Milestones — Native 2D Roadmap
 
-This roadmap supersedes the original arena-based prototype plan.
+## Completed Foundation: Milestones 0–10
 
-The current repository already proves several reusable systems: modular `Sprite3D` anatomy, component health and failure, autonomous target scoring, melee and projectile attacks, mutations, encounter results, and automated tests. Those systems are a technical foundation, but the current playable structure does **not** yet satisfy the new product goal.
+The first vertical slice is complete: persistent specimen state, pixel asset pipeline, laboratory entry, side-scrolling battle, autonomous engagement, data-driven waves, final boss, battle results, persistent damage/regeneration, XP and organ replacement, and presentation controls.
 
-The target loop is now:
+The subsequent architecture pivot is also complete: active gameplay now uses native 2D nodes and five camera-following City Ruins `Parallax2D` layers. The old 3D arena is inactive.
 
-```text
-GIANT KAIJU LAB
-    â†“
-inspect damage / regenerate / level up / change organs
-    â†“
-DEPLOY
-    â†“
-2.5D SIDE-SCROLLING AUTOBATTLE
-    â†“
-advance through waves for roughly 2â€“5 minutes
-    â†“
-FINAL BOSS
-    â†“
-battle report and persistent damage
-    â†“
-RETURN TO THE LAB
-```
-
-The visual target is deliberate retro pixel art: chunky authored pixels, fixed side-view composition, nearest-neighbor filtering, layered parallax, dark industrial scenery, and vivid toxic-green and mutation-purple accents. The images in `screenshots/` are composition, mood, scale, and UI references.
-
-## Non-Negotiable Product Rules
-
-- The game opens in the laboratory, not directly in combat.
-- The kaiju is persistent across deployments.
-- The kaiju starts near the left third of the battle viewport and faces forward along the level.
-- Battles are autonomous; the player does not steer, aim, select targets continuously, or operate a normal combat hotbar.
-- Ability panels shown during battle communicate autonomous organs, costs, cooldowns, and state. They are not manual attack buttons.
-- The battle is a horizontal push through a map, not a free-roaming 3D arena.
-- Standard levels culminate in a large boss encounter.
-- Damage sustained in battle returns to the lab and remains visible until regenerated or repaired.
-- The player can replace or upgrade an organ before redeploying.
-- Gameplay remains true 3D logic with modular pixel-art `Sprite3D` / `AnimatedSprite3D` presentation.
-- Visual nodes never own authoritative health, ability, attachment, or collision state.
-- Pixel assets use nearest-neighbor filtering and consistent pivots, socket rules, scale, and side-view lighting.
-
-## Existing Foundation
-
-The following completed work should be retained and adapted rather than discarded:
-
-- Godot 4 project entry point and project documentation.
-- Modular kaiju root with explicit attachment sockets.
-- Separate gameplay collision and sprite presentation.
-- Data-driven `ComponentData`, `MutationData`, and `BrainData` resources.
-- Component health, destruction signals, and functional shutdown.
-- Utility-weighted autonomous target selection.
-- Autonomous melee, projectile, and regeneration behavior.
-- Melee soldier, ranged soldier, and tank gameplay archetypes.
-- Encounter outcome, run state, combat telemetry, mutation application, and regression tests.
-
-The following existing presentation is now considered temporary and must be replaced or reworked:
-
-- Elevated/isometric arena composition.
-- Smooth painted body-part art generated for the earlier direction.
-- Short arena encounters and between-wave mutation-card loop.
-- Immediate combat-first startup.
-- Lab represented primarily as a mutation overlay.
-- Two-encounter run structure that resets the specimen instead of supporting a persistent lab/deployment rhythm.
-
-## Milestone 0: Pivot Baseline and Migration Safety
+## Milestone 11: Native 2D Stabilization
 
 Status: **complete**
 
-Goal: establish a safe transition from the completed arena prototype to the new side-scrolling product without losing reusable systems.
+Goal: make native 2D the unambiguous, regression-protected project architecture.
 
 Deliverables:
 
-- Add a migration note identifying reusable, replaceable, and obsolete scenes/scripts/assets.
-- Capture automated baseline tests for component damage, autonomous attacks, mutation effects, and run state before restructuring scenes.
-- Rename encounter-oriented concepts to battle-oriented concepts only where it improves ownership; avoid a broad mechanical rename with no gameplay value.
-- Separate persistent specimen state from transient battle instances.
-- Define the authoritative battle result payload, including:
-  - victory or failure reason;
-  - elapsed battle time;
-  - map progress;
-  - waves survived;
-  - enemies defeated;
-  - boss result;
-  - XP and resource rewards;
-  - per-component remaining health and damage causes.
-- Update test runners so every later milestone can be verified from the command line.
+- Replace stale 3D guidance in `AGENTS.md` and `README.md`.
+- Mark the old `encounters/` arena as inactive legacy material.
+- Keep active lab, battle, kaiju, enemy, projectile, camera, and parallax scenes free of 3D nodes.
+- Use `Camera2D` with the kaiju around the left quarter of the viewport.
+- Use five independent, seamlessly repeating `Parallax2D` layers.
+- Preserve nearest filtering and pixel snapping.
+- Retain a command-line regression suite and GPU render check.
 
 Exit criteria:
 
-- Existing reusable gameplay tests still pass.
-- Persistent specimen data can exist without a loaded battle scene.
-- Battle results can represent component damage without mutating unrelated UI state.
-- Obsolete arena code is clearly identified and is not silently treated as final architecture.
+- Active architecture test rejects 3D runtime nodes.
+- City Ruins renders without repeat gaps over multiple screens.
+- The complete automated suite passes.
 
-## Milestone 1: Retro Pixel Rendering and Asset Pipeline
+## Milestone 12: Biological Resource and Dependency Simulation
 
 Status: **complete**
 
-Goal: prove that the final pixel-art presentation works correctly inside the 3D scene before producing substantial content.
+Goal: make organs form a living machine whose upstream failures change combat behavior.
 
 Deliverables:
 
-- Configure a low-resolution logical viewport and integer-friendly stretch behavior.
-- Use nearest-neighbor filtering for all gameplay pixel art.
-- Establish a documented pixel-art body-part specification:
-  - source canvas size;
-  - pixels per world unit;
-  - side-view angle;
-  - light direction;
-  - pivot convention;
-  - socket type;
-  - render priority;
-  - animation frame size;
-  - damaged and regenerating variants.
-- Replace the current painted torso, head, and claw placeholders with genuinely authored pixel-cluster assets or purpose-built pixel placeholders.
-- Build one modular side-facing kaiju from torso, head, limbs, core, and at least one optional organ sprite.
-- Add limited but expressive independent animation states: idle, walk, attack, hurt, damaged, and regeneration pulse.
-- Verify that restrained 3D lighting and particles do not blur or overpower sprites.
+- Simulate energy, blood, oxygen, heat, and biomass.
+- Give components explicit required functions and supply demands.
+- Make circulation affect blood/oxygen supply and movement.
+- Make digestion generate energy only when supplied.
+- Make attacks and regeneration consume energy and produce heat.
+- Record useful per-component damage causes.
+- Display live metabolic telemetry in battle and dependency status in the lab.
+- Add deterministic tests for resource use, recovery, and dependency failure.
 
 Exit criteria:
 
-- No gameplay sprite uses smoothing or appears blurry at the target window sizes.
-- The kaiju reads as one silhouette while every body part remains independently replaceable.
-- Socket alignment is deterministic across idle, walk, and attack states.
-- The assets look intentionally pixel-authored rather than like downscaled paintings.
-- Damage overlays and biological glow remain readable against a dark environment.
+- Destroying circulation substantially reduces movement and disables dependent organs.
+- Energy-starved or overheated organs cannot activate.
+- Battle and lab explain the failure rather than only changing hidden numbers.
 
-## Milestone 2: Giant Laboratory Entry Scene
+## Milestone 13: Lab Buildcraft and Organ Comparison
 
 Status: **complete**
 
-Goal: make the laboratory the real starting point and primary preparation phase.
+Goal: turn organ replacement into an informed, consequential preparation decision.
 
 Deliverables:
 
-- Create a dedicated retro-pixel lab scene with a regeneration platform or containment bay.
-- Spawn the persistent modular kaiju specimen in the lab.
-- Add a fixed lab camera and layered industrial background inspired by `screenshots/2.png`.
-- Add panels for:
-  - specimen identity and level;
-  - organ condition;
-  - component regeneration status;
-  - biomass, DNA, energy, and XP;
-  - mutation slots;
-  - deploy readiness.
-- Allow the player to inspect each component and its health, function, inputs, outputs, abilities, and tradeoffs.
-- Add a deploy action that transitions to battle while preserving the current build.
-- Keep unavailable future actions visible only if clearly marked as unavailable; avoid nonfunctional controls that appear active.
+- Replace the cycle button with an inventory/selection panel.
+- Show current-versus-candidate health, mass, energy, dependency, tags, and behavior.
+- Provide at least three meaningful alternatives for one socket and two for another.
+- Enforce compatibility and explicit costs.
+- Preview visual and behavioral changes before confirmation.
+- Persist the selected build into deployment.
 
 Exit criteria:
 
-- Launching the project opens the laboratory.
-- The displayed specimen is assembled from the same persistent component data used by battle.
-- The player can inspect every installed organ and understand whether it is healthy, damaged, regenerating, or offline.
-- Deploy loads the side-scrolling battle without editor intervention.
+- The player can explain the tradeoff before installing an organ.
+- Different selections visibly and mechanically change the next battle.
 
-## Milestone 3: Side-Scrolling World and Camera
+## Milestone 14: Combat Readability, Animation, and Balance
 
 Status: **complete**
 
-Goal: prove the defining battle composition before adding wave complexity.
+Goal: make autonomous decisions and anatomy degradation readable without logs.
 
 Deliverables:
 
-- Build one horizontally authored city-ruins test level in true 3D space.
-- Add foreground, gameplay, middle-distance, and background layers.
-- Add parallax motion with pixel-readable ruined buildings, smoke, lights, and military silhouettes.
-- Add a fixed orthographic or carefully justified perspective side-view camera.
-- Anchor the kaiju near the left third of the viewport while level progress moves forward.
-- Implement a scroll controller that makes the environment visibly move left as progress increases.
-- Restrict ground gameplay primarily to the progression axis, with only limited depth lanes where they improve readability.
-- Add level start, boss gate, and level end markers.
-- Add a progress display from deployment to boss gate.
+- Improve component walk, attack, hurt, damaged, destroyed, and regeneration states.
+- Add transparent pixel VFX for attacks, impacts, wounds, failures, and boss pressure.
+- Add enemy health/status feedback and clearer telegraphs.
+- Show why attacks are unavailable and why movement slows.
+- Balance City Ruins to a representative 2–5 minute deployment.
+- Add a multi-minute automated soak test with bounded projectiles/enemies.
 
-Exit criteria:
-
-- The battle starts with the kaiju visibly on the left and facing the level.
-- The kaiju advances automatically without player movement input.
-- Camera/world scrolling produces clear leftward environmental movement.
-- The player cannot mistake the scene for an unrestricted arena.
-- Parallax layers preserve pixel edges and do not shimmer excessively during scrolling.
-
-## Milestone 4: Heavy Autonomous Advance and Engagement
+## Milestone 15: Second Biome and Faction Proof
 
 Status: **complete**
 
-Goal: convert the existing chase-based arena AI into deliberate side-scrolling battle behavior.
+Goal: prove the battle and parallax systems are reusable beyond City Ruins.
 
 Deliverables:
 
-- Implement explicit kaiju battle states:
-  - `ADVANCE`;
-  - `ENGAGE`;
-  - `RECOVER`;
-  - `STAGGERED`;
-  - `BOSS_FIGHT`;
-  - `DEAD`.
-- Give the kaiju a slow desired forward velocity and heavy acceleration/deceleration.
-- Detect important nearby threats and transition from `ADVANCE` to `ENGAGE`.
-- Stop or substantially slow forward progression while fighting blocking threats.
-- Resume progression after the threat is cleared.
-- Adapt target scoring to side-scrolling considerations: horizontal distance, lane offset, line of sight, threat priority, component availability, and brain weights.
-- Allow attacks against enemies entering from either side without reversing the entire level flow.
-- Display the current autonomous state and target for debugging.
+- Add a second biome with five independently configured `Parallax2D` layers.
+- Add biome-specific waves, at least two enemy behaviors, a hazard, and a boss variation.
+- Select map/biome through data rather than City Ruins-specific scripts.
+- Reuse camera, scroll, combat, persistence, and parallax controller code.
 
-Exit criteria:
-
-- With no threat nearby, the kaiju advances toward the boss gate.
-- When an important threat enters range, the kaiju visibly slows or stops and fights it.
-- After combat, the kaiju resumes advancing automatically.
-- Movement feels massive and deliberate rather than twitchy.
-- Brain evaluation and target scanning remain staggered and within the documented frequency budget.
-
-## Milestone 5: Progression Triggers and Enemy Waves
+## Milestone 16: Save/Load and Roguelite Progression
 
 Status: **complete**
 
-Goal: turn the test level into a continuous multi-minute deployment.
+Goal: preserve meaningful specimen development across application sessions.
 
 Deliverables:
 
-- Create data-driven battle-map and wave resources.
-- Add encounter triggers based on map progress rather than hardcoded timers alone.
-- Support configurable spawn rules, including left entry, right/ahead entry, fixed emplacements, air entry, and authored pre-placement.
-- Adapt the existing melee soldier, ranged soldier, and tank to readable side-view pixel sprites.
-- Add at least one flying or elevated threat to prove vertical targeting.
-- Add wave start, wave clear, travel, and elite challenge phases.
-- Track enemies remaining, current wave, deployment time, and map progress.
-- Balance the prototype deployment toward a 2â€“5 minute duration.
-- Prevent defeated or bypassed waves from leaving stale targets or blocking progress.
+- Versioned local save data with safe defaults and validation.
+- Save specimen anatomy, health, inventory, mutations, resources, level, and unlocks.
+- Add post-deployment reward choices and a small research/unlock path.
+- Support continue and new specimen flows without duplicating rewards.
+- Add round-trip and corrupt-save recovery tests.
 
-Exit criteria:
-
-- Multiple waves trigger exactly once at authored progress points.
-- Enemies can enter from configurable directions without AI rewrites.
-- Ground, ranged, vehicle, and elevated threats remain visually distinct.
-- The kaiju alternates between travel and combat several times in one deployment.
-- A representative automated or accelerated test proves the complete pre-boss wave sequence.
-
-## Milestone 6: Final Boss and Battle Resolution
+## Milestone 17: Release Validation and Polish
 
 Status: **complete**
 
-Goal: give the side-scrolling deployment a clear climax and authoritative result.
+Goal: produce a stable, understandable prototype build suitable for external playtesting.
 
 Deliverables:
 
-- Add a boss gate at the end of the map.
-- Add one large boss with a dramatically readable pixel silhouette.
-- Transition the kaiju into `BOSS_FIGHT` and suspend ordinary map scrolling as needed.
-- Give the boss at least two autonomous pressures that test different anatomy systems.
-- Support battle completion from:
-  - kaiju death;
-  - required-enemy completion where applicable;
-  - boss defeat;
-  - encounter-specific failure.
-- Generate a complete battle result payload.
-- Add a battle-result presentation showing progress, duration, enemies defeated, rewards, component damage, notable failures, and cause of defeat.
-- Transition back to the persistent laboratory specimen rather than constructing a new unrelated kaiju.
+- Settings, audio balancing, pause/speed correctness, and accessibility basics.
+- Performance budgets for AI scans, physics queries, projectiles, and parallax.
+- Long-session scene-transition and deployment soak tests.
+- Export/package validation and a concise player-facing control guide.
+- Final visual inspection at supported window sizes.
 
-Exit criteria:
+Exit validation:
 
-- The boss triggers only after required progression conditions are met.
-- Boss victory and kaiju death resolve exactly once.
-- The resulting component condition matches the final battle state.
-- The result reaches the lab without depending on battle nodes that have been freed.
-- The complete battle is long enough to observe build strengths and degradation.
+- 26 automated scripts pass, including a multi-minute accelerated deployment soak.
+- City Ruins and Toxic Swamp both pass GPU viewport capture checks.
+- Windows debug export produces `build/KaijuLab.exe` and launches successfully.
+- The archived 3D arena is excluded from active export content.
 
-## Milestone 7: Persistent Damage and Regeneration
+## Milestone 18: Post-Battle Salvage Decisions
 
 Status: **complete**
 
-Goal: complete the first half of the return-to-lab fantasy: bring the same damaged organism home and restore it.
+Goal: make every return to the laboratory include one consequential recovery choice.
 
 Deliverables:
 
-- Apply the battle result to persistent component health.
-- Display wounds, destroyed parts, and offline systems on the lab specimen.
-- Add a regeneration system with explicit costs, rates, and readiness rules.
-- Show per-organ and overall recovery progress.
-- Allow regeneration to restore component function and visuals.
-- Preserve meaningful consequences for destroyed or critically damaged organs.
-- Add a battle damage report explaining what failed and why.
-- Prevent deployment when the build violates clearly defined readiness rules, while avoiding arbitrary waiting with no gameplay choice.
+- Generate three data-driven salvage choices from each deployment result.
+- Offer distinct biomass, DNA, and research/experience strategies.
+- Require exactly one choice before the next deployment.
+- Persist unclaimed choices so closing the application cannot reroll or lose them.
+- Save immediately after a claim and prevent duplicate claims.
+- Present the choice in a focused retro lab panel with clear consequences.
 
-Exit criteria:
-
-- Battle damage remains visible after returning to the lab.
-- Regeneration changes the authoritative persistent component state, not only the UI.
-- Recovered organs return online and use restored sprite states.
-- The player can understand the major causes of damage from the report.
-- Reloading or changing scenes does not silently heal or duplicate the specimen.
-
-## Milestone 8: XP, Level-Up, and Organ Replacement
+## Milestone 19: Multi-Socket Build Archetypes
 
 Status: **complete**
 
-Goal: complete the player decision loop before redeployment.
+Goal: make whole-specimen engineering support visibly different biological strategies.
 
 Deliverables:
 
-- Award XP and resources from defeated enemies, wave completion, and boss results.
-- Add specimen levels with data-driven unlock or capacity effects.
-- Add an organ inventory containing at least two valid alternatives for one socket.
-- Allow the player to replace or upgrade at least one organ in the lab.
-- Preview health, mass, ability, resource, dependency, and visual changes before confirmation.
-- Enforce socket compatibility and anatomy ownership rules.
-- Visibly update the modular pixel sprite assembly after the change.
-- Persist the changed build into the next deployment.
-- Keep player-facing effects biological and behavioral rather than presenting only flat percentage bonuses.
+- Generalize the organ selector to the currently inspected component.
+- Add compatible alternatives for brain, heart, stomach, and torso sockets.
+- Give installations explicit biomass costs.
+- Make alternative organs alter targeting, circulation, metabolism, resilience, or offense.
+- Add a whole-build analysis that names the archetype, strengths, supply balance, mass, and liabilities.
+- Preserve every installed organ through battle transitions and save/load.
 
-Exit criteria:
-
-- A completed deployment grants XP and at least one spendable resource.
-- The specimen can level up through the lab UI.
-- The player can replace or upgrade an organ without editor setup.
-- The kaiju silhouette or visible anatomy changes.
-- The new organ changes behavior in the following deployment.
-
-## Milestone 9: Complete Lab â†’ Battle â†’ Boss â†’ Lab Vertical Slice
+## Milestone 20: Escalating Campaign Circuit
 
 Status: **complete**
 
-Goal: prove the revised current goal end to end with no developer intervention.
+Goal: turn the two biome proof into a replayable progression structure.
 
 Deliverables:
 
-- Start in the giant lab with a deterministic basic specimen.
-- Inspect or change an organ.
-- Deploy into the city-ruins side-scrolling level.
-- Advance through multiple triggered enemy waves.
-- Reach and defeat or lose to the final boss.
-- Return to the lab with correct component damage and rewards.
-- Regenerate damaged anatomy.
-- Level up or replace/upgrade an organ.
-- Redeploy the visibly changed persistent specimen.
-- Add explicit victory, defeat, loading, and transition states.
-- Add clean restart/new-specimen behavior without stale battle nodes or duplicated state.
+- Track per-biome victories, total deployments, total victories, circuit level, and threat tier.
+- Drive biome unlock prerequisites from map resources.
+- Complete a circuit after defeating both City Ruins and Toxic Swamp bosses.
+- Award a circuit-completion research cache and advance the circuit.
+- Scale enemy vitality, damage, and rewards by threat while preserving bounded entity counts.
+- Show clears, circuit, and threat in the lab and battle HUD.
+- Persist campaign state and add deterministic regression coverage.
 
-Exit criteria:
+Exit validation:
 
-- The complete loop runs from the configured project entry point.
-- A normal deployment lasts approximately 2â€“5 minutes at standard speed.
-- All combat remains autonomous.
-- Damage, rewards, level, inventory, and build persist correctly across scene transitions.
-- The second deployment contains the modified specimen and demonstrates its changed behavior.
-- The project runs without parser errors, missing resources, manual scene setup, or state leaks.
+- 30 automated scripts pass, including salvage UI rendering, save round-trip, campaign scaling, and the accelerated deployment soak.
+- Pending salvage survives save/load and cannot be claimed twice.
+- Brain, circulation, digestion, frame, and arm alternatives alter the live specimen and remain persistent.
+- Completing both maps advances the circuit and increases threat without increasing entity-count budgets.
 
-This is the new vertical-slice gate. Do not expand into large procedural systems, multiple factions, or meta-progression until this milestone is stable and fun.
+## Deferred
 
-## Milestone 10: Retro Presentation, Readability, and Balance
-
-Status: **complete**
-
-Goal: bring the proven vertical slice close to the quality and clarity suggested by the new reference screenshots.
-
-Deliverables:
-
-- Replace remaining smooth placeholder visuals with consistent retro pixel assets.
-- Add independent walk, attack, charge, hurt, damaged, destroyed, and regenerating animation where it improves readability.
-- Add pixel-art muzzle flashes, smoke, acid, electricity, impacts, dust, explosions, and boss effects.
-- Add audio cues for wave start, organ activation, component failure, boss gate, boss phase, victory, defeat, regeneration, level-up, and deployment.
-- Polish battle HUD hierarchy:
-  - map and boss progress;
-  - specimen vitality;
-  - wave and enemies remaining;
-  - autonomous organ ability state;
-  - component status;
-  - battle timer;
-  - pause and inspection controls.
-- Polish laboratory HUD hierarchy:
-  - battle summary;
-  - organ condition;
-  - regeneration;
-  - rewards and XP;
-  - specimen build;
-  - level-up, change-organ, mutation, and deploy actions.
-- Add battle-speed and pause controls without adding manual combat actions.
-- Profile sprite counts, physics queries, projectiles, particles, parallax layers, and AI updates.
-- Balance the default deployment to the 2â€“5 minute target with meaningful degradation and recovery decisions.
-
-Exit criteria:
-
-- The battle and lab are immediately distinguishable but clearly belong to the same game.
-- Pixel edges remain crisp during camera motion and at supported resolutions.
-- Important attacks, target changes, organ activations, damage, and failures are understandable without reading logs.
-- The boss is visually and mechanically recognizable as the deployment climax.
-- A player can explain why the build succeeded or failed and identify a useful lab change for the next deployment.
-- Performance meets the chosen baseline hardware target with documented budgets.
-
-## Revised Vertical-Slice Test Checklist
-
-Before declaring Milestone 9 complete, verify all of the following:
-
-- The project opens in the giant laboratory.
-- The persistent specimen and installed organs are visible and inspectable.
-- At least one organ can be replaced or upgraded.
-- Deploy transitions to the side-scrolling battle.
-- The kaiju starts near the left third of the viewport.
-- The kaiju advances automatically.
-- The camera/world creates readable leftward scrolling and parallax.
-- The kaiju slows or stops to engage important threats.
-- Wave triggers fire once at the correct progress values.
-- Enemy entry direction is configurable per wave.
-- Ground, ranged, vehicle, and elevated enemies can attack.
-- The kaiju autonomously chooses targets and abilities.
-- Component damage changes component function during battle.
-- Battle progress reaches a final boss gate.
-- The boss encounter starts and ordinary scrolling changes appropriately.
-- Kaiju death resolves the battle exactly once.
-- Boss defeat resolves the battle exactly once.
-- The battle result records duration, rewards, damage, and cause.
-- The same damaged specimen returns to the lab.
-- Damaged organs appear damaged or offline in the lab.
-- Regeneration restores authoritative component state.
-- Rewards can produce XP progression.
-- A changed organ visibly and behaviorally affects the next deployment.
-- Scene transitions do not duplicate enemies, projectiles, UI, rewards, or specimen state.
-- The representative deployment lasts roughly 2â€“5 minutes at standard speed.
-
-## Deferred Until After the Revised Vertical Slice
-
-- Large procedural level generation systems.
-- Multiple complete enemy factions.
-- Large research trees and extensive meta progression.
-- Multiple bosses or boss campaigns.
-- Helicopter and air-combat complexity beyond one vertical-targeting proof.
-- Destructible city simulation beyond authored set pieces.
-- Freely rotating gameplay camera or multi-direction sprite sets.
-- Full 3D character rigs for the kaiju or ordinary enemies.
+- Large procedural generation systems.
+- Multiple full campaigns or factions beyond the reuse proof.
+- Online or multiplayer features.
+- Freely rotating cameras or 3D character rigs.
 - Manual combat hotbars or reflex-action controls.
-- Online features or multiplayer.
-- Specimen archives and detailed run-history systems.
-
-## Immediate Next Step
-
-Begin Milestone 0 by extracting persistent specimen state from the current combat-first flow and documenting which existing arena systems will be adapted. Then complete the pixel-rendering proof before building the new laboratory and side-scrolling map; producing more smooth art or expanding the old arena would increase migration cost without advancing the revised goal.
-
-## Implementation Status
-
-The earlier arena roadmap was completed through its Milestone 8 and remains available in Git history. Under this revised roadmap:
-
-- Existing technical foundation: complete and reusable
-- Milestone 0 â€” Pivot baseline and migration safety: complete
-- Milestone 1 â€” Retro pixel rendering and asset pipeline: complete
-- Milestone 2 â€” Giant laboratory entry scene: complete
-- Milestone 3 â€” Side-scrolling world and camera: complete
-- Milestone 4 â€” Heavy autonomous advance and engagement: not started
-- Milestone 5 â€” Progression triggers and enemy waves: not started
-- Milestone 6 â€” Final boss and battle resolution: not started
-- Milestone 7 â€” Persistent damage and regeneration: not started
-- Milestone 8 â€” XP, level-up, and organ replacement: not started
-- Milestone 9 â€” Complete revised vertical slice: not started
-- Milestone 10 â€” Retro presentation, readability, and balance: not started

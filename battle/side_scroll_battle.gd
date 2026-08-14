@@ -20,6 +20,7 @@ const BOSS_SURGE_VFX: Texture2D = preload("res://art/pixel/vfx/boss_surge.png")
 @onready var progress_label: Label = %ProgressLabel
 @onready var state_label: Label = %StateLabel
 @onready var wave_label: Label = %WaveLabel
+@onready var metabolism_label: Label = %MetabolismLabel
 @onready var enemy_root: Node2D = %EnemyRoot
 @onready var battle_director: BattleDirector = $BattleDirector
 @onready var audio_cues: AudioCueBus = $AudioCueBus
@@ -27,6 +28,33 @@ var elapsed_seconds: float = 0.0
 var active: bool = true
 var resolved: bool = false
 var boss: Node2D
+var threat_tier: int = 1
+
+
+func configure_map(map_data: BattleMapData, deployment_threat_tier: int = 1) -> void:
+	if map_data == null:
+		return
+	battle_director.map_data = map_data
+	threat_tier = clampi(deployment_threat_tier, 1, 10)
+	for child: Node in %HazardRoot.get_children():
+		child.queue_free()
+	if not map_data.hazard_scene_path.is_empty() and ResourceLoader.exists(map_data.hazard_scene_path):
+		var hazard_scene: PackedScene = load(map_data.hazard_scene_path) as PackedScene
+		for position_x: float in [1450.0, 2750.0, 4050.0]:
+			var hazard: Node2D = hazard_scene.instantiate() as Node2D
+			%HazardRoot.add_child(hazard)
+			hazard.position = Vector2(position_x, ground_y)
+	if not map_data.parallax_scene_path.is_empty() and ResourceLoader.exists(map_data.parallax_scene_path):
+		var parallax_scene: PackedScene = load(map_data.parallax_scene_path) as PackedScene
+		var replacement: PixelParallaxController = parallax_scene.instantiate() as PixelParallaxController
+		if replacement != null and replacement.scene_file_path != parallax.scene_file_path:
+			var old_index: int = parallax.get_index()
+			remove_child(parallax)
+			parallax.queue_free()
+			add_child(replacement)
+			move_child(replacement, old_index)
+			parallax = replacement
+	progress_label.text = "%s  // THREAT %d  // 0%% >>> BOSS" % [map_data.display_name, threat_tier]
 
 
 func _ready() -> void:
@@ -52,6 +80,8 @@ func _physics_process(delta: float) -> void:
 	elapsed_seconds += delta
 	state_label.text = "AUTONOMY  %s   TARGET  %s" % [battle_controller.state_name(), _target_name()]
 	wave_label.text = "%s   HOSTILES %02d   %02d:%02d" % [battle_director.phase_name(), battle_director.remaining_count(), int(elapsed_seconds) / 60, int(elapsed_seconds) % 60]
+	var failure: String = _first_offline_system()
+	metabolism_label.text = "%s\n%s%s" % [kaiju.resource_controller.telemetry(), kaiju.resource_controller.status_summary(), failure]
 
 
 func bind_specimen(specimen: SpecimenState) -> void:
@@ -65,7 +95,7 @@ func right_screen_x() -> float:
 
 func _on_progress_changed(progress: float) -> void:
 	progress_bar.value = progress * 100.0
-	progress_label.text = "CITY RUINS  %d%%  >>>  BOSS GATE" % int(progress * 100.0)
+	progress_label.text = "%s  // T%d  // %d%% >>> BOSS" % [battle_director.map_data.display_name, threat_tier, int(progress * 100.0)]
 
 
 func _on_state_changed(_state: KaijuBattleController.State) -> void:
@@ -75,6 +105,14 @@ func _on_state_changed(_state: KaijuBattleController.State) -> void:
 func _target_name() -> String:
 	var target: Node2D = kaiju.brain_controller.target
 	return target.name.to_upper() if is_instance_valid(target) else "NONE"
+
+
+func _first_offline_system() -> String:
+	for component: KaijuComponent in kaiju.anatomy_controller.components:
+		var reason: String = kaiju.anatomy_controller.offline_reason(component)
+		if reason != "OPERATIONAL":
+			return " // %s: %s" % [component.data.display_name.to_upper(), reason]
+	return ""
 
 
 func _on_phase_changed(_phase: BattleDirector.Phase, title: String) -> void:
@@ -94,9 +132,12 @@ func build_result(outcome: BattleResult.Outcome) -> BattleResult:
 	result.waves_survived = battle_director.waves_cleared
 	result.enemies_defeated = battle_director.enemies_defeated
 	result.boss_defeated = outcome == BattleResult.Outcome.BOSS_DEFEATED
-	result.experience_reward = battle_director.enemies_defeated * 12 + (300 if result.boss_defeated else 0)
-	result.biomass_reward = battle_director.enemies_defeated * 3 + (40 if result.boss_defeated else 0)
-	result.dna_reward = 20 if result.boss_defeated else 4 * battle_director.waves_cleared
+	result.map_id = battle_director.map_data.map_id
+	result.threat_tier = threat_tier
+	var reward_multiplier: float = 1.0 + (threat_tier - 1) * 0.25
+	result.experience_reward = roundi((battle_director.enemies_defeated * 12 + (300 if result.boss_defeated else 0)) * reward_multiplier)
+	result.biomass_reward = roundi((battle_director.enemies_defeated * 3 + (40 if result.boss_defeated else 0)) * reward_multiplier)
+	result.dna_reward = roundi((20 if result.boss_defeated else 4 * battle_director.waves_cleared) * reward_multiplier)
 	return result
 
 

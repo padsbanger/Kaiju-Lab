@@ -20,6 +20,8 @@ var regeneration_amount: float = 20.0
 var regeneration_biomass_cost: float = 12.0
 var damage_resistance: float = 0.0
 var run_movement_speed: float = 3.4
+var loadout_movement_multiplier: float = 1.0
+var loadout_damage_multiplier: float = 1.0
 
 
 func _ready() -> void:
@@ -30,6 +32,7 @@ func _ready() -> void:
 	assert(right_arm_socket != null, "Kaiju requires a right arm socket")
 	health.died.connect(_on_died)
 	anatomy_controller.register_tree(component_root)
+	resource_controller.configure(anatomy_controller)
 	anatomy_controller.component_destroyed.connect(_on_component_destroyed)
 	anatomy_controller.critical_failure.connect(_on_critical_failure)
 	run_movement_speed = movement_controller.speed
@@ -43,13 +46,15 @@ func _physics_process(delta: float) -> void:
 	pixel_animation.set_state(PixelAnimationController.State.WALK if velocity.length_squared() > 0.1 else PixelAnimationController.State.IDLE)
 	if target != null:
 		var distance: float = global_position.distance_to(target.global_position)
-		if distance <= 96.0 and anatomy_controller.is_function_online(&"melee_weapon"):
+		var melee_component: KaijuComponent = anatomy_controller.get_component(&"claw_left")
+		if distance <= 96.0 and anatomy_controller.is_component_operational(melee_component):
 			if claw_attack.try_attack(target):
 				pixel_animation.set_state(PixelAnimationController.State.ATTACK)
 		elif distance > 96.0:
 			spit_attack.try_attack(target, self)
+	resource_controller.set_movement_load(clampf(velocity.length() / maxf(1.0, movement_controller.speed * 40.0), 0.0, 1.0))
 	regeneration_cooldown = maxf(0.0, regeneration_cooldown - delta)
-	if health.ratio() < 0.65 and regeneration_cooldown <= 0.0 and resource_controller.consume_biomass(regeneration_biomass_cost):
+	if health.ratio() < 0.65 and regeneration_cooldown <= 0.0 and resource_controller.consume_energy(12.0, 9.0) and resource_controller.consume_biomass(regeneration_biomass_cost):
 		health.heal(regeneration_amount)
 		for component: KaijuComponent in anatomy_controller.get_damaged_components():
 			component.heal(6.0)
@@ -57,7 +62,7 @@ func _physics_process(delta: float) -> void:
 
 
 func take_damage(amount: float, source: Node = null) -> void:
-	health.take_damage(amount * (1.0 - damage_resistance), source)
+	health.take_damage(amount * loadout_damage_multiplier * (1.0 - damage_resistance), source)
 	pixel_animation.set_state(PixelAnimationController.State.HURT)
 
 
@@ -105,6 +110,14 @@ func set_run_movement_speed(value: float) -> void:
 
 
 func apply_loadout_effects() -> void:
+	_reset_build_effects()
+	loadout_movement_multiplier = 1.0
+	loadout_damage_multiplier = 1.0
+	for component: KaijuComponent in anatomy_controller.components:
+		loadout_movement_multiplier *= component.data.movement_multiplier
+		loadout_damage_multiplier *= component.data.incoming_damage_multiplier
+		if component.data.function_id == &"brain" and component.data.brain_profile != null:
+			brain_controller.set_brain(component.data.brain_profile)
 	var left: KaijuComponent = $ComponentRoot/LeftArmSocket/ClawComponent
 	var sprite: Sprite2D = left.get_node("Visual") as Sprite2D
 	if &"tendril" in left.data.tags:
@@ -117,19 +130,48 @@ func apply_loadout_effects() -> void:
 		claw_attack.cooldown = 1.25
 		sprite.scale = Vector2(1.25, 1.25)
 		sprite.modulate = Color(0.88, 0.84, 0.64, 1.0)
+	elif &"siphon" in left.data.tags:
+		claw_attack.damage = 13.0
+		claw_attack.cooldown = 0.62
+		claw_attack.energy_cost = 1.0
+		sprite.scale = Vector2(0.65, 1.08)
+		sprite.modulate = Color(0.78, 0.18, 0.38, 1.0)
 	else:
 		claw_attack.damage = 24.0
 		claw_attack.cooldown = 0.82
 		sprite.scale = Vector2(0.9, 0.9)
 		sprite.modulate = Color.WHITE
+		claw_attack.energy_cost = 4.0
+
+
+func _reset_build_effects() -> void:
+	damage_resistance = 0.0
+	regeneration_amount = 20.0
+	regeneration_biomass_cost = 12.0
+	run_movement_speed = 3.4
+	movement_controller.speed = run_movement_speed
+	health.max_health = 180.0
+	health.current_health = minf(health.current_health, health.max_health)
+	resource_controller.maximum_biomass = 100.0
+	resource_controller.biomass = minf(resource_controller.biomass, resource_controller.maximum_biomass)
+	spit_attack.damage = 16.0
+	spit_attack.cooldown = 1.75
+	claw_attack.energy_cost = 4.0
+	var torso_visual: Sprite2D = $ComponentRoot/TorsoComponent/Visual
+	torso_visual.modulate = Color.WHITE
+	torso_visual.scale = Vector2.ONE
+	$ComponentRoot/HeadSocket/HeadComponent/Visual.modulate = Color.WHITE
+	var auxiliary: Node = component_root.get_node_or_null("AuxiliaryLimbSocket")
+	if auxiliary != null:
+		component_root.remove_child(auxiliary)
+		auxiliary.free()
 
 
 func reset_for_encounter(spawn_position: Vector2) -> void:
 	global_position = spawn_position
 	velocity = Vector2.ZERO
 	health.reset()
-	resource_controller.biomass = 60.0
-	resource_controller.resource_changed.emit(&"biomass", resource_controller.biomass, resource_controller.maximum_biomass)
+	resource_controller.reset_for_deployment(60.0)
 	movement_controller.speed = run_movement_speed
 	for component: KaijuComponent in anatomy_controller.components:
 		component.reset()

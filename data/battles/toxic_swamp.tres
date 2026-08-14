@@ -1,0 +1,52 @@
+[gd_resource type="Resource" load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://battle/battle_map_data.gd" id="1"]
+[ext_resource type="Script" path="res://battle/wave_data.gd" id="2"]
+[ext_resource type="PackedScene" path="res://enemies/spore_mote.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://enemies/bog_brute.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://enemies/ranged_soldier.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://enemies/tank.tscn" id="6"]
+
+[sub_resource type="Resource" id="SporeCloud"]
+script = ExtResource("2")
+wave_id = &"spore_cloud"
+title = "WAVE 1 // SPORE CLOUD"
+trigger_progress = 0.08
+spawn_rule = 3
+enemy_scenes = Array[PackedScene]([ExtResource("3"), ExtResource("3"), ExtResource("5")])
+
+[sub_resource type="Resource" id="BogPatrol"]
+script = ExtResource("2")
+wave_id = &"bog_patrol"
+title = "WAVE 2 // BOG PATROL"
+trigger_progress = 0.3
+enemy_scenes = Array[PackedScene]([ExtResource("4"), ExtResource("4"), ExtResource("5")])
+
+[sub_resource type="Resource" id="SunkBattery"]
+script = ExtResource("2")
+wave_id = &"sunk_battery"
+title = "WAVE 3 // SUNK BATTERY"
+trigger_progress = 0.54
+spawn_rule = 1
+enemy_scenes = Array[PackedScene]([ExtResource("5"), ExtResource("6")])
+
+[sub_resource type="Resource" id="ToxicGate"]
+script = ExtResource("2")
+wave_id = &"toxic_gate"
+title = "ELITE // TOXIC GATE"
+trigger_progress = 0.76
+spawn_rule = 2
+enemy_scenes = Array[PackedScene]([ExtResource("6"), ExtResource("3"), ExtResource("4")])
+
+[resource]
+script = ExtResource("1")
+map_id = &"toxic_swamp"
+display_name = "TOXIC SWAMP"
+unlock_after_map_id = &"city_ruins"
+unlock_after_victories = 1
+target_duration_seconds = 165.0
+battle_scene_path = "res://battle/side_scroll_battle.tscn"
+parallax_scene_path = "res://levels/toxic_swamp/toxic_swamp_parallax.tscn"
+boss_scene_path = "res://enemies/bog_titan.tscn"
+hazard_scene_path = "res://battle/hazards/toxic_pool.tscn"
+waves = Array[ExtResource("2")]([SubResource("SporeCloud"), SubResource("BogPatrol"), SubResource("SunkBattery"), SubResource("ToxicGate")])

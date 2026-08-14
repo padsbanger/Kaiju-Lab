@@ -8,6 +8,7 @@ signal component_destroyed(component: KaijuComponent)
 @export var visual_path: NodePath
 var current_health: float
 var is_destroyed: bool = false
+var last_damage_cause: String = "No recorded damage"
 @onready var visual: Sprite2D = get_node_or_null(visual_path) as Sprite2D
 
 
@@ -22,6 +23,7 @@ func take_damage(amount: float, source: Node = null) -> void:
 	if is_destroyed or amount <= 0.0:
 		return
 	current_health = maxf(0.0, current_health - amount)
+	last_damage_cause = _describe_source(source)
 	health_changed.emit(self, current_health, data.max_health)
 	_update_visual_state()
 	if current_health <= 0.0:
@@ -48,6 +50,7 @@ func reset() -> void:
 	is_destroyed = false
 	monitorable = true
 	current_health = data.max_health
+	last_damage_cause = "No recorded damage"
 	health_changed.emit(self, current_health, data.max_health)
 	_update_visual_state()
 
@@ -68,5 +71,17 @@ func _update_visual_state() -> void:
 		visual.modulate = Color(0.18, 0.18, 0.2, 0.42)
 	elif ratio() <= 0.5:
 		visual.modulate = Color(1.0, 0.38, 0.42, 0.92)
+	elif ratio() <= 0.75:
+		visual.modulate = Color(1.0, 0.72, 0.42, 0.96)
 	else:
 		visual.modulate = Color.WHITE
+
+
+func _describe_source(source: Node) -> String:
+	if source == null:
+		return "Unknown trauma"
+	if source.is_in_group(&"boss"):
+		return "Boss pressure: %s" % source.name
+	if source.is_in_group(&"enemies"):
+		return "Enemy attack: %s" % source.name
+	return source.name if not source.name.is_empty() else "Battle trauma"

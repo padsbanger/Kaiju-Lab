@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="ComponentData" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://kaiju/resources/component_data.gd" id="1"]
+[ext_resource type="Resource" path="res://data/brains/sentinel_brain.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"brain_predator"
+display_name = "Sentinel Cortex"
+description = "A cautious neural lattice that favors ranged pressure and vulnerable targets."
+max_health = 78.0
+mass = 11.0
+tags = Array[StringName]([&"organ", &"brain", &"neural", &"sentinel"])
+attachment_type = &"head"
+function_id = &"brain"
+critical = true
+required_functions = Array[StringName]([&"circulation"])
+energy_consumption = 1.8
+oxygen_demand = 6.0
+movement_multiplier = 0.94
+installation_cost = 42
+brain_profile = ExtResource("2")

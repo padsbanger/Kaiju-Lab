@@ -6,6 +6,8 @@ signal projectile_fired
 @export var projectile_scene: PackedScene
 @export var damage: float = 14.0
 @export var cooldown: float = 1.8
+@export var energy_cost: float = 8.0
+@export var heat_generated: float = 7.0
 @export_flags_2d_physics var collision_targets: int = 1
 var cooldown_remaining: float = 0.0
 
@@ -16,6 +18,9 @@ func _physics_process(delta: float) -> void:
 
 func try_attack(target: Node2D, source: Node) -> bool:
 	if target == null or cooldown_remaining > 0.0 or projectile_scene == null:
+		return false
+	var resources: ResourceController = source.get_node_or_null("ResourceController") as ResourceController
+	if resources != null and not resources.consume_energy(energy_cost, heat_generated):
 		return false
 	var projectile: CombatProjectile = projectile_scene.instantiate() as CombatProjectile
 	var projectile_root: Node = get_tree().current_scene

@@ -12,3 +12,6 @@ mass = 18.0
 tags = Array[StringName]([&"limb", &"weapon"])
 attachment_type = &"arm"
 function_id = &"melee_weapon"
+required_functions = Array[StringName]([&"circulation"])
+blood_demand = 4.0
+oxygen_demand = 3.0

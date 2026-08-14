@@ -42,4 +42,7 @@ script = ExtResource("1")
 map_id = &"city_ruins"
 display_name = "CITY RUINS"
 target_duration_seconds = 150.0
+battle_scene_path = "res://battle/side_scroll_battle.tscn"
+parallax_scene_path = "res://levels/city_ruins/city_ruins_parallax.tscn"
+boss_scene_path = "res://enemies/citadel_boss.tscn"
 waves = Array[ExtResource("2")]([SubResource("Wave1"), SubResource("Wave2"), SubResource("Wave3"), SubResource("Wave4")])

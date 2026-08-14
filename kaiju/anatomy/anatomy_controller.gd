@@ -38,6 +38,42 @@ func is_function_online(function_id: StringName) -> bool:
 	return false
 
 
+func function_efficiency(function_id: StringName) -> float:
+	var efficiency: float = 0.0
+	for component: KaijuComponent in components:
+		if component.data.function_id == function_id and not component.is_destroyed:
+			efficiency = maxf(efficiency, component.ratio() * component.data.function_output)
+	return efficiency
+
+
+func is_component_operational(component: KaijuComponent) -> bool:
+	if component == null or component.is_destroyed:
+		return false
+	for dependency: StringName in component.data.required_functions:
+		if not is_function_online(dependency):
+			return false
+	return true
+
+
+func offline_reason(component: KaijuComponent) -> String:
+	if component == null:
+		return "MISSING"
+	if component.is_destroyed:
+		return "DESTROYED"
+	for dependency: StringName in component.data.required_functions:
+		if not is_function_online(dependency):
+			return "%s OFFLINE" % String(dependency).to_upper()
+	return "OPERATIONAL"
+
+
+func total_online_property(property_name: StringName) -> float:
+	var total: float = 0.0
+	for component: KaijuComponent in components:
+		if is_component_operational(component):
+			total += float(component.data.get(property_name))
+	return total
+
+
 func get_damaged_components() -> Array[KaijuComponent]:
 	var damaged: Array[KaijuComponent] = []
 	for component: KaijuComponent in components:

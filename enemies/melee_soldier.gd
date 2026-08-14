@@ -1,6 +1,8 @@
 class_name MeleeSoldier
 extends CharacterBody2D
 
+const ENEMY_FEEDBACK: Script = preload("res://enemies/enemy_feedback.gd")
+
 signal died(enemy: MeleeSoldier)
 
 @export var speed: float = 70.0
@@ -9,11 +11,16 @@ signal died(enemy: MeleeSoldier)
 @onready var attack: MeleeAttack = $MeleeAttack
 @onready var visual: Sprite2D = $Body
 var target: Node2D
+var feedback: Node2D
 
 
 func _ready() -> void:
 	add_to_group(&"enemies")
 	health.died.connect(_on_died)
+	feedback = ENEMY_FEEDBACK.new() as Node2D
+	add_child(feedback)
+	feedback.bind(health)
+	attack.attack_started.connect(func() -> void: feedback.telegraph_action("STRIKE"))
 
 
 func _physics_process(delta: float) -> void:

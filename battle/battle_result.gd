@@ -15,12 +15,16 @@ enum Outcome { VICTORY, KAIJU_DEAD, REQUIRED_ENEMIES_FAILED, BOSS_DEFEATED, ENCO
 @export var component_health: Dictionary[StringName, float] = {}
 @export var damage_causes: Dictionary[StringName, String] = {}
 @export var failure_reason: String = ""
+@export var map_id: StringName
+@export var threat_tier: int = 1
+@export var circuit_completed: bool = false
 
 
 func capture_components(kaiju: Kaiju) -> void:
 	component_health.clear()
 	for component: KaijuComponent in kaiju.anatomy_controller.components:
 		component_health[component.data.id] = component.current_health
+		damage_causes[component.data.id] = component.last_damage_cause
 
 
 func apply_to_specimen(specimen: SpecimenState) -> void:

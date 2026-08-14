@@ -1,6 +1,8 @@
 class_name CitadelBoss
 extends CharacterBody2D
 
+const ENEMY_FEEDBACK: Script = preload("res://enemies/enemy_feedback.gd")
+
 signal died(enemy: CitadelBoss)
 signal pressure_used(pressure: StringName)
 
@@ -10,6 +12,7 @@ signal pressure_used(pressure: StringName)
 var target: Kaiju
 var stomp_remaining: float = 2.5
 var cannon_remaining: float = 0.8
+var feedback: Node2D
 
 
 func _ready() -> void:
@@ -17,6 +20,11 @@ func _ready() -> void:
 	add_to_group(&"boss")
 	health.died.connect(_on_died)
 	target = get_tree().get_first_node_in_group(&"kaiju") as Kaiju
+	feedback = ENEMY_FEEDBACK.new() as Node2D
+	add_child(feedback)
+	feedback.bind(health)
+	feedback.bar.position = Vector2(-70, -145)
+	feedback.bar.size = Vector2(140, 7)
 
 
 func _physics_process(delta: float) -> void:
@@ -29,10 +37,12 @@ func _physics_process(delta: float) -> void:
 	cannon_remaining -= delta
 	stomp_remaining -= delta
 	if cannon_remaining <= 0.0:
+		feedback.telegraph_action("SIEGE", 0.55)
 		attack.try_attack(target, self)
 		cannon_remaining = 2.2
 		pressure_used.emit(&"circulation_siege")
 	if stomp_remaining <= 0.0 and global_position.distance_to(target.global_position) < 190.0:
+		feedback.telegraph_action("SHOCK", 0.5)
 		target.take_damage(8.0, self)
 		var damaged: Array[KaijuComponent] = target.anatomy_controller.get_damaged_components()
 		if not damaged.is_empty():

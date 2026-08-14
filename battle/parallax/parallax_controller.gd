@@ -58,8 +58,16 @@ func _collect_and_configure_layers() -> void:
 		if sprite == null or sprite.texture == null:
 			push_warning("Parallax layer %s has no textured Sprite2D" % layer.name)
 			continue
-		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		var scaled_width: float = sprite.texture.get_width() * absf(sprite.scale.x)
+		var left_edge: float = INF
+		var right_edge: float = -INF
+		for child: Node in layer.get_children():
+			if child is Sprite2D:
+				var tile: Sprite2D = child as Sprite2D
+				tile.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+				if tile.texture != null:
+					left_edge = minf(left_edge, tile.position.x)
+					right_edge = maxf(right_edge, tile.position.x + tile.texture.get_width() * absf(tile.scale.x))
+		var scaled_width: float = right_edge - left_edge
 		layer.repeat_size = Vector2(roundf(scaled_width), 0.0)
 		layer.repeat_times = 3
 		layer.ignore_camera_scroll = manual_scroll

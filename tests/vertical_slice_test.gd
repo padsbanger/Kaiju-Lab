@@ -5,6 +5,8 @@ const MAIN_SCENE: PackedScene = preload("res://main.tscn")
 
 func _initialize() -> void:
 	var main: Main = MAIN_SCENE.instantiate() as Main
+	main.initialize_from_save = false
+	(main.get_node("RunManager") as RunManager).save_path = "user://kaiju_lab_vertical_slice_test.json"
 	root.add_child(main)
 	current_scene = main
 	await process_frame
@@ -38,6 +40,7 @@ func _initialize() -> void:
 	var damaged: ComponentState = specimen.component_states[component_id]
 	assert(damaged.current_health < damaged.max_health)
 	assert(main.lab_scene.regeneration.repair(specimen, damaged.component_id))
+	assert(main.run_manager.claim_salvage(0), "A post-battle salvage choice is required before redeployment")
 	assert(specimen.level_up())
 	assert(specimen.install_organ(&"claw_left", "res://data/components/claw_hammer.tres"))
 	main.deploy()
@@ -45,5 +48,8 @@ func _initialize() -> void:
 	await process_frame
 	assert(main.combat_scene.kaiju.claw_attack.damage == 39.0)
 	assert(main.scene_root.get_child_count() == 1, "Transitions must never duplicate active scenes")
+	var save_path: String = main.run_manager.save_path
+	if FileAccess.file_exists(save_path):
+		DirAccess.remove_absolute(save_path)
 	print("PASS: lab -> waves -> boss -> damaged lab -> repair/level/change -> redeploy")
 	quit(0)

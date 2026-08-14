@@ -13,3 +13,6 @@ tags = Array[StringName]([&"organ", &"digestive", &"energy"])
 attachment_type = &"core"
 function_id = &"digestion"
 energy_generation = 8.0
+required_functions = Array[StringName]([&"circulation"])
+blood_demand = 2.0
+oxygen_demand = 1.0

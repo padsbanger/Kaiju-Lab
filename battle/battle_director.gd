@@ -17,7 +17,6 @@ var current_wave_index: int = -1
 var living_enemies: Array[Node2D] = []
 var enemies_defeated: int = 0
 var waves_cleared: int = 0
-var boss_scene: PackedScene = preload("res://enemies/citadel_boss.tscn")
 var boss: Node2D
 
 
@@ -63,6 +62,7 @@ func _spawn_enemy(scene: PackedScene, wave: WaveData, index: int) -> void:
 	if scene == null:
 		return
 	var enemy: Node2D = scene.instantiate() as Node2D
+	_apply_threat_scaling(enemy)
 	battle.enemy_root.add_child(enemy)
 	# Standard waves enter from just beyond the right camera edge, then march
 	# into view. This avoids sudden enemies materialising beside the kaiju.
@@ -104,7 +104,9 @@ func _begin_boss() -> void:
 		return
 	phase = Phase.BOSS
 	preboss_sequence_complete.emit()
+	var boss_scene: PackedScene = load(map_data.boss_scene_path) as PackedScene
 	boss = boss_scene.instantiate() as Node2D
+	_apply_threat_scaling(boss)
 	battle.enemy_root.add_child(boss)
 	boss.global_position = Vector2(battle.scroll_controller.boss_gate_x + 160.0, battle.ground_y)
 	living_enemies.append(boss)
@@ -112,3 +114,17 @@ func _begin_boss() -> void:
 	boss.died.connect(func(_enemy: Node2D) -> void: phase = Phase.COMPLETE)
 	boss_spawned.emit(boss)
 	phase_changed.emit(phase, "FINAL BOSS // THE CITADEL")
+
+
+func _apply_threat_scaling(enemy: Node2D) -> void:
+	if battle == null or battle.threat_tier <= 1:
+		return
+	var vitality_multiplier: float = 1.0 + (battle.threat_tier - 1) * 0.18
+	var damage_multiplier: float = 1.0 + (battle.threat_tier - 1) * 0.12
+	var enemy_health: Health = enemy.get_node_or_null("Health") as Health
+	if enemy_health != null:
+		enemy_health.max_health = roundf(enemy_health.max_health * vitality_multiplier)
+		enemy_health.current_health = enemy_health.max_health
+	for child: Node in enemy.get_children():
+		if child is MeleeAttack or child is RangedAttack:
+			child.damage *= damage_multiplier

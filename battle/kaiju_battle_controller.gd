@@ -53,7 +53,8 @@ func _is_relevant(target: Node2D) -> bool:
 func _engage(target: Node2D, delta: float) -> void:
 	var distance: float = kaiju.global_position.distance_to(target.global_position)
 	_move_toward_speed(0.0 if distance <= blocking_range else advance_speed * 0.35, delta)
-	if distance <= blocking_range and kaiju.anatomy_controller.is_function_online(&"melee_weapon"):
+	var melee_component: KaijuComponent = kaiju.anatomy_controller.get_component(&"claw_left")
+	if distance <= blocking_range and kaiju.anatomy_controller.is_component_operational(melee_component):
 		if kaiju.claw_attack.try_attack(target):
 			kaiju.pixel_animation.set_state(PixelAnimationController.State.ATTACK)
 	elif distance <= engagement_range:
@@ -64,7 +65,9 @@ func _engage(target: Node2D, delta: float) -> void:
 
 func _move_toward_speed(desired: float, delta: float) -> void:
 	var rate: float = acceleration if desired > kaiju.velocity.x else deceleration
-	kaiju.velocity.x = move_toward(kaiju.velocity.x, desired, rate * delta)
+	var supplied_desired: float = desired * kaiju.loadout_movement_multiplier * kaiju.resource_controller.movement_factor()
+	kaiju.velocity.x = move_toward(kaiju.velocity.x, supplied_desired, rate * delta)
+	kaiju.resource_controller.set_movement_load(absf(kaiju.velocity.x) / maxf(1.0, advance_speed))
 	if kaiju.global_position.x >= boss_gate_x and state != State.BOSS_FIGHT:
 		kaiju.velocity.x = 0.0
 

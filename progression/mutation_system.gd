@@ -6,6 +6,10 @@ signal mutation_added(mutation: MutationData)
 var applied_mutations: Array[MutationData] = []
 
 
+func reset_applied() -> void:
+	applied_mutations.clear()
+
+
 func apply_mutation(kaiju: Kaiju, mutation: MutationData) -> bool:
 	if mutation == null or mutation in applied_mutations:
 		return false

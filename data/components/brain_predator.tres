@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="ComponentData" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ComponentData" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://kaiju/resources/component_data.gd" id="1"]
+[ext_resource type="Resource" path="res://data/brains/predator_brain.tres" id="2"]
 
 [resource]
 script = ExtResource("1")
@@ -13,3 +14,7 @@ tags = Array[StringName]([&"organ", &"brain", &"neural"])
 attachment_type = &"head"
 function_id = &"brain"
 critical = true
+required_functions = Array[StringName]([&"circulation"])
+energy_consumption = 1.0
+oxygen_demand = 5.0
+brain_profile = ExtResource("2")

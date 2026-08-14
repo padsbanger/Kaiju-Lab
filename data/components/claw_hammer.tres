@@ -13,4 +13,7 @@ tags = Array[StringName]([&"limb", &"weapon", &"crusher", &"heavy"])
 attachment_type = &"arm"
 function_id = &"melee_weapon"
 energy_consumption = 5.0
-
+required_functions = Array[StringName]([&"circulation"])
+blood_demand = 7.0
+oxygen_demand = 6.0
+installation_cost = 48

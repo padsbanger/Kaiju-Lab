@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ComponentData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://kaiju/resources/component_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"torso_basic"
+display_name = "Bastion Carapace"
+description = "Layered ossified armor dramatically reduces incoming damage at the cost of speed."
+max_health = 205.0
+mass = 76.0
+tags = Array[StringName]([&"organ", &"structural", &"defensive", &"fortress"])
+attachment_type = &"core"
+function_id = &"structural"
+critical = true
+movement_multiplier = 0.78
+incoming_damage_multiplier = 0.78
+installation_cost = 75

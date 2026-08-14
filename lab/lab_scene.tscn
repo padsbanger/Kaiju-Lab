@@ -122,6 +122,26 @@ text = "NO PREVIOUS DEPLOYMENT"
 horizontal_alignment = 1
 autowrap_mode = 2
 
+[node name="OrganSelector" type="OptionButton" parent="UI"]
+unique_name_in_owner = true
+offset_left = 198.0
+offset_top = 218.0
+offset_right = 442.0
+offset_bottom = 241.0
+theme_override_font_sizes/font_size = 8
+
+[node name="OrganPreview" type="Label" parent="UI"]
+unique_name_in_owner = true
+offset_left = 198.0
+offset_top = 148.0
+offset_right = 442.0
+offset_bottom = 216.0
+theme_override_colors/font_color = Color(0.72, 0.9, 0.75, 1)
+theme_override_font_sizes/font_size = 7
+text = "ORGAN COMPARISON"
+horizontal_alignment = 1
+autowrap_mode = 2
+
 [node name="Phase" type="Label" parent="UI"]
 offset_left = 205.0
 offset_top = 62.0
@@ -143,6 +163,44 @@ theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = SubResource("Button")
 text = "DEPLOY"
 
+[node name="MapSelector" type="OptionButton" parent="UI"]
+unique_name_in_owner = true
+offset_left = 452.0
+offset_top = 307.0
+offset_right = 630.0
+offset_bottom = 334.0
+theme_override_font_sizes/font_size = 8
+item_count = 1
+selected = 0
+popup/item_0/text = "CITY RUINS"
+popup/item_0/id = 0
+
+[node name="MutationSelector" type="OptionButton" parent="UI"]
+unique_name_in_owner = true
+offset_left = 8.0
+offset_top = 307.0
+offset_right = 188.0
+offset_bottom = 330.0
+theme_override_font_sizes/font_size = 7
+
+[node name="MutationButton" type="Button" parent="UI"]
+unique_name_in_owner = true
+offset_left = 8.0
+offset_top = 331.0
+offset_right = 188.0
+offset_bottom = 353.0
+theme_override_font_sizes/font_size = 7
+text = "INSTALL MUTATION"
+
+[node name="NewSpecimenButton" type="Button" parent="UI"]
+unique_name_in_owner = true
+offset_left = 452.0
+offset_top = 335.0
+offset_right = 630.0
+offset_bottom = 355.0
+theme_override_font_sizes/font_size = 7
+text = "NEW SPECIMEN / ERASE SAVE"
+
 [node name="OrganButton" type="Button" parent="UI"]
 unique_name_in_owner = true
 offset_left = 198.0
@@ -151,7 +209,7 @@ offset_right = 442.0
 offset_bottom = 289.0
 theme_override_font_sizes/font_size = 8
 theme_override_styles/normal = SubResource("Button")
-text = "CHANGE ORGAN"
+text = "INSTALL SELECTED ORGAN"
 
 [node name="LevelButton" type="Button" parent="UI"]
 unique_name_in_owner = true
@@ -162,3 +220,55 @@ offset_bottom = 314.0
 theme_override_font_sizes/font_size = 8
 theme_override_styles/normal = SubResource("Button")
 text = "LEVEL UP"
+
+[node name="SalvagePanel" type="PanelContainer" parent="UI"]
+unique_name_in_owner = true
+visible = false
+z_index = 50
+offset_left = 94.0
+offset_top = 58.0
+offset_right = 546.0
+offset_bottom = 304.0
+theme_override_styles/panel = SubResource("Panel")
+
+[node name="Rows" type="VBoxContainer" parent="UI/SalvagePanel"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Title" type="Label" parent="UI/SalvagePanel/Rows"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.74, 0.35, 1, 1)
+theme_override_font_sizes/font_size = 15
+text = "POST-BATTLE SALVAGE // CHOOSE ONE"
+horizontal_alignment = 1
+
+[node name="Instruction" type="Label" parent="UI/SalvagePanel/Rows"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.9, 0.68, 1)
+theme_override_font_sizes/font_size = 8
+text = "THE REST IS CONSUMED BY THE RECOVERY VATS. THIS CHOICE IS PERMANENT."
+horizontal_alignment = 1
+
+[node name="SalvageButton1" type="Button" parent="UI/SalvagePanel/Rows"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 53)
+layout_mode = 2
+theme_override_font_sizes/font_size = 8
+theme_override_styles/normal = SubResource("Button")
+text = "SALVAGE OPTION 1"
+
+[node name="SalvageButton2" type="Button" parent="UI/SalvagePanel/Rows"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 53)
+layout_mode = 2
+theme_override_font_sizes/font_size = 8
+theme_override_styles/normal = SubResource("Button")
+text = "SALVAGE OPTION 2"
+
+[node name="SalvageButton3" type="Button" parent="UI/SalvagePanel/Rows"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 53)
+layout_mode = 2
+theme_override_font_sizes/font_size = 8
+theme_override_styles/normal = SubResource("Button")
+text = "SALVAGE OPTION 3"
