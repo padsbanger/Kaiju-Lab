@@ -60,6 +60,8 @@ func _physics_process(delta: float) -> void:
 			_engage_target()
 		BattleState.RECOVER, BattleState.STAGGERED, BattleState.DEAD:
 			velocity = Vector2.ZERO
+			if battle_state == BattleState.RECOVER:
+				specimen.regenerate_tick(delta)
 
 
 func scan_for_target() -> void:
@@ -155,4 +157,3 @@ func _widest_attack_range() -> float:
 		if state != null and state.offline_reason.is_empty():
 			result = maxf(result, state.definition.attack_range)
 	return result
-

@@ -9,6 +9,7 @@
 size = Vector2(8000, 32)
 
 [node name="SideScrollBattle" type="Node2D"]
+process_mode = 3
 script = ExtResource("1")
 
 [node name="WorldColor" type="ColorRect" parent="."]
@@ -140,4 +141,3 @@ offset_bottom = 34.0
 max_value = 3400.0
 value = 160.0
 show_percentage = false
-

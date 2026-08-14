@@ -49,5 +49,5 @@ length = 3520.0
 ground_y = 290.0
 sky_color = Color(0.055, 0.085, 0.04, 1)
 accent_color = Color(0.7, 0.35, 0.76, 1)
+layer_colors = PackedColorArray(0.08, 0.075, 0.11, 1, 0.11, 0.14, 0.09, 1, 0.13, 0.21, 0.1, 1, 0.16, 0.24, 0.08, 1, 0.055, 0.1, 0.035, 1)
 waves = Array[ExtResource("2")]([SubResource("wave_1"), SubResource("wave_2"), SubResource("wave_3"), SubResource("wave_boss")])
-

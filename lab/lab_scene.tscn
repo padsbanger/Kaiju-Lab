@@ -1,14 +1,23 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://lab/lab_controller.gd" id="1"]
+[ext_resource type="Texture2D" path="res://art/lab/lab_backdrop.png" id="2_backdrop"]
 
 [node name="Lab" type="Node2D"]
 script = ExtResource("1")
 
+[node name="BackdropArt" type="TextureRect" parent="."]
+offset_right = 640.0
+offset_bottom = 360.0
+mouse_filter = 2
+texture = ExtResource("2_backdrop")
+expand_mode = 1
+stretch_mode = 6
+
 [node name="Background" type="ColorRect" parent="."]
 offset_right = 640.0
 offset_bottom = 360.0
-color = Color(0.025, 0.04, 0.06, 1)
+color = Color(0.025, 0.04, 0.06, 0.72)
 
 [node name="Header" type="ColorRect" parent="."]
 offset_right = 640.0
@@ -23,6 +32,14 @@ offset_bottom = 40.0
 theme_override_colors/font_color = Color(0.5, 1, 0.68, 1)
 theme_override_font_sizes/font_size = 22
 text = "KAIJU LAB"
+
+[node name="Help" type="Button" parent="."]
+offset_left = 215.0
+offset_top = 10.0
+offset_right = 276.0
+offset_bottom = 38.0
+theme_override_font_sizes/font_size = 10
+text = "GUIDE"
 
 [node name="Resources" type="Label" parent="."]
 offset_left = 330.0
@@ -249,3 +266,42 @@ offset_right = 480.0
 offset_bottom = 222.0
 theme_override_font_sizes/font_size = 9
 text = "ANALYZE COMBAT"
+
+[node name="GuidePanel" type="Panel" parent="."]
+visible = false
+z_index = 30
+offset_left = 92.0
+offset_top = 72.0
+offset_right = 548.0
+offset_bottom = 292.0
+
+[node name="Backdrop" type="ColorRect" parent="GuidePanel"]
+show_behind_parent = true
+offset_right = 456.0
+offset_bottom = 220.0
+mouse_filter = 2
+color = Color(0.025, 0.045, 0.055, 1)
+
+[node name="Title" type="Label" parent="GuidePanel"]
+offset_left = 18.0
+offset_top = 14.0
+offset_right = 330.0
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(0.52, 1, 0.68, 1)
+theme_override_font_sizes/font_size = 18
+text = "FIELD GUIDE"
+
+[node name="Body" type="Label" parent="GuidePanel"]
+offset_left = 18.0
+offset_top = 52.0
+offset_right = 438.0
+offset_bottom = 178.0
+theme_override_font_sizes/font_size = 11
+text = "1  INSPECT sockets and dependency failures.\n2  REPAIR wounds or INSTALL a compatible organ.\n3  DEPLOY; combat movement and attacks are autonomous.\n4  Watch ENERGY, BLOOD, OXYGEN, and HEAT in battle.\n5  Return with persistent wounds and choose one salvage.\n\nP  Pause battle     F  Toggle 1x / 2x speed"
+
+[node name="Close" type="Button" parent="GuidePanel"]
+offset_left = 340.0
+offset_top = 180.0
+offset_right = 438.0
+offset_bottom = 210.0
+text = "UNDERSTOOD"

@@ -19,6 +19,7 @@ var map_data: BattleMapData
 var resolved: bool = false
 var elapsed_seconds: float = 0.0
 var starting_health: Dictionary[StringName, float] = {}
+var battle_speed: float = 1.0
 
 
 func _ready() -> void:
@@ -47,6 +48,7 @@ func configure_map(value: BattleMapData) -> void:
 	progress_bar.max_value = map_data.length
 	director.configure(map_data, kaiju, specimen.circuit_level if specimen != null else 1)
 	wave_label.text = map_data.display_name + " // APPROACH"
+	_apply_biome_palette()
 
 
 func _process(delta: float) -> void:
@@ -62,8 +64,19 @@ func _process(delta: float) -> void:
 func spawn_projectile(start: Vector2, target_position: Vector2, damage: float, from_kaiju: bool, cause: String) -> CombatProjectile:
 	var projectile := PROJECTILE_SCENE.instantiate() as CombatProjectile
 	add_child(projectile)
+	projectile.process_mode = Node.PROCESS_MODE_PAUSABLE
 	projectile.configure(start, target_position, damage, from_kaiju, cause)
 	return projectile
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("pause"):
+		get_tree().paused = not get_tree().paused
+		state_label.text = "PAUSED" if get_tree().paused else "STATE  %s" % KaijuBattleActor.BattleState.keys()[kaiju.battle_state]
+	elif event.is_action_pressed("speed_up"):
+		battle_speed = 2.0 if battle_speed < 2.0 else 1.0
+		Engine.time_scale = battle_speed
+		wave_label.text = "%s // %.0fX" % [map_data.display_name, battle_speed]
 
 
 func _on_wave_spawned(index: int) -> void:
@@ -95,3 +108,19 @@ func _resolve(victory: bool) -> void:
 				"cause": specimen.components[socket].damage_cause,
 			}
 	battle_finished.emit(result)
+
+
+func _apply_biome_palette() -> void:
+	var layers: Array[Node] = [$FarSkyline, $RuinsBack, $RuinsMid, $NearDebris, $Foreground]
+	for index: int in range(layers.size()):
+		var strip := layers[index].get_node("Strip") as ParallaxStrip
+		if index < map_data.layer_colors.size():
+			strip.strip_color = map_data.layer_colors[index]
+			strip.detail_color = map_data.layer_colors[index].lightened(0.28)
+		strip.queue_redraw()
+
+
+func _exit_tree() -> void:
+	Engine.time_scale = 1.0
+	if get_tree() != null:
+		get_tree().paused = false

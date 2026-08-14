@@ -48,11 +48,19 @@ Status: **complete**
 
 ## Milestone 5 — Authored Content and Release Validation
 
-Status: **planned**
+Status: **complete**
 
 - Add original pixel-art presentation, two distinct biomes, organ alternatives, mutations, and enemy variants.
 - Add concise onboarding, readable failure feedback, pause, speed, and accessibility options.
 - Run full regression, accelerated soak, visual capture, and export validation.
+
+Exit validation:
+
+- 17 command-line regression scripts pass.
+- The five-minute accelerated metabolism/deployment soak remains bounded.
+- Lab, City Ruins, Toxic Swamp, and salvage GPU captures pass visual inspection.
+- The Windows debug export builds and survives a launch smoke check.
+- Every active scene passes the native-2D architecture audit.
 
 ## Deferred
 

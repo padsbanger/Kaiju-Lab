@@ -39,6 +39,7 @@ func spawn_wave(index: int) -> Array[BattleEnemy]:
 		if enemy == null:
 			continue
 		get_parent().add_child(enemy)
+		enemy.process_mode = Node.PROCESS_MODE_PAUSABLE
 		var threat_multiplier := 1.0 + float(threat_level - 1) * 0.16
 		enemy.max_health *= threat_multiplier
 		enemy.health = enemy.max_health

@@ -20,6 +20,7 @@ const SOCKET_ORDER: PackedStringArray = ["brain", "heart", "stomach", "torso", "
 @onready var map_option: OptionButton = $MapOption
 @onready var salvage_panel: Panel = $SalvagePanel
 @onready var salvage_summary: Label = $SalvagePanel/Summary
+@onready var guide_panel: Panel = $GuidePanel
 
 var specimen: SpecimenState
 var selected_socket: StringName = &"torso"
@@ -35,6 +36,8 @@ func _ready() -> void:
 	mutation_option.item_selected.connect(_on_mutation_selected)
 	mutate_button.pressed.connect(mutate_selected)
 	deploy_button.pressed.connect(request_deployment)
+	$Help.pressed.connect(_toggle_guide)
+	$GuidePanel/Close.pressed.connect(_toggle_guide)
 	for index: int in range(3):
 		var salvage_button: Button = salvage_panel.get_node("Choice%d" % (index + 1))
 		salvage_button.pressed.connect(_claim_salvage_index.bind(index))
@@ -243,3 +246,7 @@ func _claim_salvage_index(index: int) -> void:
 	if specimen == null or index < 0 or index >= specimen.pending_salvage.size():
 		return
 	claim_salvage_by_id(specimen.pending_salvage[index].choice_id)
+
+
+func _toggle_guide() -> void:
+	guide_panel.visible = not guide_panel.visible

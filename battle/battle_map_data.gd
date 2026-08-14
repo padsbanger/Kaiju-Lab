@@ -7,5 +7,5 @@ extends Resource
 @export var ground_y: float = 290.0
 @export var sky_color: Color = Color(0.05, 0.08, 0.12)
 @export var accent_color: Color = Color(0.3, 0.8, 0.5)
+@export var layer_colors: PackedColorArray = []
 @export var waves: Array[WaveData] = []
-

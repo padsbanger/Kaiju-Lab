@@ -217,6 +217,30 @@ func damage_multiplier() -> float:
 	return clampf(1.0 - resistance, 0.35, 1.0)
 
 
+func regenerate_tick(delta: float) -> float:
+	var rate := 0.0
+	for mutation_id: String in mutations:
+		var mutation := MutationCatalog.get_by_id(StringName(mutation_id))
+		if mutation != null:
+			rate += mutation.passive_regeneration
+	if rate <= 0.0 or energy < 25.0 or heat > 85.0:
+		return 0.0
+	var wounded: ComponentState
+	for state: ComponentState in components.values():
+		if state.is_destroyed() or state.health >= state.definition.max_health or not state.offline_reason.is_empty():
+			continue
+		if wounded == null or state.health_ratio() < wounded.health_ratio():
+			wounded = state
+	if wounded == null:
+		return 0.0
+	var healed := minf(rate * delta, wounded.definition.max_health - wounded.health)
+	wounded.health += healed
+	energy = maxf(0.0, energy - healed * 0.8)
+	heat = minf(MAX_HEAT, heat + healed * 0.3)
+	state_changed.emit()
+	return healed
+
+
 func has_function(function_name: StringName) -> bool:
 	return _available_functions.has(function_name)
 

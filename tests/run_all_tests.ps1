@@ -13,7 +13,12 @@ $tests = @(
     "res://tests/persistent_campaign_test.gd",
     "res://tests/corrupt_save_test.gd",
     "res://tests/second_map_test.gd",
-    "res://tests/salvage_render_test.gd"
+    "res://tests/salvage_render_test.gd",
+    "res://tests/onboarding_controls_test.gd",
+    "res://tests/authored_content_test.gd",
+    "res://tests/deployment_soak_test.gd",
+    "res://tests/active_2d_architecture_test.gd",
+    "res://tests/toxic_swamp_render_test.gd"
 )
 
 function Invoke-Godot([string[]] $Arguments) {
