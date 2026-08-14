@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="ComponentData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://kaiju/component_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+component_id = &"claw_left"
+display_name = "Rending Claw L"
+description = "Reliable close-range impact organ."
+socket_type = &"arm_left"
+max_health = 112.0
+mass = 18.0
+tags = PackedStringArray("weapon", "melee")
+provides_functions = PackedStringArray("offense")
+required_functions = PackedStringArray("structure", "circulation", "cognition")
+resting_energy_use = 0.5
+activation_energy = 12.0
+blood_demand = 2.0
+oxygen_demand = 1.5
+heat_per_activation = 14.0
+attack_power = 24.0
+attack_range = 56.0
+attack_cooldown = 1.2
+repair_cost_per_health = 0.3
+

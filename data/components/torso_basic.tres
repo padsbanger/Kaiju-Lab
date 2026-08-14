@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ComponentData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://kaiju/component_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+component_id = &"torso_basic"
+display_name = "Bastion Torso"
+description = "Dense supporting frame. Keeps every dependent organ anchored."
+socket_type = &"torso"
+max_health = 180.0
+mass = 44.0
+tags = PackedStringArray("structural", "armored")
+provides_functions = PackedStringArray("structure")
+resting_energy_use = 0.5
+repair_cost_per_health = 0.18
+

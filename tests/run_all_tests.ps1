@@ -2,7 +2,8 @@ $ErrorActionPreference = "Stop"
 
 $godot = (Get-Command godot.exe -ErrorAction Stop).Source
 $tests = @(
-    "res://tests/foundation_test.gd"
+    "res://tests/foundation_test.gd",
+    "res://tests/biological_specimen_test.gd"
 )
 
 function Invoke-Godot([string[]] $Arguments) {

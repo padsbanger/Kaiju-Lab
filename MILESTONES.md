@@ -13,7 +13,7 @@ Status: **complete**
 
 ## Milestone 1 — Persistent Biological Specimen
 
-Status: **planned**
+Status: **complete**
 
 - Define typed, data-driven organ, socket, mutation, and specimen models.
 - Simulate energy, blood, oxygen, heat, biomass, dependencies, and failure reasons.
