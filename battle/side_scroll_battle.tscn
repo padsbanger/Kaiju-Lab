@@ -1,0 +1,143 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://battle/side_scroll_battle.gd" id="1"]
+[ext_resource type="Script" path="res://battle/battle_director.gd" id="2"]
+[ext_resource type="Script" path="res://battle/parallax_strip.gd" id="3"]
+[ext_resource type="PackedScene" path="res://kaiju/kaiju_battle_actor.tscn" id="4"]
+
+[sub_resource type="RectangleShape2D" id="ground_shape"]
+size = Vector2(8000, 32)
+
+[node name="SideScrollBattle" type="Node2D"]
+script = ExtResource("1")
+
+[node name="WorldColor" type="ColorRect" parent="."]
+z_index = -20
+offset_left = -320.0
+offset_top = -180.0
+offset_right = 8320.0
+offset_bottom = 360.0
+mouse_filter = 2
+color = Color(0.045, 0.07, 0.105, 1)
+
+[node name="FarSkyline" type="Parallax2D" parent="."]
+z_index = -15
+scroll_scale = Vector2(0.08, 1)
+repeat_size = Vector2(640, 0)
+repeat_times = 3
+[node name="Strip" type="Node2D" parent="FarSkyline"]
+script = ExtResource("3")
+strip_color = Color(0.065, 0.095, 0.14, 1)
+detail_color = Color(0.09, 0.13, 0.18, 1)
+horizon_y = 118.0
+block_width = 106.0
+block_height = 54.0
+
+[node name="RuinsBack" type="Parallax2D" parent="."]
+z_index = -12
+scroll_scale = Vector2(0.22, 1)
+repeat_size = Vector2(640, 0)
+repeat_times = 3
+[node name="Strip" type="Node2D" parent="RuinsBack"]
+script = ExtResource("3")
+strip_color = Color(0.075, 0.13, 0.16, 1)
+detail_color = Color(0.11, 0.2, 0.21, 1)
+horizon_y = 175.0
+block_width = 84.0
+block_height = 62.0
+
+[node name="RuinsMid" type="Parallax2D" parent="."]
+z_index = -9
+scroll_scale = Vector2(0.43, 1)
+repeat_size = Vector2(640, 0)
+repeat_times = 3
+[node name="Strip" type="Node2D" parent="RuinsMid"]
+script = ExtResource("3")
+strip_color = Color(0.08, 0.18, 0.18, 1)
+detail_color = Color(0.13, 0.28, 0.24, 1)
+horizon_y = 222.0
+block_width = 76.0
+block_height = 46.0
+
+[node name="NearDebris" type="Parallax2D" parent="."]
+z_index = -6
+scroll_scale = Vector2(0.72, 1)
+repeat_size = Vector2(640, 0)
+repeat_times = 3
+[node name="Strip" type="Node2D" parent="NearDebris"]
+script = ExtResource("3")
+strip_color = Color(0.07, 0.16, 0.14, 1)
+detail_color = Color(0.16, 0.31, 0.23, 1)
+horizon_y = 266.0
+block_width = 62.0
+block_height = 28.0
+
+[node name="Foreground" type="Parallax2D" parent="."]
+z_index = 4
+scroll_scale = Vector2(1.18, 1)
+repeat_size = Vector2(640, 0)
+repeat_times = 3
+[node name="Strip" type="Node2D" parent="Foreground"]
+script = ExtResource("3")
+strip_color = Color(0.035, 0.075, 0.065, 1)
+detail_color = Color(0.1, 0.22, 0.14, 1)
+horizon_y = 342.0
+block_width = 98.0
+block_height = 13.0
+
+[node name="Ground" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+[node name="Shape" type="CollisionShape2D" parent="Ground"]
+position = Vector2(4000, 306)
+shape = SubResource("ground_shape")
+
+[node name="Kaiju" parent="." instance=ExtResource("4")]
+position = Vector2(160, 290)
+
+[node name="Director" type="Node" parent="."]
+script = ExtResource("2")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="TopBar" type="ColorRect" parent="HUD"]
+offset_right = 640.0
+offset_bottom = 38.0
+color = Color(0.02, 0.035, 0.045, 0.94)
+
+[node name="State" type="Label" parent="HUD"]
+offset_left = 12.0
+offset_top = 5.0
+offset_right = 176.0
+offset_bottom = 24.0
+theme_override_colors/font_color = Color(0.56, 1, 0.67, 1)
+theme_override_font_sizes/font_size = 11
+text = "STATE  ADVANCE"
+
+[node name="Resources" type="Label" parent="HUD"]
+offset_left = 185.0
+offset_top = 5.0
+offset_right = 410.0
+offset_bottom = 24.0
+theme_override_font_sizes/font_size = 11
+text = "E 100  B 100  O 100  H 000"
+
+[node name="Wave" type="Label" parent="HUD"]
+offset_left = 420.0
+offset_top = 5.0
+offset_right = 628.0
+offset_bottom = 24.0
+theme_override_colors/font_color = Color(0.9, 0.77, 0.4, 1)
+theme_override_font_sizes/font_size = 10
+text = "CITY RUINS // APPROACH"
+horizontal_alignment = 2
+
+[node name="Progress" type="ProgressBar" parent="HUD"]
+offset_left = 12.0
+offset_top = 27.0
+offset_right = 628.0
+offset_bottom = 34.0
+max_value = 3400.0
+value = 160.0
+show_percentage = false
+

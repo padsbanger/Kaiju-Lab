@@ -1,9 +1,12 @@
 class_name KaijuLabMain
 extends Node2D
 
+const BATTLE_SCENE: PackedScene = preload("res://battle/side_scroll_battle.tscn")
+
 @onready var lab: LabController = $Lab
 
 var specimen: SpecimenState
+var active_battle: SideScrollBattle
 
 
 func _ready() -> void:
@@ -14,6 +17,20 @@ func _ready() -> void:
 	lab.deployment_requested.connect(_on_deployment_requested)
 
 
-func _on_deployment_requested(_prepared_specimen: SpecimenState) -> void:
-	lab.status_label.text = "DEPLOYMENT CHAMBER ARMED // AWAITING BATTLE LINK"
+func _on_deployment_requested(prepared_specimen: SpecimenState) -> void:
+	if active_battle != null:
+		return
+	lab.visible = false
+	active_battle = BATTLE_SCENE.instantiate()
+	add_child(active_battle)
+	active_battle.bind_specimen(prepared_specimen)
+	active_battle.battle_finished.connect(_on_battle_finished)
+
+
+func _on_battle_finished(_victory: bool) -> void:
+	active_battle.queue_free()
+	active_battle = null
+	lab.visible = true
+	lab.bind_specimen(specimen)
+	lab.status_label.text = "SPECIMEN RECOVERED // REVIEW ORGAN DAMAGE"
 

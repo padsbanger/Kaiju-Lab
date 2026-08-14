@@ -1,0 +1,32 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://enemies/enemy.gd" id="1"]
+[sub_resource type="RectangleShape2D" id="shape"]
+size = Vector2(22, 38)
+
+[node name="RifleUnit" type="CharacterBody2D"]
+script = ExtResource("1")
+display_name = "Rifle Team"
+max_health = 34.0
+move_speed = 25.0
+attack_damage = 6.0
+attack_range = 190.0
+attack_interval = 2.1
+ranged = true
+reward_value = 8
+[node name="Shape" type="CollisionShape2D" parent="."]
+position = Vector2(0, -19)
+shape = SubResource("shape")
+[node name="Visual" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-11, -38, 9, -38, 13, -7, 7, 0, -8, 0, -13, -9)
+color = Color(0.8, 0.66, 0.26, 1)
+[node name="Weapon" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-18, -27, 2, -29, 3, -24, -18, -23)
+color = Color(0.22, 0.25, 0.27, 1)
+[node name="HealthBar" type="ProgressBar" parent="."]
+offset_left = -17.0
+offset_top = -49.0
+offset_right = 17.0
+offset_bottom = -43.0
+show_percentage = false
+

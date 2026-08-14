@@ -30,7 +30,7 @@ Status: **complete**
 
 ## Milestone 3 — Autonomous Side-Scrolling Battle
 
-Status: **planned**
+Status: **complete**
 
 - Implement `ADVANCE`, `ENGAGE`, `RECOVER`, `STAGGERED`, `BOSS_FIGHT`, and `DEAD` states.
 - Add staggered targeting, data-driven waves, attacks, enemies, a boss, and live telemetry.

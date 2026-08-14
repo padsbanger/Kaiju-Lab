@@ -1,0 +1,53 @@
+[gd_resource type="Resource" script_class="BattleMapData" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://battle/battle_map_data.gd" id="1"]
+[ext_resource type="Script" path="res://battle/wave_data.gd" id="2"]
+[ext_resource type="PackedScene" path="res://enemies/raider.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://enemies/rifle_unit.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://enemies/citadel_boss.tscn" id="5"]
+
+[sub_resource type="Resource" id="wave_1"]
+script = ExtResource("2")
+wave_id = &"scout_line"
+trigger_x = 220.0
+enemy_scene = ExtResource("3")
+count = 3
+spacing = 62.0
+
+[sub_resource type="Resource" id="wave_2"]
+script = ExtResource("2")
+wave_id = &"crossfire"
+trigger_x = 1050.0
+enemy_scene = ExtResource("4")
+count = 3
+spacing = 85.0
+entry_rule = "fixed"
+
+[sub_resource type="Resource" id="wave_3"]
+script = ExtResource("2")
+wave_id = &"rear_ambush"
+trigger_x = 1950.0
+enemy_scene = ExtResource("3")
+count = 4
+spacing = 55.0
+entry_rule = "left"
+
+[sub_resource type="Resource" id="wave_boss"]
+script = ExtResource("2")
+wave_id = &"citadel"
+trigger_x = 2920.0
+enemy_scene = ExtResource("5")
+count = 1
+entry_rule = "fixed"
+is_boss_wave = true
+
+[resource]
+script = ExtResource("1")
+map_id = &"city_ruins"
+display_name = "CITY RUINS"
+length = 3400.0
+ground_y = 290.0
+sky_color = Color(0.045, 0.07, 0.105, 1)
+accent_color = Color(0.35, 0.82, 0.55, 1)
+waves = Array[ExtResource("2")]([SubResource("wave_1"), SubResource("wave_2"), SubResource("wave_3"), SubResource("wave_boss")])
+

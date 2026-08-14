@@ -5,7 +5,10 @@ $tests = @(
     "res://tests/foundation_test.gd",
     "res://tests/biological_specimen_test.gd",
     "res://tests/lab_flow_test.gd",
-    "res://tests/lab_render_test.gd"
+    "res://tests/lab_render_test.gd",
+    "res://tests/autonomous_battle_test.gd",
+    "res://tests/wave_boss_test.gd",
+    "res://tests/battle_render_test.gd"
 )
 
 function Invoke-Godot([string[]] $Arguments) {
