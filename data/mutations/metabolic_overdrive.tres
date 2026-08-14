@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="MutationData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://progression/mutation_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+mutation_id = &"metabolic_overdrive"
+display_name = "Metabolic Overdrive"
+description = "Faster movement and stronger attacks at the edge of supply tolerance."
+dna_cost = 5
+attack_multiplier = 1.15
+movement_multiplier = 1.12
+

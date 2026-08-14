@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="ComponentData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://kaiju/component_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+component_id = &"stomach_reservoir"
+display_name = "Reservoir Gut"
+description = "Low-demand digestion with steadier, weaker energy output."
+socket_type = &"stomach"
+max_health = 125.0
+mass = 22.0
+tags = PackedStringArray("digestion", "efficient")
+provides_functions = PackedStringArray("digestion")
+required_functions = PackedStringArray("structure", "circulation")
+energy_generation = 5.5
+resting_energy_use = 0.2
+blood_demand = 1.0
+oxygen_demand = 0.8
+repair_cost_per_health = 0.2
+installation_cost = 24
+

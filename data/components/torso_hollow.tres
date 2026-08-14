@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ComponentData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://kaiju/component_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+component_id = &"torso_hollow"
+display_name = "Hollow Frame"
+description = "Fast, light structural lattice with dangerously thin protection."
+socket_type = &"torso"
+max_health = 105.0
+mass = 21.0
+tags = PackedStringArray("structural", "lightweight")
+provides_functions = PackedStringArray("structure")
+resting_energy_use = 0.25
+repair_cost_per_health = 0.3
+installation_cost = 28
+

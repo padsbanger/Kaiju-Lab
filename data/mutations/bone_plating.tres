@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="MutationData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://progression/mutation_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+mutation_id = &"bone_plating"
+display_name = "Bone Plating"
+description = "Reduces incoming damage by 18%, but adds locomotive drag."
+dna_cost = 4
+movement_multiplier = 0.9
+damage_resistance = 0.18
+

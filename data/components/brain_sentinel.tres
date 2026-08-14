@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="ComponentData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://kaiju/component_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+component_id = &"brain_sentinel"
+display_name = "Sentinel Cortex"
+description = "Prefers dangerous ranged threats before nearby fodder."
+socket_type = &"brain"
+max_health = 88.0
+mass = 9.0
+tags = PackedStringArray("cognition", "defensive")
+provides_functions = PackedStringArray("cognition")
+required_functions = PackedStringArray("structure", "circulation", "oxygenation")
+resting_energy_use = 2.2
+blood_demand = 2.0
+oxygen_demand = 4.0
+repair_cost_per_health = 0.48
+installation_cost = 26
+

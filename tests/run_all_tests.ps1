@@ -3,12 +3,19 @@ $ErrorActionPreference = "Stop"
 $godot = (Get-Command godot.exe -ErrorAction Stop).Source
 $tests = @(
     "res://tests/foundation_test.gd",
-    "res://tests/biological_specimen_test.gd"
+    "res://tests/biological_specimen_test.gd",
+    "res://tests/lab_flow_test.gd",
+    "res://tests/lab_render_test.gd"
 )
 
 function Invoke-Godot([string[]] $Arguments) {
-    $process = Start-Process -FilePath $godot -ArgumentList $Arguments -NoNewWindow -Wait -PassThru
-    return $process.ExitCode
+    $process = Start-Process -FilePath $godot -ArgumentList $Arguments -NoNewWindow -PassThru
+    if (-not $process.WaitForExit(30000)) {
+        $process.Kill()
+        throw "Godot process timed out: $($Arguments -join ' ')"
+    }
+    $process.WaitForExit()
+    return [int]$process.ExitCode
 }
 
 $importExitCode = Invoke-Godot @("--headless", "--editor", "--path", ".", "--quit")

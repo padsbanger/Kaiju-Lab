@@ -7,6 +7,12 @@ const STOMACH_BASIC: ComponentData = preload("res://data/components/stomach_basi
 const TORSO_BASIC: ComponentData = preload("res://data/components/torso_basic.tres")
 const CLAW_LEFT: ComponentData = preload("res://data/components/claw_left.tres")
 const CLAW_RIGHT: ComponentData = preload("res://data/components/claw_right.tres")
+const BRAIN_SENTINEL: ComponentData = preload("res://data/components/brain_sentinel.tres")
+const HEART_OVERCLOCKED: ComponentData = preload("res://data/components/heart_overclocked.tres")
+const STOMACH_RESERVOIR: ComponentData = preload("res://data/components/stomach_reservoir.tres")
+const TORSO_HOLLOW: ComponentData = preload("res://data/components/torso_hollow.tres")
+const ACID_LEFT: ComponentData = preload("res://data/components/acid_left.tres")
+const ACID_RIGHT: ComponentData = preload("res://data/components/acid_right.tres")
 
 const ALL: Array[ComponentData] = [
 	BRAIN_PREDATOR,
@@ -15,6 +21,12 @@ const ALL: Array[ComponentData] = [
 	TORSO_BASIC,
 	CLAW_LEFT,
 	CLAW_RIGHT,
+	BRAIN_SENTINEL,
+	HEART_OVERCLOCKED,
+	STOMACH_RESERVOIR,
+	TORSO_HOLLOW,
+	ACID_LEFT,
+	ACID_RIGHT,
 ]
 
 
@@ -38,4 +50,12 @@ static func default_loadout() -> Dictionary[StringName, ComponentData]:
 		&"arm_left": CLAW_LEFT,
 		&"arm_right": CLAW_RIGHT,
 	}
+
+
+static func compatible_with(socket: StringName) -> Array[ComponentData]:
+	var matches: Array[ComponentData] = []
+	for component: ComponentData in ALL:
+		if component.socket_type == socket:
+			matches.append(component)
+	return matches
 

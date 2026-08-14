@@ -21,7 +21,7 @@ Status: **complete**
 
 ## Milestone 2 — Functional Laboratory
 
-Status: **planned**
+Status: **complete**
 
 - Inspect every organ and its dependencies.
 - Repair damage for explicit biomass costs.

@@ -146,6 +146,33 @@ func install(socket: StringName, definition: ComponentData) -> bool:
 	return true
 
 
+func apply_mutation(mutation: MutationData) -> bool:
+	if mutation == null or mutations.has(String(mutation.mutation_id)) or dna < mutation.dna_cost:
+		return false
+	dna -= mutation.dna_cost
+	mutations.append(String(mutation.mutation_id))
+	state_changed.emit()
+	return true
+
+
+func attack_multiplier() -> float:
+	var multiplier := 1.0
+	for mutation_id: String in mutations:
+		var mutation := MutationCatalog.get_by_id(StringName(mutation_id))
+		if mutation != null:
+			multiplier *= mutation.attack_multiplier
+	return multiplier
+
+
+func damage_multiplier() -> float:
+	var resistance := 0.0
+	for mutation_id: String in mutations:
+		var mutation := MutationCatalog.get_by_id(StringName(mutation_id))
+		if mutation != null:
+			resistance += mutation.damage_resistance
+	return clampf(1.0 - resistance, 0.35, 1.0)
+
+
 func has_function(function_name: StringName) -> bool:
 	return _available_functions.has(function_name)
 
@@ -159,7 +186,12 @@ func movement_multiplier() -> float:
 	for state: ComponentState in components.values():
 		total_mass += state.definition.mass
 	var mass_factor := clampf(1.2 - total_mass / 300.0, 0.55, 1.0)
-	return clampf(supply * circulation_factor * mass_factor, 0.0, 1.0)
+	var mutation_factor := 1.0
+	for mutation_id: String in mutations:
+		var mutation := MutationCatalog.get_by_id(StringName(mutation_id))
+		if mutation != null:
+			mutation_factor *= mutation.movement_multiplier
+	return clampf(supply * circulation_factor * mass_factor * mutation_factor, 0.0, 1.0)
 
 
 func to_dictionary() -> Dictionary:
@@ -215,4 +247,3 @@ func _requirements_met(definition: ComponentData) -> bool:
 		if not _available_functions.has(StringName(required)):
 			return false
 	return true
-

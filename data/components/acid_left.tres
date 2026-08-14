@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="ComponentData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://kaiju/component_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+component_id = &"acid_left"
+display_name = "Acid Gland L"
+description = "Ranged corrosive organ with high energy and heat demands."
+socket_type = &"arm_left"
+max_health = 82.0
+mass = 12.0
+tags = PackedStringArray("weapon", "ranged", "acid")
+provides_functions = PackedStringArray("offense")
+required_functions = PackedStringArray("structure", "circulation", "cognition", "digestion")
+resting_energy_use = 0.8
+activation_energy = 18.0
+blood_demand = 2.5
+oxygen_demand = 2.0
+heat_per_activation = 22.0
+attack_power = 18.0
+attack_range = 170.0
+attack_cooldown = 1.8
+repair_cost_per_health = 0.4
+installation_cost = 30
+

@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="ComponentData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://kaiju/component_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+component_id = &"heart_overclocked"
+display_name = "Hypercardiac Heart"
+description = "Exceptional blood flow with fragile tissue and heavy energy draw."
+socket_type = &"heart"
+max_health = 76.0
+mass = 12.0
+tags = PackedStringArray("circulation", "volatile")
+provides_functions = PackedStringArray("circulation", "oxygenation")
+required_functions = PackedStringArray("structure")
+resting_energy_use = 3.0
+blood_demand = 1.0
+oxygen_demand = 1.5
+circulation_output = 25.0
+oxygenation_output = 14.0
+repair_cost_per_health = 0.55
+installation_cost = 34
+
